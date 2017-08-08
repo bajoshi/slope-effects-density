@@ -1,6 +1,7 @@
 from __future__ import division  
 
 import numpy as np
+from astropy.modeling import models, fitting
 
 import sys
 import os
@@ -52,21 +53,35 @@ if __name__ == '__main__':
     density[nodata_idx] = np.nan
 
     # second, for now, also ignore high density values
-    density_upper_lim = 100.0
+    density_upper_lim = 1.0
     high_idx = np.where(density > density_upper_lim)[0]
     density[high_idx] = np.nan
+
+    # third,     
+    val_idx = np.where(density != 0.0)[0] # np.isfinite(density)
+
+    # ---------------------------------------- #
+    # find frac pix values for pixels that have high density values
+    
+
+    # --------------------------------------- # 
+    # Fit gaussian
+    gauss_init = models.Gaussian1D(amplitude=1.0, mean=5.0, stddev=10.0)
+    fit_gauss = fitting.LevMarLSQFitter()
+    x_fit_arr = slope[val_idx]
+    y_fit_arr = density[val_idx]
+    #gauss = fit_gauss(gauss_init, x_fit_arr, y_fit_arr)
 
     # plots
     fig = plt.figure()
     ax = fig.add_subplot(111)
 
-    val_idx = np.where(density != 0.0)[0] # np.isfinite(density)
-
     #ax.plot(pix_frac[val_idx], np.log10(density[val_idx]), 'o', color='k', markersize=2, markeredgecolor='None')
     #ax.set_ylim(-5,2.5)
 
-    ax.plot(crater_frac[val_idx], np.log10(density[val_idx]), 'o', color='k', markersize=2, markeredgecolor='None')
-    ax.set_ylim(-4,2.5)
+    ax.plot(slope[val_idx], density[val_idx], 'o', color='k', markersize=2, markeredgecolor='None')
+    #ax.plot(x_fit_arr, gauss(x_fit_arr), '-', color='r', lw=2)
+    ax.set_ylim(0,1)
 
     plt.show()
 
