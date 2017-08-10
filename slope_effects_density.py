@@ -689,6 +689,25 @@ def get_crater_circle_poly(x_cen, y_cen, dia):
 
     return circ_poly
 
+def get_density(crater_frac, pix_frac, total_pix):
+
+    density = np.zeros(total_pix)
+    for i in range(total_pix):
+
+        if pix_frac[i] != 0.0:
+            density[i] = crater_frac[i] / pix_frac[i] 
+            # Because pixel area is currently 1 sq. km, we do not need to multiply 
+            # pix_frac by the area of a single pixel. 
+            # Density = # of craters per sq. km.
+            # If you ever have pixels that are not 1 sq. km in area then you should use
+            # density[i] = crater_frac[i] / pix_area_arr_phys[i] (pix_area_arr_phys calculation currently commented out)
+            # with area_single_pix (see code above where it saves the pixel area frac) 
+            # set to the area of a pixel in the physical units you need.
+        elif pix_frac[i] == 0.0:
+            density[i] = np.nan
+
+    return density
+
 if __name__ == '__main__': 
 
 	# add code to give user choice to run boolean or fuzzy logic
@@ -995,20 +1014,7 @@ if __name__ == '__main__':
     pix_frac = np.load(slope_extdir + 'pix_area_fraction.npy')
     crater_frac = np.load(slope_extdir + 'crater_area_frac_in_pix.npy')
 
-    density = np.zeros(len(pix_centers))
-    for i in range(len(pix_centers)):
-
-        if pix_frac[i] != 0.0:
-            density[i] = crater_frac[i] / pix_frac[i] 
-            # Because pixel area is currently 1 sq. km, we do not need to multiply 
-            # pix_frac by the area of a single pixel. 
-            # Density = # of craters per sq. km.
-            # If you ever have pixels that are not 1 sq. km in area then you should use
-            # density[i] = crater_frac[i] / pix_area_arr_phys[i] (pix_area_arr_phys calculation currently commented out)
-            # with area_single_pix (see code above where it saves the pixel area frac) 
-            # set to the area of a pixel in the physical units you need.
-        elif pix_frac[i] == 0.0:
-            density[i] = np.nan
+    density = get_density(crater_frac, pix_frac, len(pix_centers))
 
     np.save(slope_extdir + 'density.npy', density.reshape(rows,columns))
     np.save(slope_extdir + 'slope_val.npy', slope.reshape(rows,columns))
