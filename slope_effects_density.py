@@ -933,9 +933,18 @@ if __name__ == '__main__':
 
         crater_poly = pg.Polygon(zip(current_x_vert, current_y_vert))
 
+        # Check the diameter of the crater and only proceed if 
+        # the diameter is equal to or greater than 1 KM.
+        # The area will be in sq. meters. 
+        current_diam = np.sqrt(crater_poly.area() * 4 / np.pi)
+        if current_diam < 1000:
+            continue
+
+        # get all pixels within the crater's bounding box
         pix_bbox_x, pix_bbox_y, pixel_indices = \
         get_pixels_in_bbox(crater_poly.boundingBox(), pix_x_cen_arr, pix_y_cen_arr, mode='run')
 
+        # loop over all pixels within the crater's bounding box and assign crater area fraction to each
         for j in range(len(pix_bbox_x)):
 
             current_pix_x_cen = pix_bbox_x[j]

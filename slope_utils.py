@@ -84,6 +84,52 @@ def raster_to_numpy(raster_path, total_pixels, dir_for_array='same'):
 
     return None
 
+def blank_raster(final_shape, pix_x, pix_y, savedir):
+    """
+    This function will create a blank ascii 
+    raster file with all ones in it.
+    It needs the shape and the pixel coordinates.
+    It also needs to know the directory path 
+    for saving the raster.
+    """
+
+    # create raster file
+    if savedir[-1] != '/':
+        raster_file = open(savedir + '/' + 'blank_raster.asc', 'wa')
+    elif savedir[-1] == '/':
+        raster_file = open(savedir + 'blank_raster.asc', 'wa')
+
+    # determine rows and columns
+    rows = final_shape[0]
+    cols = final_shape[1]
+
+    # get pixel values
+    pix_x_ll = pix_x[0]
+    pix_y_ll = pix_y[-1]  # these indices are the way they are because I know how the coord arrays are shaped
+    cellsize = 1000  # pixel step in meters
+
+    # write array to file
+    raster_file.write('NCOLS ' + str(cols) + '\n')
+    raster_file.write('NROWS ' + str(rows) + '\n')
+
+    raster_file.write('XLLCENTER ' + str(pix_x_ll) + '\n')
+    raster_file.write('YLLCENTER ' + str(pix_y_ll) + '\n')
+
+    raster_file.write('CELLSIZE ' + str(cellsize) + '\n')
+    raster_file.write('NODATA_VALUE ' + str(-9999.0) + '\n')
+
+    # loop over all rows and write row data to raster file
+    for i in range(rows):
+        for j in range(cols):
+        
+            raster_file.write(str(1.0) + ' ')
+        raster_file.write('\n')
+
+    # close file to actually write it to disk and return
+    raster_file.close()
+
+    return None
+
 if __name__ == '__main__':
     
     print "\n"
