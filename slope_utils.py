@@ -54,7 +54,7 @@ def numpy_to_asciiraster(npy_array_path, final_shape, pix_x, pix_y, dir_for_rast
 
     return None
 
-def raster_to_numpy(raster_path, final_shape, dir_for_array='same'):
+def raster_to_numpy(raster_path, dir_for_array='same'):
 
     # read in raster file
     # opened only in read mode to stop from accidentally messing with it
@@ -67,11 +67,7 @@ def raster_to_numpy(raster_path, final_shape, dir_for_array='same'):
     array_filename = os.path.splitext(os.path.basename(raster_path))[0]  # the 0th element is just the filename without hte extension
 
     # create array 
-    rows = final_shape[0]
-    cols = final_shape[1]
-    print rows, cols
-    total_pixels = rows * cols
-    npy_array = np.zeros((rows, cols))
+    npy_array = []
 
     # convert data in raster to 1D numpy array
     row_count = 0
@@ -80,16 +76,13 @@ def raster_to_numpy(raster_path, final_shape, dir_for_array='same'):
         # LINES IN ITS HEADER AND THAT NO ROWS ARE BEING SKIPPED.
         
         col_arr = np.array(line.split(' '))
-        col_arr = col_arr[:-1].astype(np.float32)  # i'm skipping the last character because it is the newline character
-        print col_arr, col_arr.shape
-        print np.where(col_arr == 1.0)
-
-        #npy_array[row_count] = col_arr
-        if row_count == 10: sys.exit(0)
+        col_arr = col_arr[:-1].astype(np.int)  # i'm skipping the last character because it is the newline character
+        npy_array.append(col_arr)
 
         row_count += 1
 
     # write file as numpy binary file
+    npy_array = np.asarray(npy_array)
     np.save(dir_for_array + array_filename + '.npy', npy_array)
 
     # close file and return
