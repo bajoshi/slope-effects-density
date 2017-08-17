@@ -734,11 +734,25 @@ def plot_im(arr, outname):
 
     return None
 
-if __name__ == '__main__': 
+def save_csv(arr, arr_name, datatype, savepath, hdr):
 
-	# add code to give user choice to run boolean or fuzzy logic
-	# run_mode = sys.argv.......
-	# if run_mode == 'bool': 
+    # save as csv
+    data = np.array(zip(arr), dtype=[(arr_name, datatype)])
+    # the string in the dtype here should match the array variable
+    np.savetxt(savepath, data, fmt=['%.4f'], delimiter=',', header=hdr)
+
+    return None
+
+def convert_arr_to_bool_int(arr, returntype):
+
+    if returntype == 'bool' or returntype == 'boolean':
+        return arr.astype(bool)
+    else:
+        nonzero_idx = np.nonzero(arr)
+        arr[nonzero_idx] = 1.0
+        return arr
+
+if __name__ == '__main__': 
     
     # Start time
     start = time.time()
@@ -984,7 +998,6 @@ if __name__ == '__main__':
         # loop over all pixels within the crater's bounding box and assign crater area fraction to each
         for j in range(len(pix_bbox_x)):
 
-            """
             current_pix_x_cen = pix_bbox_x[j]
             current_pix_y_cen = pix_bbox_y[j]
 
@@ -1012,11 +1025,10 @@ if __name__ == '__main__':
             # the fraction of original crater that area amounts to
             inter_area = (pixel_corners & crater_poly).area()
             inter_area_crater_frac = inter_area / crater_poly.area() # store the fraction of the crater occupying that pixel
-            """
 
             # find pixel index using pixel center to append to the correct array element
             pix_index = pixel_indices[j]
-            #pix_crater_area[pix_index] += inter_area_crater_frac #for each pixel, keep a running sum of the fractions of craters within it
+            pix_crater_area[pix_index] += inter_area_crater_frac #for each pixel, keep a running sum of the fractions of craters within it
             pix_crater_id[pix_index].append(crater_ids[i])
 
     # pix_crater_area /= 1e6 -- normalized to 1 sq km if needed (comment out if using fractions)
@@ -1035,19 +1047,14 @@ if __name__ == '__main__':
     pix_crater_area[invalid_idx] = -9999.0
 
     # save as numpy binary array
-    #np.save(slope_extdir + 'crater_area_frac_in_pix.npy', pix_crater_area)
-
-    # save as csv
-    #data = np.array(zip(pix_crater_area), dtype=[('pix_crater_area', float)])
-    # the string in the dtype here should match the array variable
-    #np.savetxt(slope_extdir + 'crater_area_frac_in_pix.csv', data, fmt=['%.4f'], delimiter=',', \
-    #    header='crater_area_fraction_in_pixel')
+    np.save(slope_extdir + 'crater_area_frac_in_pix.npy', pix_crater_area)
+    save_csv(pix_crater_area, 'pix_crater_area', float, slope_extdir + 'crater_area_fraction_in_pixel.csv', 'crater_area_fraction_in_pixel')
 
     # save the list of lists as csv
     write_LofL_pickle(pix_crater_id, 'pix_crater_id')
 
     # save as ascii raster
-    #su.numpy_to_asciiraster(slope_extdir + 'crater_area_frac_in_pix.npy', (rows, columns), pix_x_cen_arr, pix_y_cen_arr)
+    su.numpy_to_asciiraster(slope_extdir + 'crater_area_frac_in_pix.npy', (rows, columns), pix_x_cen_arr, pix_y_cen_arr)
 
     print "\n","Crater fractional area in each pixel computation done and saved."
 
