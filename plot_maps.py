@@ -74,8 +74,8 @@ if __name__ == '__main__':
     pix_frac = np.load(pix_frac_path.replace('.txt', '.npy'))
     crater_frac = np.load(crater_frac_path.replace('.txt', '.npy'))
 
-    pix_frac = pix_frac.flatten()
-    crater_frac = crater_frac.flatten()
+    pix_frac = pix_frac.ravel()
+    crater_frac = crater_frac.ravel()
 
     density = se.get_density(crater_frac, pix_frac, len(pix_frac))
 
@@ -83,7 +83,7 @@ if __name__ == '__main__':
     slopemap_path = slope_extdir + 'hf_full_slopemap_clipped.txt'
     #su.raster_to_numpy(slopemap_path)
     slope_arr = np.load(slopemap_path.replace('.txt', '.npy'))
-    slope_arr = slope_arr.flatten()
+    slope_arr = slope_arr.ravel()
 
 
     #pix_x_cen_arr = slope_arr['pix_x_cen']

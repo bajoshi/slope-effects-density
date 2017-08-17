@@ -708,6 +708,32 @@ def get_density(crater_frac, pix_frac, total_pix):
 
     return density
 
+def write_LofL_pickle(l, outname):
+    """Function came from SO solution:
+    see here -- https://stackoverflow.com/questions/25464295/how-to-pickle-a-list
+    """
+
+    import pickle
+
+    with open(outname + ".pkl", "wb") as f:
+        pickle.dump(l, f)
+
+    return None
+
+def plot_im(arr, outname):
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    im = ax.imshow(arr, cmap='bone')
+    plt.colorbar(im, ax=ax)
+
+    fig.savefig(slope_extdir + outname + '.png', dpi=300, bbox_inches='tight')
+    plt.clf()
+    plt.cla()
+    plt.close()
+
+    return None
+
 if __name__ == '__main__': 
 
 	# add code to give user choice to run boolean or fuzzy logic
@@ -803,6 +829,7 @@ if __name__ == '__main__':
     
     # loop over all pixels, range just designates the iterable -- in this case, 
     # the pix_centers array.
+    """
     for i in range(len(pix_centers)):
 
         if (i % 100000) == 0.0:
@@ -903,6 +930,7 @@ if __name__ == '__main__':
     plt.clf()
     plt.cla()
     plt.close()
+    """
 
     # ----------------  measure and populate crater pixel fraction array  ---------------- # 
     # read crater vertices file
@@ -915,6 +943,15 @@ if __name__ == '__main__':
     # loop over all pixels in that bounding box
     # find intersecting area for each pixel and keep a running sum
     pix_crater_area = np.zeros(len(pix_x_cen_arr))
+
+    # also create a blank array for associating 
+    # crater ids with each pixel. I need a blank 
+    # array of lists so that I can append to each element.
+    pix_crater_id = np.zeros(len(pix_x_cen_arr))
+    pix_crater_id = pix_crater_id.tolist()
+
+    for w in range(len(pix_crater_id)):
+        pix_crater_id[w] = []
 
     for i in range(len(crater_ids)):
 
@@ -947,6 +984,7 @@ if __name__ == '__main__':
         # loop over all pixels within the crater's bounding box and assign crater area fraction to each
         for j in range(len(pix_bbox_x)):
 
+            """
             current_pix_x_cen = pix_bbox_x[j]
             current_pix_y_cen = pix_bbox_y[j]
 
@@ -974,47 +1012,44 @@ if __name__ == '__main__':
             # the fraction of original crater that area amounts to
             inter_area = (pixel_corners & crater_poly).area()
             inter_area_crater_frac = inter_area / crater_poly.area() # store the fraction of the crater occupying that pixel
+            """
 
             # find pixel index using pixel center to append to the correct array element
             pix_index = pixel_indices[j]
-            pix_crater_area[pix_index] += inter_area_crater_frac #for each pixel, keep a running sum of the fractions of craters within it
+            #pix_crater_area[pix_index] += inter_area_crater_frac #for each pixel, keep a running sum of the fractions of craters within it
+            pix_crater_id[pix_index].append(crater_ids[i])
 
     # pix_crater_area /= 1e6 -- normalized to 1 sq km if needed (comment out if using fractions)
 
-    # write all zeros as -9999.0 which is the NODATA_VALUE (for the ascii raster and numpy array)
-    # For the crater area fraction array, I want to save the pixels outside the study area with the
-    # NODATA_VALUE and those inside the study area but NOT intersecting a crater to 0.0 which should
-    # be the case after the previous for loop is done. So I only need to change the pixels outside
-    # study area to the NODATA_VALUE using the same invalid_idx as before.
-    pix_area_arr = np.load(slope_extdir + 'pix_area_fraction.npy')  
+    """
+    write all zeros as -9999.0 which is the NODATA_VALUE (for the ascii raster and numpy array)
+    For the crater area fraction array, I want to save the pixels outside the study area with the
+    NODATA_VALUE and those inside the study area but NOT intersecting a crater to 0.0 which should
+    be the case after the previous for loop is done. So I only need to change the pixels outside
+    study area to the NODATA_VALUE using the same invalid_idx as before.
+    x_area_arr = np.load(slope_extdir + 'pix_area_fraction.npy')  
+    """
     invalid_idx = np.where(pix_area_arr == 0.0)[0]
     # these lines is here just in case you're running the code only for the 
     # craters and the invalid_idx definition would be commented out otherwise
     pix_crater_area[invalid_idx] = -9999.0
 
     # save as numpy binary array
-    np.save(slope_extdir + 'crater_area_frac_in_pix.npy', pix_crater_area)
+    #np.save(slope_extdir + 'crater_area_frac_in_pix.npy', pix_crater_area)
 
     # save as csv
-    data = np.array(zip(pix_crater_area), dtype=[('pix_crater_area', float)])
+    #data = np.array(zip(pix_crater_area), dtype=[('pix_crater_area', float)])
     # the string in the dtype here should match the array variable
-    np.savetxt(slope_extdir + 'crater_area_frac_in_pix.csv', data, fmt=['%.4f'], delimiter=',', \
-        header='crater_area_fraction_in_pixel')
+    #np.savetxt(slope_extdir + 'crater_area_frac_in_pix.csv', data, fmt=['%.4f'], delimiter=',', \
+    #    header='crater_area_fraction_in_pixel')
+
+    # save the list of lists as csv
+    write_LofL_pickle(pix_crater_id, 'pix_crater_id')
 
     # save as ascii raster
-    su.numpy_to_asciiraster(slope_extdir + 'crater_area_frac_in_pix.npy', (rows, columns), pix_x_cen_arr, pix_y_cen_arr)
+    #su.numpy_to_asciiraster(slope_extdir + 'crater_area_frac_in_pix.npy', (rows, columns), pix_x_cen_arr, pix_y_cen_arr)
 
     print "\n","Crater fractional area in each pixel computation done and saved."
-
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-    im = ax.imshow(pix_crater_area.reshape(rows, columns), cmap='bone')
-    plt.colorbar(im, ax=ax)
-
-    fig.savefig(slope_extdir + 'pix_crater_frac.png', dpi=300, bbox_inches='tight')
-    plt.clf()
-    plt.cla()
-    plt.close()
 
     sys.exit(0)
 
