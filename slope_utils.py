@@ -76,7 +76,7 @@ def raster_to_numpy(raster_path, dir_for_array='same'):
         # LINES IN ITS HEADER AND THAT NO ROWS ARE BEING SKIPPED.
         
         col_arr = np.array(line.split(' '))
-        col_arr = col_arr[:-1].astype(np.int)  # i'm skipping the last character because it is the newline character
+        col_arr = col_arr[:-1].astype(np.float)  # i'm skipping the last character because it is the newline character
         npy_array.append(col_arr)
 
         row_count += 1
