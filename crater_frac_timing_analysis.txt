@@ -1,0 +1,65 @@
+# I ran the crater frac part of hte code for craters ids between 5 to 20.
+# Using time.time() differences and print statements at the right places 
+# it can be seen that getting pixels in the bbox is hte bottleneck.
+# Eyeballed (seconds):
+# avg time at loop beginning: ~ 10^{-2}
+# avg time getting pixels in bbox: ~ 2 
+# avg time assigning pixel crater frac areas: ~ 10^{-3}
+# bbox is the bounding box for the crater
+
+bhavins-mbp:slope-effects-density bhavinjoshi$ python slope_effects_density.py
+Starting at -- 2017-08-18 14:06:38.685805
+1503090581.34
+
+5 time taken at the loop beginning 0.500651836395
+time taken to get pixels in bbox 2.97750902176
+time taken to assign pixel crater frac areas 0.00983715057373
+
+7 time taken at the loop beginning 0.0180630683899
+time taken to get pixels in bbox 2.08622097969
+time taken to assign pixel crater frac areas 0.00304412841797
+
+8 time taken at the loop beginning 0.0209848880768
+time taken to get pixels in bbox 2.12107515335
+time taken to assign pixel crater frac areas 0.00157880783081
+
+9 time taken at the loop beginning 0.0178329944611
+time taken to get pixels in bbox 2.0695810318
+time taken to assign pixel crater frac areas 0.0106408596039
+
+10 time taken at the loop beginning 0.0186290740967
+time taken to get pixels in bbox 2.09485197067
+time taken to assign pixel crater frac areas 0.00358390808105
+
+12 time taken at the loop beginning 0.0218100547791
+time taken to get pixels in bbox 2.12676787376
+time taken to assign pixel crater frac areas 0.00387215614319
+
+13 time taken at the loop beginning 0.0201089382172
+time taken to get pixels in bbox 2.18237304688
+time taken to assign pixel crater frac areas 0.00201296806335
+
+15 time taken at the loop beginning 0.0186970233917
+time taken to get pixels in bbox 2.11470317841
+time taken to assign pixel crater frac areas 0.00442790985107
+
+16 time taken at the loop beginning 0.0176949501038
+time taken to get pixels in bbox 2.08767795563
+time taken to assign pixel crater frac areas 0.00169110298157
+
+17 time taken at the loop beginning 0.0185530185699
+time taken to get pixels in bbox 2.0973367691
+time taken to assign pixel crater frac areas 0.0011670589447
+
+18 time taken at the loop beginning 0.0175108909607
+time taken to get pixels in bbox 2.05132102966
+time taken to assign pixel crater frac areas 0.00350213050842
+
+19 time taken at the loop beginning 0.0241701602936
+time taken to get pixels in bbox 2.08296084404
+time taken to assign pixel crater frac areas 0.00284004211426
+bhavins-mbp:slope-effects-density bhavinjoshi$ clear
+
+bhavins-mbp:slope-effects-density bhavinjoshi$ 
+
+
