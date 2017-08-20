@@ -1134,7 +1134,7 @@ if __name__ == '__main__':
     save_csv(pix_crater_area, 'pix_crater_area', float, slope_extdir + 'crater_area_fraction_in_pixel_fastcomp.csv', 'crater_area_fraction_in_pixel')
 
     # save the list of lists as csv
-    write_LofL_pickle(pix_crater_id, 'pix_crater_id_fastcomp')
+    write_LofL_pickle(pix_crater_id, slope_extdir + 'pix_crater_id_fastcomp')
 
     # save as ascii raster
     su.numpy_to_asciiraster(slope_extdir + 'crater_area_frac_in_pix_fastcomp.npy', (rows, columns), pix_x_cen_arr, pix_y_cen_arr)
