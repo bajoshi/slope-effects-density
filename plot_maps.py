@@ -65,9 +65,9 @@ if __name__ == '__main__':
     # first convert the clipped rasters (they are simple 
     # txt files) to numpy arrays. then load them in.
     pix_frac_path = slope_extdir + 'pix_area_fraction_clipped.txt'
-    crater_frac_path = slope_extdir + 'crater_area_frac_in_pix_clipped.txt'
+    crater_frac_path = slope_extdir + 'crater_frac_bool_clipped.txt'
     #su.raster_to_numpy(pix_frac_path)
-    #su.raster_to_numpy(crater_frac_path)
+    su.raster_to_numpy(crater_frac_path)
 
     # load all arrays
     # read in products
@@ -85,22 +85,6 @@ if __name__ == '__main__':
     slope_arr = np.load(slopemap_path.replace('.txt', '.npy'))
     slope_arr = slope_arr.ravel()
 
-
-    #pix_x_cen_arr = slope_arr['pix_x_cen']
-    #pix_y_cen_arr = slope_arr['pix_y_cen']
-    #slope = slope_arr['slope_val']
-    # These are all 1D arrays of 4709560 elements
-
-    # reshape to 2D arrays
-    """
-    rows, columns = se.get_rows_columns(pix_x_cen_arr, pix_y_cen_arr)
-
-    pix_frac_2d = pix_frac.reshape(rows, columns)
-    crater_frac_2d = crater_frac.reshape(rows, columns)
-    density_2d = density.reshape(rows, columns)
-    slope_2d = slope.reshape(rows, columns)
-    """
-
     # choose valid points to plot
     # first, replace all -9999.0 values by NaN
     nodata_idx = np.where(density == -9999.0)
@@ -109,54 +93,21 @@ if __name__ == '__main__':
     nodata_idx = np.where(slope_arr == -9999.0)
     slope_arr[nodata_idx] = np.nan
 
-    # second, for now, also ignore high density values
-    #density_upper_lim = 5.0
-    #high_idx = np.where(density > density_upper_lim)[0]
-    #density[high_idx] = np.nan
-
-    # third, only select non-zero values of density
-    #val_idx = np.where(density != 0.0)[0] # np.isfinite(density)
-
-    # find frac pix and crater values for pixels that have high density values
-    #idx = np.where(density > density_upper_lim)[0]
-    ##print idx
-    #print "Upper density limit is", density_upper_lim
-    #print len(np.where(density > density_upper_lim)[0]), \
-    #"pixels with density value greater than density upper limit."
-    #print "Frac crater counts at high density value are \n", crater_frac[idx]
-    #print "Frac pixel  areas  at high density value are \n", pix_frac[idx]
-    #sys.exit(0)
-
-    #eps = 0.01
-    #idx = np.where((density >= 1.0 - eps) & ((density <= 1.0 + eps)))[0]
-    #print idx
-    #print crater_frac[idx]
-    #print crater_diam[idx]
-    #print pix_frac[idx]
-    #sys.exit(0)
-
-    # ---------------------------------------- #
-    #plot_hist(density)
-
-    # --------------------------------------- # 
-    # Fit gaussian
-    gauss_init = models.Gaussian1D(amplitude=1.0, mean=5.0, stddev=10.0)
-    fit_gauss = fitting.LevMarLSQFitter()
-    #x_fit_arr = slope[val_idx]
-    #y_fit_arr = density[val_idx]
-    #gauss = fit_gauss(gauss_init, x_fit_arr, y_fit_arr)
-
     # plots
     fig = plt.figure()
     ax = fig.add_subplot(111)
 
-    #ax.plot(pix_frac[val_idx], np.log10(density[val_idx]), 'o', color='k', markersize=2, markeredgecolor='None')
-    #ax.set_ylim(-5,2.5)
+    ax.set_xlabel(r'$\mathrm{Slope}$')
+    ax.set_ylabel(r'$\mathrm{Density}$')
 
-    ax.plot(slope_arr, density, 'o', color='k', markersize=2, markeredgecolor='None')
-    #ax.plot(x_fit_arr, gauss(x_fit_arr), '-', color='r', lw=2)
-    #ax.set_ylim(0,1)
+    ax.plot(slope_arr, density, 'o', color='k', markersize=1, markeredgecolor='None')
 
-    plt.show()
+    ax.minorticks_on()
+    ax.tick_params('both', width=1, length=3, which='minor')
+    ax.tick_params('both', width=1, length=4.7, which='major')
+    ax.grid(True)
+
+    fig.savefig(slope_extdir + 'density_slope_boolean', dpi=300, bbox_inches='tight')
+    #plt.show()
 
     sys.exit(0)

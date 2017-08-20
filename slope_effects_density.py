@@ -596,12 +596,12 @@ def get_pixels_in_bbox(bbox, pix_x_cen_arr, pix_y_cen_arr, rows, columns):
 
     # turn the limits into search area for pixels
     # i.e. be conservative and search an additional 
-    # 2000 units (i.e. 2 pixels) on each side. 
+    # 1000 units (i.e. 1 pixel) on each side. 
     # the _s is for search
-    xmin_s = xmin - 2000
-    xmax_s = xmax + 2000
-    ymin_s = ymin - 2000
-    ymax_s = ymax + 2000
+    xmin_s = xmin - 1000
+    xmax_s = xmax + 1000
+    ymin_s = ymin - 1000
+    ymax_s = ymax + 1000
 
     # now get the coordinates of hte top left pixels 
     # in the full array and the bounding box.
@@ -620,17 +620,14 @@ def get_pixels_in_bbox(bbox, pix_x_cen_arr, pix_y_cen_arr, rows, columns):
     delta_cols = int(delta_x / 1000)
 
     # now populate the pixel values and indices arrays
-    bbox_rows = int(((xmax_s - xmin_s) / 1000) + 1)
-    bbox_cols = int(((ymax_s - ymin_s) / 1000) + 1)
+    bbox_rows = int(((ymax_s - ymin_s) / 1000) + 1) + 2  # padding it by 2 pixels just so that I don't miss any
+    bbox_cols = int(((xmax_s - xmin_s) / 1000) + 1) + 2
 
     pixel_indices = []
-    row_count = 0
-    for i in range(bbox_rows):
+    for row_count in range(bbox_rows):
         tl_idx = columns*(delta_rows + row_count) + delta_cols
         tr_idx = tl_idx + bbox_cols
         pixel_indices.append(np.arange(tl_idx, tr_idx, 1))
-
-        row_count += 1
     
     # make sure that pixel_indices is 1d 
     # and get pix values and return
@@ -1035,7 +1032,7 @@ if __name__ == '__main__':
     for w in range(len(pix_crater_id)):
         pix_crater_id[w] = []
 
-    for i in range(20):#len(crater_ids)):
+    for i in range(len(crater_ids)):
 
         if (i % 1000) == 0.0:
             print '\r',
@@ -1064,17 +1061,20 @@ if __name__ == '__main__':
         pix_bbox_x, pix_bbox_y, pixel_indices = \
         get_pixels_in_bbox(crater_poly.boundingBox(), pix_x_cen_arr, pix_y_cen_arr, rows, columns)
 
-        pix_bbox_x_old, pix_bbox_y_old, pixel_indices_old = \
-        get_pixels_in_bbox_old(crater_poly.boundingBox(), pix_x_cen_arr, pix_y_cen_arr, mode='run')
+        #pix_bbox_x_old, pix_bbox_y_old, pixel_indices_old = \
+        #get_pixels_in_bbox_old(crater_poly.boundingBox(), pix_x_cen_arr, pix_y_cen_arr, mode='run')
 
-        print '\n'
-        print len(pix_bbox_x), len(pix_bbox_x_old)
-        print len(pix_bbox_y), len(pix_bbox_y_old)
-        print len(pixel_indices), len(pixel_indices_old)
-        print pixel_indices
-        print pixel_indices_old
-
-        continue
+        #print '\n'
+        #if pixel_indices_old.tolist() in pixel_indices.tolist(): 
+        #    print i, 'True'
+        #else:
+        #    print i, 'False'
+        #    print len(pix_bbox_x), len(pix_bbox_x_old)
+        #    print len(pix_bbox_y), len(pix_bbox_y_old)
+        #    print len(pixel_indices), len(pixel_indices_old)
+        #    print pixel_indices
+        #    print pixel_indices_old
+        #continue
 
         # loop over all pixels within the crater's bounding box and assign crater area fraction to each
         for j in range(len(pix_bbox_x)):
@@ -1110,11 +1110,10 @@ if __name__ == '__main__':
             # find pixel index using pixel center to append to the correct array element
             pix_index = pixel_indices[j]
             pix_crater_area[pix_index] += inter_area_crater_frac #for each pixel, keep a running sum of the fractions of craters within it
-            pix_crater_id[pix_index].append(crater_ids[i])
+            if inter_area_crater_frac != 0.0:
+                pix_crater_id[pix_index].append(crater_ids[i])
 
     # pix_crater_area /= 1e6 -- normalized to 1 sq km if needed (comment out if using fractions)
-
-    sys.exit(0)
 
     """
     write all zeros as -9999.0 which is the NODATA_VALUE (for the ascii raster and numpy array)
