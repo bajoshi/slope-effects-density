@@ -468,7 +468,14 @@ def closest_pixel_indices(xp, yp, X, Y):
 
     return row_idx, col_idx
 
-def get_pixels_in_bbox(bbox, pix_x_cen_arr, pix_y_cen_arr, mode='run'):
+def get_pixels_in_bbox_old(bbox, pix_x_cen_arr, pix_y_cen_arr, mode='run'):
+    """
+    This is the old function I wrote which is too precise 
+    (in getting the correct pixels in the bbox) and also
+    uses far too much brute force to get to the answer. 
+    The new function get_pixels_in_bbox() uses an analytical
+    solution and is way faster.
+    """
 
     # get limits from the bounding box
     xmin = bbox[0]
@@ -496,8 +503,8 @@ def get_pixels_in_bbox(bbox, pix_x_cen_arr, pix_y_cen_arr, mode='run'):
 
     X, Y = np.meshgrid(x1d_short, y1d_short)
 
-    # second, find the pixel coords (and their indices) that
-    # are closest to hte search corners
+    # second, find the pixel coords (and their 
+    # indices) that are closest to hte search corners
     len_x1d_arr = len(x1d_short)
     len_y1d_arr = len(y1d_short)
     
@@ -576,6 +583,62 @@ def get_pixels_in_bbox(bbox, pix_x_cen_arr, pix_y_cen_arr, mode='run'):
         current_row_indices = np.arange(int(current_start), int(current_start + columns_in_bbox), 1)
 
     pixel_indices = np.asarray(pixel_indices)
+
+    return pix_bbox_x, pix_bbox_y, pixel_indices
+
+def get_pixels_in_bbox(bbox, pix_x_cen_arr, pix_y_cen_arr, rows, columns):
+
+    # get limits from the bounding box
+    xmin = bbox[0]
+    xmax = bbox[1]
+    ymin = bbox[2]
+    ymax = bbox[3]
+
+    # turn the limits into search area for pixels
+    # i.e. be conservative and search an additional 
+    # 2000 units (i.e. 2 pixels) on each side. 
+    # the _s is for search
+    xmin_s = xmin - 2000
+    xmax_s = xmax + 2000
+    ymin_s = ymin - 2000
+    ymax_s = ymax + 2000
+
+    # now get the coordinates of hte top left pixels 
+    # in the full array and the bounding box.
+    x_tl = pix_x_cen_arr[0]
+    y_tl = pix_y_cen_arr[0]
+
+    x_bbox_tl = xmin_s
+    y_bbox_tl = ymax_s
+
+    # now get the differences to find hte number
+    # of rows and columns in between these two coords.
+    delta_x = abs(x_bbox_tl - x_tl)
+    delta_y = abs(y_bbox_tl - y_tl)
+
+    delta_rows = int(delta_y / 1000)
+    delta_cols = int(delta_x / 1000)
+
+    # now populate the pixel values and indices arrays
+    bbox_rows = int(((xmax_s - xmin_s) / 1000) + 1)
+    bbox_cols = int(((ymax_s - ymin_s) / 1000) + 1)
+
+    pixel_indices = []
+    row_count = 0
+    for i in range(bbox_rows):
+        tl_idx = columns*(delta_rows + row_count) + delta_cols
+        tr_idx = tl_idx + bbox_cols
+        pixel_indices.append(np.arange(tl_idx, tr_idx, 1))
+
+        row_count += 1
+    
+    # make sure that pixel_indices is 1d 
+    # and get pix values and return
+    pixel_indices = np.asarray(pixel_indices)
+    pixel_indices = pixel_indices.ravel()
+    
+    pix_bbox_x = pix_x_cen_arr[pixel_indices]
+    pix_bbox_y = pix_y_cen_arr[pixel_indices]
 
     return pix_bbox_x, pix_bbox_y, pixel_indices
 
@@ -817,6 +880,12 @@ if __name__ == '__main__':
     # ----------------  measure and populate pixel area fraction array  ---------------- # 
     # read in pixel slope info
     # this file also gives the x and y centers of pixels
+    do_pix_frac = False
+    if do_pix_frac:
+        print "Will compute pixel fractions now."
+    else:
+        print "Will skip computing pixel fractions. Moving to crater fractions now."
+
     slope_arr = np.load(slope_extdir + '3km_slope_points.npy')
 
     pix_x_cen_arr = slope_arr['pix_x_cen']
@@ -843,108 +912,107 @@ if __name__ == '__main__':
     
     # loop over all pixels, range just designates the iterable -- in this case, 
     # the pix_centers array.
-    """
-    for i in range(len(pix_centers)):
+    if do_pix_frac:
+        for i in range(len(pix_centers)):
 
-        if (i % 100000) == 0.0:
-            print '\r',
-            print "At pixel number:",'{0:.2e}'.format(i),\
-            "; time taken up to now:",'{0:.2f}'.format((time.time() - start)/60),"minutes.",
-            sys.stdout.flush()
+            if (i % 100000) == 0.0:
+                print '\r',
+                print "At pixel number:",'{0:.2e}'.format(i),\
+                "; time taken up to now:",'{0:.2f}'.format((time.time() - start)/60),"minutes.",
+                sys.stdout.flush()
 
-        # check if pixel center falls "well" inside the inner excluding rectangle
-        if (min(inner_rect_x) + 500 < pix_x_cen_arr[i]) and (pix_x_cen_arr[i] < max(inner_rect_x) - 500) and \
-        (min(inner_rect_y) + 500 < pix_y_cen_arr[i]) and (pix_y_cen_arr[i] < max(inner_rect_y) - 500):
-            pix_area_arr[i] = 0.0
-            continue
-        # pix_area_arr defines the starting array for the fractional area of pixels within the study area.
-        # in any other case you'll have to define the corners and proceed.
-        tl_x = pix_centers[i][0] - 5e2
-        tr_x = pix_centers[i][0] + 5e2
-        bl_x = pix_centers[i][0] - 5e2
-        br_x = pix_centers[i][0] + 5e2
+            # check if pixel center falls "well" inside the inner excluding rectangle
+            if (min(inner_rect_x) + 500 < pix_x_cen_arr[i]) and (pix_x_cen_arr[i] < max(inner_rect_x) - 500) and \
+            (min(inner_rect_y) + 500 < pix_y_cen_arr[i]) and (pix_y_cen_arr[i] < max(inner_rect_y) - 500):
+                pix_area_arr[i] = 0.0
+                continue
+            # pix_area_arr defines the starting array for the fractional area of pixels within the study area.
+            # in any other case you'll have to define the corners and proceed.
+            tl_x = pix_centers[i][0] - 5e2
+            tr_x = pix_centers[i][0] + 5e2
+            bl_x = pix_centers[i][0] - 5e2
+            br_x = pix_centers[i][0] + 5e2
 
-        tl_y = pix_centers[i][1] + 5e2
-        tr_y = pix_centers[i][1] + 5e2
-        bl_y = pix_centers[i][1] - 5e2
-        br_y = pix_centers[i][1] - 5e2
+            tl_y = pix_centers[i][1] + 5e2
+            tr_y = pix_centers[i][1] + 5e2
+            bl_y = pix_centers[i][1] - 5e2
+            br_y = pix_centers[i][1] - 5e2
 
-        tl = [tl_x, tl_y]
-        tr = [tr_x, tr_y]
-        bl = [bl_x, bl_y]
-        br = [br_x, br_y]
+            tl = [tl_x, tl_y]
+            tr = [tr_x, tr_y]
+            bl = [bl_x, bl_y]
+            br = [br_x, br_y]
 
-        pixel_corners = [tl, tr, br, bl]  # top and bottom, left and right going clockwise
+            pixel_corners = [tl, tr, br, bl]  # top and bottom, left and right going clockwise
 
-        pixel_corners = pg.Polygon(pixel_corners) # creates a polygon for each pixel as it iterates
+            pixel_corners = pg.Polygon(pixel_corners) # creates a polygon for each pixel as it iterates
 
-        # The Polygon module is capable of finding the area of intersection between two polygons, which is what we've implemented below.
-        # case 1: check if the pixel is completely inside both polygons
-        if ((pixel_corners & poly_inner).area() == 1e6) and ((pixel_corners & poly_outer).area() == 1e6):
-            # if it is completely inside the inner polygon then it is not part of the
-            # annulus of interest, so it gets assigned zero.
-            pix_area_arr[i] = 0.0
-            continue
+            # The Polygon module is capable of finding the area of intersection between two polygons, which is what we've implemented below.
+            # case 1: check if the pixel is completely inside both polygons
+            if ((pixel_corners & poly_inner).area() == 1e6) and ((pixel_corners & poly_outer).area() == 1e6):
+                # if it is completely inside the inner polygon then it is not part of the
+                # annulus of interest, so it gets assigned zero.
+                pix_area_arr[i] = 0.0
+                continue
 
-        # case 2: check if the pixel is completely outside both polygons, also assigned zero.
-        if ((pixel_corners & poly_inner).area() == 0.0) and ((pixel_corners & poly_outer).area() == 0.0):
-            pix_area_arr[i] = 0.0
-            continue
+            # case 2: check if the pixel is completely outside both polygons, also assigned zero.
+            if ((pixel_corners & poly_inner).area() == 0.0) and ((pixel_corners & poly_outer).area() == 0.0):
+                pix_area_arr[i] = 0.0
+                continue
 
-        # case 3: check if the pixel is completely outside the inner polygon but completely inside the outer polygon
-        if ((pixel_corners & poly_inner).area() == 0.0) and ((pixel_corners & poly_outer).area() == 1e6):
-            # if it is outside the inner polygon but inside the outer one (i.e. completely within the annulus)
-            pix_area_arr[i] = 1.0
-            continue
+            # case 3: check if the pixel is completely outside the inner polygon but completely inside the outer polygon
+            if ((pixel_corners & poly_inner).area() == 0.0) and ((pixel_corners & poly_outer).area() == 1e6):
+                # if it is outside the inner polygon but inside the outer one (i.e. completely within the annulus)
+                pix_area_arr[i] = 1.0
+                continue
 
-        # case 4: check if the pixel is completely inside the outer polygon but intersects the inner polygon
-        if ((pixel_corners & poly_inner).area() < 1e6) and ((pixel_corners & poly_inner).area() != 0.0) and\
-         ((pixel_corners & poly_outer).area() == 1e6):
-            pix_area_arr[i] = 1.0 - (pixel_corners & poly_inner).area() / 1e6  # stores the fraction of the pixel area that is within the annulus
-            continue
+            # case 4: check if the pixel is completely inside the outer polygon but intersects the inner polygon
+            if ((pixel_corners & poly_inner).area() < 1e6) and ((pixel_corners & poly_inner).area() != 0.0) and\
+             ((pixel_corners & poly_outer).area() == 1e6):
+                pix_area_arr[i] = 1.0 - (pixel_corners & poly_inner).area() / 1e6  # stores the fraction of the pixel area that is within the annulus
+                continue
 
-        # case 5: check if the pixel is completely outside the inner polygon but intersects the outer polygon
-        if ((pixel_corners & poly_outer).area() < 1e6) and ((pixel_corners & poly_outer).area() != 0.0) and\
-         ((pixel_corners & poly_inner).area() == 0.0):
-            pix_area_arr[i] = (pixel_corners & poly_outer).area() / 1e6  # stores the fraction of the pixel area that is within the annulus
-            continue
+            # case 5: check if the pixel is completely outside the inner polygon but intersects the outer polygon
+            if ((pixel_corners & poly_outer).area() < 1e6) and ((pixel_corners & poly_outer).area() != 0.0) and\
+             ((pixel_corners & poly_inner).area() == 0.0):
+                pix_area_arr[i] = (pixel_corners & poly_outer).area() / 1e6  # stores the fraction of the pixel area that is within the annulus
+                continue
 
-    # write all zeros as -9999.0 which is the NODATA_VALUE (for the ascii raster and numpy array)
-    invalid_idx = np.where(pix_area_arr == 0.0)[0]
-    pix_area_arr[invalid_idx] = -9999.0
+        # write all zeros as -9999.0 which is the NODATA_VALUE (for the ascii raster and numpy array)
+        invalid_idx = np.where(pix_area_arr == 0.0)[0]
+        pix_area_arr[invalid_idx] = -9999.0
 
-    # This array will give pixel area in physical units
-    # Uncomment the line for saving physical area arr if the area is not unity 
-    # check this part of the code again and make sure that it is okay with the NODATA_VALUE
-    #area_single_pix = 1.0  # in square km
-    #pix_area_arr_phys = pix_area_arr * area_single_pix
+        # This array will give pixel area in physical units
+        # Uncomment the line for saving physical area arr if the area is not unity 
+        # check this part of the code again and make sure that it is okay with the NODATA_VALUE
+        #area_single_pix = 1.0  # in square km
+        #pix_area_arr_phys = pix_area_arr * area_single_pix
 
-    # save as numpy binary
-    np.save(slope_extdir + 'pix_area_fraction.npy', pix_area_arr)
-    #np.save(slope_extdir + 'pix_area_km.npy', pix_area_arr_phys)
+        # save as numpy binary
+        np.save(slope_extdir + 'pix_area_fraction.npy', pix_area_arr)
+        #np.save(slope_extdir + 'pix_area_km.npy', pix_area_arr_phys)
 
-    # save as csv
-    data = np.array(zip(pix_area_arr), dtype=[('pixel_area_frac', float)])
-    # the string in the dtype here should match the array variable
-    np.savetxt(slope_extdir + 'pixel_area_fraction.csv', data, fmt=['%.4f'], delimiter=',', \
-        header='pixel_area_fraction')
+        # save as csv
+        data = np.array(zip(pix_area_arr), dtype=[('pixel_area_frac', float)])
+        # the string in the dtype here should match the array variable
+        np.savetxt(slope_extdir + 'pixel_area_fraction.csv', data, fmt=['%.4f'], delimiter=',', \
+            header='pixel_area_fraction')
 
-    # save as ascii raster
-    su.numpy_to_asciiraster(slope_extdir + 'pix_area_fraction.npy', (rows, columns), pix_x_cen_arr, pix_y_cen_arr)
+        # save as ascii raster
+        su.numpy_to_asciiraster(slope_extdir + 'pix_area_fraction.npy', (rows, columns), pix_x_cen_arr, pix_y_cen_arr)
 
-    print "\n","Pixel fractional area computation done and saved."
-    print "Moving to craters now.", '\n'
+        print "\n","Pixel fractional area computation done and saved."
+        print "Moving to craters now.", '\n'
 
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-    im = ax.imshow(pix_area_arr.reshape(rows, columns), cmap='bone')
-    plt.colorbar(im, ax=ax)
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        im = ax.imshow(pix_area_arr.reshape(rows, columns), cmap='bone')
+        plt.colorbar(im, ax=ax)
 
-    fig.savefig(slope_extdir + 'pix_area_frac.png', dpi=300, bbox_inches='tight')
-    plt.clf()
-    plt.cla()
-    plt.close()
-    """
+        fig.savefig(slope_extdir + 'pix_area_frac.png', dpi=300, bbox_inches='tight')
+        plt.clf()
+        plt.cla()
+        plt.close()
 
     # ----------------  measure and populate crater pixel fraction array  ---------------- # 
     # read crater vertices file
@@ -967,11 +1035,12 @@ if __name__ == '__main__':
     for w in range(len(pix_crater_id)):
         pix_crater_id[w] = []
 
-    for i in range(len(crater_ids)):
+    for i in range(20):#len(crater_ids)):
 
-        print '\r',
-        print 'Analyzing crater', i+1, "of", len(crater_ids),
-        sys.stdout.flush()
+        if (i % 1000) == 0.0:
+            print '\r',
+            print 'Analyzing crater', i+1, "of", len(crater_ids),
+            sys.stdout.flush()
 
         # this line was originally used to create a circular polygon for each crater
         # based on its x,y center and diameter
@@ -993,7 +1062,19 @@ if __name__ == '__main__':
 
         # get all pixels within the crater's bounding box
         pix_bbox_x, pix_bbox_y, pixel_indices = \
-        get_pixels_in_bbox(crater_poly.boundingBox(), pix_x_cen_arr, pix_y_cen_arr, mode='run')
+        get_pixels_in_bbox(crater_poly.boundingBox(), pix_x_cen_arr, pix_y_cen_arr, rows, columns)
+
+        pix_bbox_x_old, pix_bbox_y_old, pixel_indices_old = \
+        get_pixels_in_bbox_old(crater_poly.boundingBox(), pix_x_cen_arr, pix_y_cen_arr, mode='run')
+
+        print '\n'
+        print len(pix_bbox_x), len(pix_bbox_x_old)
+        print len(pix_bbox_y), len(pix_bbox_y_old)
+        print len(pixel_indices), len(pixel_indices_old)
+        print pixel_indices
+        print pixel_indices_old
+
+        continue
 
         # loop over all pixels within the crater's bounding box and assign crater area fraction to each
         for j in range(len(pix_bbox_x)):
@@ -1033,6 +1114,8 @@ if __name__ == '__main__':
 
     # pix_crater_area /= 1e6 -- normalized to 1 sq km if needed (comment out if using fractions)
 
+    sys.exit(0)
+
     """
     write all zeros as -9999.0 which is the NODATA_VALUE (for the ascii raster and numpy array)
     For the crater area fraction array, I want to save the pixels outside the study area with the
@@ -1041,20 +1124,20 @@ if __name__ == '__main__':
     study area to the NODATA_VALUE using the same invalid_idx as before.
     x_area_arr = np.load(slope_extdir + 'pix_area_fraction.npy')  
     """
-    invalid_idx = np.where(pix_area_arr == 0.0)[0]
+    #invalid_idx = np.where(pix_area_arr == 0.0)[0]
     # these lines is here just in case you're running the code only for the 
     # craters and the invalid_idx definition would be commented out otherwise
-    pix_crater_area[invalid_idx] = -9999.0
+    #pix_crater_area[invalid_idx] = -9999.0
 
-    # save as numpy binary array
-    np.save(slope_extdir + 'crater_area_frac_in_pix.npy', pix_crater_area)
-    save_csv(pix_crater_area, 'pix_crater_area', float, slope_extdir + 'crater_area_fraction_in_pixel.csv', 'crater_area_fraction_in_pixel')
+    # save as numpy binary array and csv
+    np.save(slope_extdir + 'crater_area_frac_in_pix_fastcomp.npy', pix_crater_area)
+    save_csv(pix_crater_area, 'pix_crater_area', float, slope_extdir + 'crater_area_fraction_in_pixel_fastcomp.csv', 'crater_area_fraction_in_pixel')
 
     # save the list of lists as csv
-    write_LofL_pickle(pix_crater_id, 'pix_crater_id')
+    write_LofL_pickle(pix_crater_id, 'pix_crater_id_fastcomp')
 
     # save as ascii raster
-    su.numpy_to_asciiraster(slope_extdir + 'crater_area_frac_in_pix.npy', (rows, columns), pix_x_cen_arr, pix_y_cen_arr)
+    su.numpy_to_asciiraster(slope_extdir + 'crater_area_frac_in_pix_fastcomp.npy', (rows, columns), pix_x_cen_arr, pix_y_cen_arr)
 
     print "\n","Crater fractional area in each pixel computation done and saved."
 
