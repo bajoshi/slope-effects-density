@@ -28,8 +28,12 @@ def numpy_to_asciiraster(npy_array_path, final_shape, pix_x, pix_y, dir_for_rast
     npy_array = npy_array.reshape((rows, cols))
 
     # get pixel values
-    pix_x_ll = pix_x[0]
-    pix_y_ll = pix_y[-1]  # these indices are the way they are because I know how the coord arrays are shaped
+    if (type(pix_x) is float) and (type(pix_y) is float):
+        pix_x_ll = pix_x
+        pix_y_ll = pix_y
+    elif (type(pix_x) is np.ndarray) and (type(pix_y) is np.ndarray):
+        pix_x_ll = pix_x[0]
+        pix_y_ll = pix_y[-1]  # these indices are the way they are because I know how the coord arrays are shaped
     cellsize = 1000  # pixel step in meters
 
     # write array to file
@@ -46,7 +50,10 @@ def numpy_to_asciiraster(npy_array_path, final_shape, pix_x, pix_y, dir_for_rast
     for i in range(rows):
         for j in range(cols):
         
-            raster_file.write(str(npy_array[i,j]) + ' ')
+            if np.isnan(npy_array[i,j]):
+                raster_file.write(str(-9999.0) + ' ')
+            else:
+                raster_file.write(str(npy_array[i,j]) + ' ')
         raster_file.write('\n')
 
     # close file to actually write it to disk and return

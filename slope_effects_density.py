@@ -763,7 +763,8 @@ def get_density(crater_frac, pix_frac, total_pix):
             # density[i] = crater_frac[i] / pix_area_arr_phys[i] (pix_area_arr_phys calculation currently commented out)
             # with area_single_pix (see code above where it saves the pixel area frac) 
             # set to the area of a pixel in the physical units you need.
-        elif pix_frac[i] == 0.0:
+        
+        if (pix_frac[i] == 0.0) or (pix_frac[i] == -9999.0):
             density[i] = np.nan
 
     return density

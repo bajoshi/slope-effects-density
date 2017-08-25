@@ -61,7 +61,7 @@ def plot_image(arr, vmin, vmax):
     return None
 
 if __name__ == '__main__':
-    
+    """
     # first convert the clipped rasters (they are simple 
     # txt files) to numpy arrays. then load them in.
     pix_frac_path = slope_extdir + 'pix_area_fraction_clipped.txt'
@@ -78,12 +78,22 @@ if __name__ == '__main__':
     crater_frac = crater_frac.ravel()
 
     density = se.get_density(crater_frac, pix_frac, len(pix_frac))
+    """
+
+    density_path = slope_extdir + 'pointdensity_bull.txt'
+    su.raster_to_numpy(density_path)
+    density = np.load(density_path.replace('.txt','.npy'))
+    density = density.ravel()
 
     # read in pixel coordinates
     slopemap_path = slope_extdir + 'hf_full_slopemap_clipped.txt'
     #su.raster_to_numpy(slopemap_path)
     slope_arr = np.load(slopemap_path.replace('.txt', '.npy'))
     slope_arr = slope_arr.ravel()
+
+    # save density raster
+    #np.save(slope_extdir + 'density_arr_bool_clipped.npy', density)
+    #su.numpy_to_asciiraster(slope_extdir + 'density_arr_bool_clipped.npy', (2109,1949), -3822716.7379517, -1728009.4370101)
 
     # choose valid points to plot
     # first, replace all -9999.0 values by NaN
@@ -107,7 +117,7 @@ if __name__ == '__main__':
     ax.tick_params('both', width=1, length=4.7, which='major')
     ax.grid(True)
 
-    fig.savefig(slope_extdir + 'density_slope_boolean', dpi=300, bbox_inches='tight')
+    fig.savefig(slope_extdir + 'density_slope_point', dpi=300, bbox_inches='tight')
     #plt.show()
 
     sys.exit(0)
