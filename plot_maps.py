@@ -60,30 +60,36 @@ def plot_image(arr, vmin, vmax):
 
     return None
 
+def plot_by_diam():
+
+    return None
+
 if __name__ == '__main__':
-    """
-    # first convert the clipped rasters (they are simple 
-    # txt files) to numpy arrays. then load them in.
-    pix_frac_path = slope_extdir + 'pix_area_fraction_clipped.txt'
-    crater_frac_path = slope_extdir + 'crater_frac_bool_clipped.txt'
-    #su.raster_to_numpy(pix_frac_path)
-    su.raster_to_numpy(crater_frac_path)
 
-    # load all arrays
-    # read in products
-    pix_frac = np.load(pix_frac_path.replace('.txt', '.npy'))
-    crater_frac = np.load(crater_frac_path.replace('.txt', '.npy'))
+    use_point_density = False
+    if use_point_density:
+        density_path = slope_extdir + 'pointdensity_bull.txt'
+        #su.raster_to_numpy(density_path)
+        density = np.load(density_path.replace('.txt','.npy'))
+        density = density.ravel()
 
-    pix_frac = pix_frac.ravel()
-    crater_frac = crater_frac.ravel()
+    else:
+        # first convert the clipped rasters (they are simple 
+        # txt files) to numpy arrays. then load them in.
+        pix_frac_path = slope_extdir + 'pix_area_fraction_clipped.txt'
+        crater_frac_path = slope_extdir + 'crater_area_frac_in_pix_clipped.txt'
+        #su.raster_to_numpy(pix_frac_path)
+        #su.raster_to_numpy(crater_frac_path)
 
-    density = se.get_density(crater_frac, pix_frac, len(pix_frac))
-    """
+        # load all arrays
+        # read in products
+        pix_frac = np.load(pix_frac_path.replace('.txt', '.npy'))
+        crater_frac = np.load(crater_frac_path.replace('.txt', '.npy'))
 
-    density_path = slope_extdir + 'pointdensity_bull.txt'
-    su.raster_to_numpy(density_path)
-    density = np.load(density_path.replace('.txt','.npy'))
-    density = density.ravel()
+        pix_frac = pix_frac.ravel()
+        crater_frac = crater_frac.ravel()
+
+        density = se.get_density(crater_frac, pix_frac, len(pix_frac))
 
     # read in pixel coordinates
     slopemap_path = slope_extdir + 'hf_full_slopemap_clipped.txt'
@@ -103,6 +109,9 @@ if __name__ == '__main__':
     nodata_idx = np.where(slope_arr == -9999.0)
     slope_arr[nodata_idx] = np.nan
 
+    plot_by_diam(density, slope)
+    sys.exit(0)
+
     # plots
     fig = plt.figure()
     ax = fig.add_subplot(111)
@@ -110,14 +119,14 @@ if __name__ == '__main__':
     ax.set_xlabel(r'$\mathrm{Slope}$')
     ax.set_ylabel(r'$\mathrm{Density}$')
 
-    ax.plot(slope_arr, density, 'o', color='k', markersize=1, markeredgecolor='None')
+    ax.plot(slope_arr, density, 'o', color='k', markersize=2, markeredgecolor='None')
 
     ax.minorticks_on()
     ax.tick_params('both', width=1, length=3, which='minor')
     ax.tick_params('both', width=1, length=4.7, which='major')
     ax.grid(True)
 
-    fig.savefig(slope_extdir + 'density_slope_point', dpi=300, bbox_inches='tight')
+    fig.savefig(slope_extdir + 'density_slope_fuzzy', dpi=300, bbox_inches='tight')
     #plt.show()
 
     sys.exit(0)
