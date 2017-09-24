@@ -2,6 +2,8 @@ from __future__ import division
 
 import numpy as np
 from astropy.modeling import models, fitting
+import cPickle
+import Polygon as pg
 
 import sys
 import os
@@ -60,7 +62,34 @@ def plot_image(arr, vmin, vmax):
 
     return None
 
-def plot_by_diam():
+def plot_by_diam(density, slope):
+
+    # first read in crater ids associated with each pixel
+    with open(slope_extdir + 'pix_crater_id_fastcomp.pkl', 'rb') as crater_id_file:
+        crater_id_in_pix_arr = cPickle.load(crater_id_file)
+
+    # now read in crater diam from id and save them 
+    # read crater vertices file
+    crater_vert = np.genfromtxt(slope_extdir + 'CRATER_FullHF_Vertices_coords.txt', \
+        dtype=None, names=True, delimiter=',')
+    crater_ids = np.unique(crater_vert['ORIG_FID'])
+
+    # Now loop over all pixels
+    # create arrays for storing 
+
+    for i in range(len(crater_ids)):
+
+        # Using the explicit x and y crater vertices create a polygon
+        current_crater_vert_idx = np.where(crater_vert['ORIG_FID'] == crater_ids[i])
+        current_x_vert = crater_vert['x_coord_m'][current_crater_vert_idx]
+        current_y_vert = crater_vert['y_coord_m'][current_crater_vert_idx]
+
+        crater_poly = pg.Polygon(zip(current_x_vert, current_y_vert))
+
+        # Check the diameter of the crater and only proceed if 
+        # the diameter is equal to or greater than 1 KM.
+        # The area will be in sq. meters. 
+        current_diam = np.sqrt(crater_poly.area() * 4 / np.pi)
 
     return None
 
@@ -106,20 +135,23 @@ if __name__ == '__main__':
     nodata_idx = np.where(density == -9999.0)
     density[nodata_idx] = np.nan
 
+    density_zero_idx = np.where(density == 0.0)  # NaNing this out because these are pixels where there are no craters
+    density[density_zero_idx] = np.nan
+
     nodata_idx = np.where(slope_arr == -9999.0)
     slope_arr[nodata_idx] = np.nan
 
-    plot_by_diam(density, slope)
+    plot_by_diam(density, slope_arr)
     sys.exit(0)
 
     # plots
-    fig = plt.figure()
+    fig = plt.figure(figsize=(16,16))
     ax = fig.add_subplot(111)
 
-    ax.set_xlabel(r'$\mathrm{Slope}$')
-    ax.set_ylabel(r'$\mathrm{Density}$')
+    ax.set_xlabel(r'$\mathrm{Slope}$', fontsize=18)
+    ax.set_ylabel(r'$\mathrm{Density}$', fontsize=18)
 
-    ax.plot(slope_arr, density, 'o', color='k', markersize=2, markeredgecolor='None')
+    ax.plot(slope_arr, density, 'o', color='k', markersize=1.5, markeredgecolor='None')
 
     ax.minorticks_on()
     ax.tick_params('both', width=1, length=3, which='minor')
