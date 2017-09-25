@@ -62,11 +62,39 @@ def plot_image(arr, vmin, vmax):
 
     return None
 
+def get_diam(crater_vert_cat, crater_id):
+
+    crater_vert = crater_vert_cat
+
+    # Using the explicit x and y crater vertices create a polygon
+    current_crater_vert_idx = np.where(crater_vert['ORIG_FID'] == crater_id)
+    current_x_vert = crater_vert['x_coord_m'][current_crater_vert_idx]
+    current_y_vert = crater_vert['y_coord_m'][current_crater_vert_idx]
+
+    crater_poly = pg.Polygon(zip(current_x_vert, current_y_vert))
+
+    # Check the diameter of the crater
+    # The area will be in sq. meters. 
+    diam = np.sqrt(crater_poly.area() * 4 / np.pi)
+    diam /= 1000  # convert to km
+
+    return diam
+
+def get_idx_in_clipped_arr(idx_in_unclipped_arr):
+
+    long_idx = idx_in_unclipped_arr
+
+    return short_idx 
+
 def plot_by_diam(density, slope):
 
     # first read in crater ids associated with each pixel
     with open(slope_extdir + 'pix_crater_id_fastcomp.pkl', 'rb') as crater_id_file:
         crater_id_in_pix_arr = cPickle.load(crater_id_file)
+    # this crater id array is of a different length than the 
+    # other "clipped" arrays because it cannot be clipped since
+    # it is a list of lists. i.e. it has the original length 
+    # of ~4.7 million pixels.
 
     # now read in crater diam from id and save them 
     # read crater vertices file
@@ -75,21 +103,46 @@ def plot_by_diam(density, slope):
     crater_ids = np.unique(crater_vert['ORIG_FID'])
 
     # Now loop over all pixels
-    # create arrays for storing 
+    color_arr = []  
+    # create color array for storing what color point should 
+    # be depending on the crater diam(s) on that pixel 
+    # also create density and slope arrays again for plotting
+    # pixels sorted by crater diameters.
+    density_arr_color = []
+    slope_arr_color = []
 
-    for i in range(len(crater_ids)):
+    for i in range(len(crater_id_in_pix_arr)):
 
-        # Using the explicit x and y crater vertices create a polygon
-        current_crater_vert_idx = np.where(crater_vert['ORIG_FID'] == crater_ids[i])
-        current_x_vert = crater_vert['x_coord_m'][current_crater_vert_idx]
-        current_y_vert = crater_vert['y_coord_m'][current_crater_vert_idx]
+        current_crater_ids = crater_id_in_pix_arr[i]
+        if len(current_crater_ids) == 0:
+            continue
 
-        crater_poly = pg.Polygon(zip(current_x_vert, current_y_vert))
+        elif len(current_crater_ids) == 1:
+            current_id = current_crater_ids[0]
+            current_diam = get_diam(crater_vert, crater_id)
 
-        # Check the diameter of the crater and only proceed if 
-        # the diameter is equal to or greater than 1 KM.
-        # The area will be in sq. meters. 
-        current_diam = np.sqrt(crater_poly.area() * 4 / np.pi)
+            if (current_diam > 4) and (current_diam < 30):
+                continue
+
+            else:
+                # I need the index in the clipped array 
+                # because the crater id array is not the 
+                # same size as the density and slope arrays
+                # which are clipped by ArcGIS.
+                idx_in_clipped_arr = get_idx_in_clipped_arr(i)
+                # store censity and slope values
+                density_arr_color.append(density[idx_in_clipped_arr])
+                slope_arr_color.append(slope[idx_in_clipped_arr])
+
+                if current_diam <= 4:
+                    color_arr.append('b')
+
+                if current_diam >= 30:
+                    color_arr.append('r')
+
+        elif len(current_crater_ids) > 1:
+            for j in range(len(current_crater_ids)):
+
 
     return None
 
