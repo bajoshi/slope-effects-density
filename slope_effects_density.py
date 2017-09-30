@@ -884,11 +884,26 @@ if __name__ == '__main__':
     else:
         print "Will skip computing pixel fractions. Moving to crater fractions now."
 
-    slope_arr = np.load(slope_extdir + '3km_slope_points.npy')
+    # Old file for slope values and pixel centers that
+    # was in a bigger area than the clipped area which 
+    # is used for the newer arrays with secondary craters
+    # stamped out.
+    #slope_arr = np.load(slope_extdir + '3km_slope_points.npy')
+    #pix_x_cen_arr = slope_arr['pix_x_cen']
+    #pix_y_cen_arr = slope_arr['pix_y_cen']
+    #slope = slope_arr['slope_val']
 
-    pix_x_cen_arr = slope_arr['pix_x_cen']
-    pix_y_cen_arr = slope_arr['pix_y_cen']
-    slope = slope_arr['slope_val']
+    # New arrays that have compatible shapes with the 
+    # clipped files. 
+    # The limits have been hardcoded in for now.
+    # Will have to be changed if the clipped area changes.
+    nrows = 2109
+    ncols = 1949
+    pix_x_cen_arr = np.arange(-3822217, -1874217 + 1000, 1000)
+    pix_y_cen_arr = np.ones(ncols) * 380491
+    for count in range(1,nrows):
+        pix_x_cen_arr = np.append(pix_x_cen_arr, np.arange(-3822217, -1874217 + 1000, 1000))
+        pix_y_cen_arr = np.append(pix_y_cen_arr, np.ones(ncols) * (380491 - 1000*count))
 
     rows, columns = get_rows_columns(pix_x_cen_arr, pix_y_cen_arr)
 
