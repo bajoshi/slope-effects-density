@@ -633,6 +633,14 @@ def get_pixels_in_bbox(bbox, pix_x_cen_arr, pix_y_cen_arr, rows, columns):
     # and get pix values and return
     pixel_indices = np.asarray(pixel_indices)
     pixel_indices = pixel_indices.ravel()
+
+    # remove all pixel indices that are greater than
+    # the total length of the full array
+    # this is a check to make sure that the indices 
+    # supplied don't cause the next bit of code to 
+    # look for pixel centers that don't exist.
+    valid_idx = np.where(pixel_indices <= len(pix_x_cen_arr))[0]
+    pixel_indices = pixel_indices[valid_idx]
     
     pix_bbox_x = pix_x_cen_arr[pixel_indices]
     pix_bbox_y = pix_y_cen_arr[pixel_indices]
@@ -1048,7 +1056,7 @@ if __name__ == '__main__':
     for w in range(len(pix_crater_id)):
         pix_crater_id[w] = []
 
-    for i in range(len(crater_ids)):
+    for i in range(12101, len(crater_ids)):
 
         if (i % 1000) == 0.0:
             print '\r',
@@ -1143,6 +1151,9 @@ if __name__ == '__main__':
     # these lines is here just in case you're running the code only for the 
     # craters and the invalid_idx definition would be commented out otherwise
     #pix_crater_area[invalid_idx] = -9999.0
+
+    print 'craters done'
+    sys.exit(0)
 
     # save as numpy binary array and csv
     np.save(slope_extdir + 'crater_area_frac_in_pix_fastcomp.npy', pix_crater_area)
