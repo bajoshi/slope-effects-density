@@ -80,12 +80,6 @@ def get_diam(crater_vert_cat, crater_id):
 
     return diam
 
-def get_idx_in_clipped_arr(idx_in_unclipped_arr):
-
-    long_idx = idx_in_unclipped_arr
-
-    return short_idx 
-
 def plot_by_diam(density, slope):
 
     # first read in crater ids associated with each pixel
@@ -98,9 +92,9 @@ def plot_by_diam(density, slope):
 
     # now read in crater diam from id and save them 
     # read crater vertices file
-    crater_vert = np.genfromtxt(slope_extdir + 'CRATER_FullHF_Vertices_coords.txt', \
+    crater_vert_cat = np.genfromtxt(slope_extdir + 'CRATER_FullHF_Vertices_coords.txt', \
         dtype=None, names=True, delimiter=',')
-    crater_ids = np.unique(crater_vert['ORIG_FID'])
+    crater_ids = np.unique(crater_vert_cat['ORIG_FID'])
 
     # Now loop over all pixels
     color_arr = []  
@@ -113,26 +107,27 @@ def plot_by_diam(density, slope):
 
     for i in range(len(crater_id_in_pix_arr)):
 
+        if (i % 100000) == 0.0:
+            print '\r',
+            print "At pixel number:",'{0:.2e}'.format(i),\
+            "; time taken up to now:",'{0:.2f}'.format((time.time() - start)/60),"minutes.",
+            sys.stdout.flush()
+
         current_crater_ids = crater_id_in_pix_arr[i]
         if len(current_crater_ids) == 0:
             continue
 
         elif len(current_crater_ids) == 1:
             current_id = current_crater_ids[0]
-            current_diam = get_diam(crater_vert, crater_id)
+            current_diam = get_diam(crater_vert_cat, current_id)
 
             if (current_diam > 4) and (current_diam < 30):
                 continue
 
             else:
-                # I need the index in the clipped array 
-                # because the crater id array is not the 
-                # same size as the density and slope arrays
-                # which are clipped by ArcGIS.
-                idx_in_clipped_arr = get_idx_in_clipped_arr(i)
-                # store censity and slope values
-                density_arr_color.append(density[idx_in_clipped_arr])
-                slope_arr_color.append(slope[idx_in_clipped_arr])
+                # store density and slope values
+                density_arr_color.append(density[i])
+                slope_arr_color.append(slope[i])
 
                 if current_diam <= 4:
                     color_arr.append('b')
@@ -142,11 +137,63 @@ def plot_by_diam(density, slope):
 
         elif len(current_crater_ids) > 1:
             for j in range(len(current_crater_ids)):
+                current_id = current_crater_ids[j]
+                current_diam = get_diam(crater_vert_cat, current_id)
 
+                if (current_diam > 4) and (current_diam < 30):
+                    continue
+
+                else:
+                    # store density and slope values
+                    density_arr_color.append(density[i])
+                    slope_arr_color.append(slope[i])
+
+                    if current_diam <= 4:
+                        color_arr.append('b')
+
+                    if current_diam >= 30:
+                        color_arr.append('r')
+
+    # do the actual plotting
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+
+    print np.where(density_arr_color == 0.0)
+
+    ax.scatter(slope_arr_color, density_arr_color, s=25, c=color_arr, alpha=0.4, edgecolors='none')
+
+    fig.savefig(slope_extdir + 'slope_v_density_4_and_30_km.png', dpi=300, bbox_inches='tight')
+
+    #plt.show()
+
+    return None
+
+def make_plot(density, slope_arr):
+
+    fig = plt.figure(figsize=(16,16))
+    ax = fig.add_subplot(111)
+
+    ax.set_xlabel(r'$\mathrm{Slope}$', fontsize=18)
+    ax.set_ylabel(r'$\mathrm{Density}$', fontsize=18)
+
+    ax.plot(slope_arr, density, 'o', color='k', markersize=1.5, markeredgecolor='None')
+
+    ax.minorticks_on()
+    ax.tick_params('both', width=1, length=3, which='minor')
+    ax.tick_params('both', width=1, length=4.7, which='major')
+    ax.grid(True)
+
+    fig.savefig(slope_extdir + 'density_slope', dpi=300, bbox_inches='tight')
+    #plt.show()
 
     return None
 
 if __name__ == '__main__':
+
+    # Start time
+    start = time.time()
+    dt = datetime.datetime
+    print "Starting at --", dt.now()
 
     use_point_density = False
     if use_point_density:
@@ -195,23 +242,8 @@ if __name__ == '__main__':
     slope_arr[nodata_idx] = np.nan
 
     plot_by_diam(density, slope_arr)
-    sys.exit(0)
 
-    # plots
-    fig = plt.figure(figsize=(16,16))
-    ax = fig.add_subplot(111)
-
-    ax.set_xlabel(r'$\mathrm{Slope}$', fontsize=18)
-    ax.set_ylabel(r'$\mathrm{Density}$', fontsize=18)
-
-    ax.plot(slope_arr, density, 'o', color='k', markersize=1.5, markeredgecolor='None')
-
-    ax.minorticks_on()
-    ax.tick_params('both', width=1, length=3, which='minor')
-    ax.tick_params('both', width=1, length=4.7, which='major')
-    ax.grid(True)
-
-    fig.savefig(slope_extdir + 'density_slope_fuzzy', dpi=300, bbox_inches='tight')
-    #plt.show()
-
+    # total run time
+    print '\n'
+    print "Total time taken --", (time.time() - start)/60, "minutes."
     sys.exit(0)

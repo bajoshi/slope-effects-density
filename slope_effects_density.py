@@ -1056,7 +1056,7 @@ if __name__ == '__main__':
     for w in range(len(pix_crater_id)):
         pix_crater_id[w] = []
 
-    for i in range(12101, len(crater_ids)):
+    for i in range(len(crater_ids)):
 
         if (i % 1000) == 0.0:
             print '\r',
@@ -1151,9 +1151,6 @@ if __name__ == '__main__':
     # these lines is here just in case you're running the code only for the 
     # craters and the invalid_idx definition would be commented out otherwise
     #pix_crater_area[invalid_idx] = -9999.0
-
-    print 'craters done'
-    sys.exit(0)
 
     # save as numpy binary array and csv
     np.save(slope_extdir + 'crater_area_frac_in_pix_fastcomp.npy', pix_crater_area)
