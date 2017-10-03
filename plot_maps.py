@@ -156,15 +156,38 @@ def plot_by_diam(density, slope):
                     if current_diam >= 30:
                         color_arr.append('r')
 
+    # convert to numpy arrays so you can do array ops
+    density_arr_color = np.asarray(density_arr_color)
+    slope_arr_color = np.asarray(slope_arr_color)
+    color_arr = np.asarray(color_arr)
+
     # do the actual plotting
+    # perhaps you could make the blue points bigger than the
+    # red points simply because there are fewer blue points.
+    # i.e. weighting by the size of the crater.
     fig = plt.figure()
     ax = fig.add_subplot(111)
 
-    print np.where(density_arr_color == 0.0)
+    ax.set_xlabel(r'$\mathrm{Slope}$', fontsize=18)
+    ax.set_ylabel(r'$\mathrm{Density}$', fontsize=18)
 
-    ax.scatter(slope_arr_color, density_arr_color, s=25, c=color_arr, alpha=0.4, edgecolors='none')
+    b_idx = np.where(color_arr == 'b')[0]
+    r_idx = np.where(color_arr == 'r')[0]
+
+    ax.scatter(slope_arr_color[b_idx], density_arr_color[b_idx], s=8, c=color_arr[b_idx], alpha=0.4, edgecolors='none')
+    ax.scatter(slope_arr_color[r_idx], density_arr_color[r_idx], s=1, c=color_arr[r_idx], alpha=0.4, edgecolors='none')
+
+    ax.minorticks_on()
+    ax.tick_params('both', width=1, length=3, which='minor')
+    ax.tick_params('both', width=1, length=4.7, which='major')
+    ax.grid(True)
 
     fig.savefig(slope_extdir + 'slope_v_density_4_and_30_km.png', dpi=300, bbox_inches='tight')
+    fig.savefig(slope_extdir + 'slope_v_density_4_and_30_km.eps', dpi=300, bbox_inches='tight')
+
+    plt.clf()
+    plt.cla()
+    plt.close()
 
     #plt.show()
 
