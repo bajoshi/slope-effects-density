@@ -1,7 +1,8 @@
 from __future__ import division  
 
 import numpy as np
-from astropy.modeling import models, fitting
+#from astropy.modeling import models, fitting
+#from scipy.optimize import curve_fit
 import cPickle
 import Polygon as pg
 
@@ -82,6 +83,9 @@ def get_diam(crater_vert_cat, crater_id):
 
     return diam
 
+def gauss(x,a,x0,sigma):
+    return a*np.exp(-(x-x0)**2/(2*sigma**2))
+
 def plot_by_diam(density, slope):
 
     # first read in crater ids associated with each pixel
@@ -107,7 +111,7 @@ def plot_by_diam(density, slope):
     density_arr_color = []
     slope_arr_color = []
 
-    for i in range(len(crater_id_in_pix_arr)):
+    for i in range(100000):#len(crater_id_in_pix_arr)):
 
         if (i % 100000) == 0.0:
             print '\r',
@@ -174,22 +178,62 @@ def plot_by_diam(density, slope):
     b_idx = np.where(color_arr == 'b')[0]
     r_idx = np.where(color_arr == 'r')[0]
 
+    # fit a curve 
+    #gauss_init = models.Gaussian1D(amplitude=1.0, mean=4.0, stddev=5.0)
+    #fit_gauss = fitting.LevMarLSQFitter()
+
+    fit_x_arr = slope_arr_color[b_idx]
+    fit_y_arr = density_arr_color[b_idx]
+
+    fin_idx_x = np.where(np.isfinite(fit_x_arr))[0]
+    fin_idx_y = np.where(np.isfinite(fit_y_arr))[0]
+    
+    print fin_idx_x
+    print fin_idx_y
+    fin_idx = np.union1d(fin_idx_x, fin_idx_y)
+    print fin_idx
+
+    fit_x_arr = fit_x_arr[fin_idx]
+    fit_y_arr = fit_y_arr[fin_idx]
+    print fit_x_arr
+    print fit_y_arr
+    sys.exit(0)
+    # perhaps these fit arrays need to be sorted before fitting?
+    # also maybe the x array could just be something easier while 
+    # plotting you don't need the entire fit_x_arr while plotting
+    # could just use x = np.arange(x...values) and fit_func(x)
+
+    #g = fit_gauss(gauss_init, fit_x_arr, fit_y_arr)
+
+    #print g.parameters
+    #print "amp", g.parameters[0]
+    #print "mean", g.parameters[1]
+    #print "std", g.parameters[2]
+
+    popt, pcov = curve_fit(gauss, fit_x_arr, fit_y_arr, p0=[1.0,4.0,5.0])
+    print popt
+    print pcov
+
+    # plot the actual points
     ax.scatter(slope_arr_color[b_idx], density_arr_color[b_idx], s=8, c=color_arr[b_idx], alpha=0.4, edgecolors='none')
     ax.scatter(slope_arr_color[r_idx], density_arr_color[r_idx], s=1, c=color_arr[r_idx], alpha=0.4, edgecolors='none')
+
+    # plot the best fit curves
+    #ax.plot(fit_x_arr, g(fit_x_arr), ls='-', color='skyblue', lw=2)
+    ax.plot(fit_x_arr, gauss(fit_x_arr, *popt))
 
     ax.minorticks_on()
     ax.tick_params('both', width=1, length=3, which='minor')
     ax.tick_params('both', width=1, length=4.7, which='major')
     ax.grid(True)
 
-    fig.savefig(slope_extdir + 'slope_v_density_4_and_30_km.png', dpi=300, bbox_inches='tight')
-    fig.savefig(slope_extdir + 'slope_v_density_4_and_30_km.eps', dpi=300, bbox_inches='tight')
+    #fig.savefig(slope_extdir + 'slope_v_density_4_and_30_km.png', dpi=300, bbox_inches='tight')
+    #fig.savefig(slope_extdir + 'slope_v_density_4_and_30_km.eps', dpi=300, bbox_inches='tight')
+    plt.show()
 
     plt.clf()
     plt.cla()
     plt.close()
-
-    #plt.show()
 
     return None
 
