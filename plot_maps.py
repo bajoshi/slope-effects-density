@@ -1,7 +1,7 @@
 from __future__ import division  
 
 import numpy as np
-#from astropy.modeling import models, fitting
+from astropy.modeling import models, fitting
 from scipy.optimize import curve_fit
 import cPickle
 import Polygon as pg
@@ -188,15 +188,14 @@ def plot_by_diam(density, slope):
     fin_idx = np.intersect1d(fin_idx_x, fin_idx_y)
 
     fit_x_arr = fit_x_arr[fin_idx]
-    fit_y_arr = fit_y_arr[fin_idx]
-    # perhaps these fit arrays need to be sorted before fitting?
-    # also maybe the x array could just be something easier while 
+    fit_y_arr = fit_y_arr[fin_idx] 
+    # maybe the x array could just be something easier while 
     # plotting you don't need the entire fit_x_arr while plotting
     # could just use x = np.arange(x...values) and fit_func(x)
 
     # now fit using two separate packages 
     # fitting using astropy
-    gauss_init = models.Gaussian1D(amplitude=1.0, mean=4.0, stddev=5.0)
+    gauss_init = models.Gaussian1D(amplitude=0.5, mean=4.0, stddev=5.0)
     fit_gauss = fitting.LevMarLSQFitter()
     g = fit_gauss(gauss_init, fit_x_arr, fit_y_arr)
 
@@ -206,7 +205,7 @@ def plot_by_diam(density, slope):
     print "std", g.parameters[2]
 
     # fitting using scipy curve_fit
-    popt, pcov = curve_fit(gauss, fit_x_arr, fit_y_arr, p0=[1.0,4.0,5.0])
+    popt, pcov = curve_fit(gauss, fit_x_arr, fit_y_arr, p0=[0.5,4.0,5.0])
     print popt
     print pcov
 
