@@ -133,7 +133,7 @@ def plot_by_diam(density, slope):
     density_arr_color = []
     slope_arr_color = []
 
-    for i in range(int(1e6)):#len(crater_id_in_pix_arr)):
+    for i in range(len(crater_id_in_pix_arr)):
 
         if (i % 100000) == 0.0:
             print '\r',
@@ -229,7 +229,7 @@ def plot_by_diam(density, slope):
 
     fig.savefig(slope_extdir + 'slope_v_density_4_and_30_km.png', dpi=300, bbox_inches='tight')
     fig.savefig(slope_extdir + 'slope_v_density_4_and_30_km.eps', dpi=300, bbox_inches='tight')
-    plt.show()
+    #plt.show()
 
     plt.clf()
     plt.cla()
