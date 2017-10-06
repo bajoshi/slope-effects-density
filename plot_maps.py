@@ -2,7 +2,6 @@ from __future__ import division
 
 import numpy as np
 from astropy.modeling import models, fitting
-from scipy.optimize import curve_fit
 import cPickle
 import Polygon as pg
 
@@ -83,8 +82,31 @@ def get_diam(crater_vert_cat, crater_id):
 
     return diam
 
-def gauss(x,a,x0,sigma):
-    return a*np.exp(-(x-x0)**2/(2*sigma**2))
+def fit_gauss(fit_x_arr, fit_y_arr):
+
+    # make sure that the fitting is done to only the finite
+    # elements in the arrays i.e. No NaN or inf in the arrays
+    fin_idx_x = np.where(np.isfinite(fit_x_arr))[0]
+    fin_idx_y = np.where(np.isfinite(fit_y_arr))[0]
+    fin_idx = np.intersect1d(fin_idx_x, fin_idx_y)
+
+    fit_x_arr = fit_x_arr[fin_idx]
+    fit_y_arr = fit_y_arr[fin_idx] 
+
+    # Checked: Sorting the arrays before passing them 
+    # to the fitting function makes no difference
+
+    # fitting using astropy
+    gauss_init = models.Gaussian1D(amplitude=0.5, mean=4.0, stddev=5.0)
+    fit_gauss = fitting.LevMarLSQFitter()
+    g = fit_gauss(gauss_init, fit_x_arr, fit_y_arr)
+
+    print g.parameters
+    print "amp", g.parameters[0]
+    print "mean", g.parameters[1]
+    print "std", g.parameters[2]
+
+    return g
 
 def plot_by_diam(density, slope):
 
@@ -111,7 +133,7 @@ def plot_by_diam(density, slope):
     density_arr_color = []
     slope_arr_color = []
 
-    for i in range(100000):#len(crater_id_in_pix_arr)):
+    for i in range(int(1e6)):#len(crater_id_in_pix_arr)):
 
         if (i % 100000) == 0.0:
             print '\r',
@@ -163,7 +185,7 @@ def plot_by_diam(density, slope):
     # convert to numpy arrays so you can do array ops
     density_arr_color = np.asarray(density_arr_color)
     slope_arr_color = np.asarray(slope_arr_color)
-    color_arr = np.asarray(color_arr)
+    color_arr = np.asarray(color_arr).astype(str)
 
     # do the actual plotting
     # perhaps you could make the blue points bigger than the
@@ -183,47 +205,30 @@ def plot_by_diam(density, slope):
     fit_x_arr = slope_arr_color[b_idx]
     fit_y_arr = density_arr_color[b_idx]
 
-    fin_idx_x = np.where(np.isfinite(fit_x_arr))[0]
-    fin_idx_y = np.where(np.isfinite(fit_y_arr))[0]
-    fin_idx = np.intersect1d(fin_idx_x, fin_idx_y)
+    gb = fit_gauss(fit_x_arr, fit_y_arr)
 
-    fit_x_arr = fit_x_arr[fin_idx]
-    fit_y_arr = fit_y_arr[fin_idx] 
-    # maybe the x array could just be something easier while 
-    # plotting you don't need the entire fit_x_arr while plotting
-    # could just use x = np.arange(x...values) and fit_func(x)
+    # fit to other diam bins
+    fit_x_arr = slope_arr_color[r_idx]
+    fit_y_arr = density_arr_color[r_idx]
 
-    # now fit using two separate packages 
-    # fitting using astropy
-    gauss_init = models.Gaussian1D(amplitude=0.5, mean=4.0, stddev=5.0)
-    fit_gauss = fitting.LevMarLSQFitter()
-    g = fit_gauss(gauss_init, fit_x_arr, fit_y_arr)
-
-    print g.parameters
-    print "amp", g.parameters[0]
-    print "mean", g.parameters[1]
-    print "std", g.parameters[2]
-
-    # fitting using scipy curve_fit
-    popt, pcov = curve_fit(gauss, fit_x_arr, fit_y_arr, p0=[0.5,4.0,5.0])
-    print popt
-    print pcov
+    gr = fit_gauss(fit_x_arr, fit_y_arr)
 
     # plot the actual points
     ax.scatter(slope_arr_color[b_idx], density_arr_color[b_idx], s=8, c=color_arr[b_idx], alpha=0.4, edgecolors='none')
     ax.scatter(slope_arr_color[r_idx], density_arr_color[r_idx], s=1, c=color_arr[r_idx], alpha=0.4, edgecolors='none')
 
     # plot the best fit curves
-    ax.plot(fit_x_arr, g(fit_x_arr), ls='-', color='skyblue', lw=2)
-    ax.plot(fit_x_arr, gauss(fit_x_arr, *popt), color='slategrey')
+    x_plot_arr = np.linspace(0,30,1000)
+    ax.plot(x_plot_arr, gb(x_plot_arr), ls='-', color='skyblue', lw=2)
+    ax.plot(x_plot_arr, gr(x_plot_arr), ls='-', color='pink', lw=2)
 
     ax.minorticks_on()
     ax.tick_params('both', width=1, length=3, which='minor')
     ax.tick_params('both', width=1, length=4.7, which='major')
     ax.grid(True)
 
-    #fig.savefig(slope_extdir + 'slope_v_density_4_and_30_km.png', dpi=300, bbox_inches='tight')
-    #fig.savefig(slope_extdir + 'slope_v_density_4_and_30_km.eps', dpi=300, bbox_inches='tight')
+    fig.savefig(slope_extdir + 'slope_v_density_4_and_30_km.png', dpi=300, bbox_inches='tight')
+    fig.savefig(slope_extdir + 'slope_v_density_4_and_30_km.eps', dpi=300, bbox_inches='tight')
     plt.show()
 
     plt.clf()
