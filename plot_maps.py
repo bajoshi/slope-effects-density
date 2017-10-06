@@ -2,7 +2,7 @@ from __future__ import division
 
 import numpy as np
 #from astropy.modeling import models, fitting
-#from scipy.optimize import curve_fit
+from scipy.optimize import curve_fit
 import cPickle
 import Polygon as pg
 
@@ -179,37 +179,33 @@ def plot_by_diam(density, slope):
     r_idx = np.where(color_arr == 'r')[0]
 
     # fit a curve 
-    #gauss_init = models.Gaussian1D(amplitude=1.0, mean=4.0, stddev=5.0)
-    #fit_gauss = fitting.LevMarLSQFitter()
-
+    # first define fitting arrays
     fit_x_arr = slope_arr_color[b_idx]
     fit_y_arr = density_arr_color[b_idx]
 
     fin_idx_x = np.where(np.isfinite(fit_x_arr))[0]
     fin_idx_y = np.where(np.isfinite(fit_y_arr))[0]
-    
-    print fin_idx_x
-    print fin_idx_y
-    fin_idx = np.union1d(fin_idx_x, fin_idx_y)
-    print fin_idx
+    fin_idx = np.intersect1d(fin_idx_x, fin_idx_y)
 
     fit_x_arr = fit_x_arr[fin_idx]
     fit_y_arr = fit_y_arr[fin_idx]
-    print fit_x_arr
-    print fit_y_arr
-    sys.exit(0)
     # perhaps these fit arrays need to be sorted before fitting?
     # also maybe the x array could just be something easier while 
     # plotting you don't need the entire fit_x_arr while plotting
     # could just use x = np.arange(x...values) and fit_func(x)
 
-    #g = fit_gauss(gauss_init, fit_x_arr, fit_y_arr)
+    # now fit using two separate packages 
+    # fitting using astropy
+    gauss_init = models.Gaussian1D(amplitude=1.0, mean=4.0, stddev=5.0)
+    fit_gauss = fitting.LevMarLSQFitter()
+    g = fit_gauss(gauss_init, fit_x_arr, fit_y_arr)
 
-    #print g.parameters
-    #print "amp", g.parameters[0]
-    #print "mean", g.parameters[1]
-    #print "std", g.parameters[2]
+    print g.parameters
+    print "amp", g.parameters[0]
+    print "mean", g.parameters[1]
+    print "std", g.parameters[2]
 
+    # fitting using scipy curve_fit
     popt, pcov = curve_fit(gauss, fit_x_arr, fit_y_arr, p0=[1.0,4.0,5.0])
     print popt
     print pcov
@@ -219,8 +215,8 @@ def plot_by_diam(density, slope):
     ax.scatter(slope_arr_color[r_idx], density_arr_color[r_idx], s=1, c=color_arr[r_idx], alpha=0.4, edgecolors='none')
 
     # plot the best fit curves
-    #ax.plot(fit_x_arr, g(fit_x_arr), ls='-', color='skyblue', lw=2)
-    ax.plot(fit_x_arr, gauss(fit_x_arr, *popt))
+    ax.plot(fit_x_arr, g(fit_x_arr), ls='-', color='skyblue', lw=2)
+    ax.plot(fit_x_arr, gauss(fit_x_arr, *popt), color='slategrey')
 
     ax.minorticks_on()
     ax.tick_params('both', width=1, length=3, which='minor')
