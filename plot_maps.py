@@ -285,8 +285,12 @@ def plot_3d_hist(density, slope):
     from matplotlib import cm
     import matplotlib.colors as colors
 
-    fig = plt.figure()
+    fig = plt.figure(figsize=(10,10))
     ax = fig.add_subplot(111, projection='3d')
+
+    ax.set_xlabel(r"$\mathrm{Slope}$", fontsize=14, labelpad=10)
+    ax.set_ylabel(r"$\mathrm{Density}$", fontsize=14, labelpad=10)
+    ax.set_zlabel(r"$\mathrm{log(N)}$", fontsize=14, labelpad=10)
 
     x, y = slope, density
     hist, xedges, yedges = np.histogram2d(x, y, bins=(40,40)) #, range=[[0, 30], [0, 1.2]])
@@ -314,6 +318,8 @@ def plot_3d_hist(density, slope):
 
     ax.bar3d(xpos, ypos, zpos, dx, dy, dz, color=colorval, zsort='average')#, edgecolor='k', linewidth=1)
     ax.view_init(elev=10, azim=22)
+
+    #plt.colorbar(b)
 
     plt.show()
 
