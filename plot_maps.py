@@ -269,7 +269,55 @@ def plot_by_diam(density, slope):
 def plot_3d_hist(density, slope):
 
     # get arrays where the crater diam has been identified by color
+    #density_arr_color, slope_arr_color, color_arr = get_diam_ref_arrays(density, slope)
 
+    # get the code to remove all NaN from both arrays
+    fin_idx_density = np.where(np.isfinite(density))[0]
+    fin_idx_slope = np.where(np.isfinite(slope))[0]
+    fin_idx = np.intersect1d(fin_idx_density, fin_idx_slope)
+
+    density = density[fin_idx]
+    slope = slope[fin_idx]
+
+    # make 3d histogram
+    # code taken from matplotlib examples
+    from mpl_toolkits.mplot3d import Axes3D
+    from matplotlib import cm
+    import matplotlib.colors as colors
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+
+    x, y = slope, density
+    hist, xedges, yedges = np.histogram2d(x, y, bins=(40,40)) #, range=[[0, 30], [0, 1.2]])
+
+    # Construct arrays for the anchor positions of the bars.
+    # Note: np.meshgrid gives arrays in (ny, nx) so we use 'F' to flatten xpos,
+    # ypos in column-major order. For numpy >= 1.7, we could instead call meshgrid
+    # with indexing='ij'.
+    xpos, ypos = np.meshgrid(xedges[:-1] + xedges[1:], yedges[:-1] + yedges[1:])
+    xpos = xpos.flatten('F') / 2
+    ypos = ypos.flatten('F') / 2
+    zpos = np.zeros_like(xpos)
+
+    # Construct arrays with the dimensions for the bars.
+    dx = xedges[1] - xedges[0]
+    dy = yedges[1] - xedges[0]
+    dz = hist.flatten()
+    dz = np.log10(dz)
+
+    # color using colormap 
+    my_cmap = plt.get_cmap('cubehelix')
+    cNorm = colors.Normalize(vmin=0, vmax=np.max(dz))
+    scalarMap = cm.ScalarMappable(norm=cNorm, cmap=my_cmap)
+    colorval = scalarMap.to_rgba(dz)
+
+    ax.bar3d(xpos, ypos, zpos, dx, dy, dz, color=colorval, zsort='average')#, edgecolor='k', linewidth=1)
+    ax.view_init(elev=10, azim=22)
+
+    plt.show()
+
+    return None
 
 def make_plot(density, slope_arr):
 
@@ -286,8 +334,8 @@ def make_plot(density, slope_arr):
     ax.tick_params('both', width=1, length=4.7, which='major')
     ax.grid(True)
 
-    fig.savefig(slope_extdir + 'density_slope', dpi=300, bbox_inches='tight')
-    #plt.show()
+    #fig.savefig(slope_extdir + 'density_slope', dpi=300, bbox_inches='tight')
+    plt.show()
 
     return None
 
@@ -344,7 +392,8 @@ if __name__ == '__main__':
     nodata_idx = np.where(slope_arr == -9999.0)
     slope_arr[nodata_idx] = np.nan
 
-    plot_by_diam(density, slope_arr)
+    #plot_by_diam(density, slope_arr)
+    plot_3d_hist(density, slope_arr)
 
     # total run time
     print '\n'
