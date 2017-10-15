@@ -113,7 +113,8 @@ def fit_gauss(fit_x_arr, fit_y_arr):
 def poisson(k, lamb):
     return (lamb**k/factorial(k)) * np.exp(-lamb)
 
-def plot_by_diam(density, slope):
+
+def get_diam_ref_arrays(density, slope):
 
     # first read in crater ids associated with each pixel
     with open(slope_extdir + 'pix_crater_id_fastcomp.pkl', 'rb') as crater_id_file:
@@ -138,7 +139,7 @@ def plot_by_diam(density, slope):
     density_arr_color = []
     slope_arr_color = []
 
-    for i in range(500000):#len(crater_id_in_pix_arr)):
+    for i in range(100000):#len(crater_id_in_pix_arr)):
 
         if (i % 100000) == 0.0:
             print '\r',
@@ -191,6 +192,13 @@ def plot_by_diam(density, slope):
     density_arr_color = np.asarray(density_arr_color)
     slope_arr_color = np.asarray(slope_arr_color)
     color_arr = np.asarray(color_arr).astype(str)
+
+    return density_arr_color, slope_arr_color, color_arr
+
+def plot_by_diam(density, slope):
+
+    # get arrays where the crater diam has been identified by color
+    density_arr_color, slope_arr_color, color_arr = get_diam_ref_arrays(density, slope)
 
     # do the actual plotting
     # perhaps you could make the blue points bigger than the
@@ -257,6 +265,11 @@ def plot_by_diam(density, slope):
     plt.close()
 
     return None
+
+def plot_3d_hist(density, slope):
+
+    # get arrays where the crater diam has been identified by color
+
 
 def make_plot(density, slope_arr):
 
