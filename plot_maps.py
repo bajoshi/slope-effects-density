@@ -4,6 +4,8 @@ import numpy as np
 from astropy.modeling import models, fitting
 import cPickle
 import Polygon as pg
+from scipy.misc import factorial
+from scipy.optimize import curve_fit
 
 import sys
 import os
@@ -108,6 +110,9 @@ def fit_gauss(fit_x_arr, fit_y_arr):
 
     return g
 
+def poisson(k, lamb):
+    return (lamb**k/factorial(k)) * np.exp(-lamb)
+
 def plot_by_diam(density, slope):
 
     # first read in crater ids associated with each pixel
@@ -133,7 +138,7 @@ def plot_by_diam(density, slope):
     density_arr_color = []
     slope_arr_color = []
 
-    for i in range(len(crater_id_in_pix_arr)):
+    for i in range(500000):#len(crater_id_in_pix_arr)):
 
         if (i % 100000) == 0.0:
             print '\r',
@@ -207,6 +212,21 @@ def plot_by_diam(density, slope):
 
     gb = fit_gauss(fit_x_arr, fit_y_arr)
 
+    # fit a poisson distribution
+    # you could make a histogram and fit to a poisson distribution
+    # which might be easier but first fitting a poisson distribution 
+    # directly to the data
+    fin_idx_x = np.where(np.isfinite(fit_x_arr))[0]
+    fin_idx_y = np.where(np.isfinite(fit_y_arr))[0]
+    fin_idx = np.intersect1d(fin_idx_x, fin_idx_y)
+
+    fit_x_arr = fit_x_arr[fin_idx]
+    fit_y_arr = fit_y_arr[fin_idx] 
+
+    popt, pcov = curve_fit(poisson, fit_x_arr, fit_y_arr, p0=[1.5])
+    print popt
+    print pcov
+
     # fit to other diam bins
     fit_x_arr = slope_arr_color[r_idx]
     fit_y_arr = density_arr_color[r_idx]
@@ -221,15 +241,16 @@ def plot_by_diam(density, slope):
     x_plot_arr = np.linspace(0,30,1000)
     ax.plot(x_plot_arr, gb(x_plot_arr), ls='-', color='skyblue', lw=2)
     ax.plot(x_plot_arr, gr(x_plot_arr), ls='-', color='pink', lw=2)
+    ax.plot(x_plot_arr, poisson(x_plot_arr, *popt), ls='-', color='forestgreen', lw=2)
 
     ax.minorticks_on()
     ax.tick_params('both', width=1, length=3, which='minor')
     ax.tick_params('both', width=1, length=4.7, which='major')
     ax.grid(True)
 
-    fig.savefig(slope_extdir + 'slope_v_density_4_and_30_km.png', dpi=300, bbox_inches='tight')
-    fig.savefig(slope_extdir + 'slope_v_density_4_and_30_km.eps', dpi=300, bbox_inches='tight')
-    #plt.show()
+    #fig.savefig(slope_extdir + 'slope_v_density_4_and_30_km.png', dpi=300, bbox_inches='tight')
+    #fig.savefig(slope_extdir + 'slope_v_density_4_and_30_km.eps', dpi=300, bbox_inches='tight')
+    plt.show()
 
     plt.clf()
     plt.cla()
