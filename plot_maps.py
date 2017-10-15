@@ -293,7 +293,7 @@ def plot_3d_hist(density, slope):
     ax.set_zlabel(r"$\mathrm{log(N)}$", fontsize=14, labelpad=10)
 
     x, y = slope, density
-    hist, xedges, yedges = np.histogram2d(x, y, bins=(40,40)) #, range=[[0, 30], [0, 1.2]])
+    hist, xedges, yedges = np.histogram2d(x, y, bins=(50,50)) #, range=[[0, 30], [0, 1.2]])
 
     # Construct arrays for the anchor positions of the bars.
     # Note: np.meshgrid gives arrays in (ny, nx) so we use 'F' to flatten xpos,
