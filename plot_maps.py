@@ -86,6 +86,8 @@ def get_diam(crater_vert_cat, crater_id):
 
 def fit_gauss(fit_x_arr, fit_y_arr):
 
+    fit_y_arr = np.log10(fit_y_arr)
+
     # make sure that the fitting is done to only the finite
     # elements in the arrays i.e. No NaN or inf in the arrays
     fin_idx_x = np.where(np.isfinite(fit_x_arr))[0]
@@ -139,7 +141,7 @@ def get_diam_ref_arrays(density, slope):
     density_arr_color = []
     slope_arr_color = []
 
-    for i in range(100000):#len(crater_id_in_pix_arr)):
+    for i in range(500000):#len(crater_id_in_pix_arr)):
 
         if (i % 100000) == 0.0:
             print '\r',
@@ -215,6 +217,7 @@ def plot_by_diam(density, slope):
 
     # fit a curve 
     # first define fitting arrays
+    """
     fit_x_arr = slope_arr_color[b_idx]
     fit_y_arr = density_arr_color[b_idx]
 
@@ -231,34 +234,52 @@ def plot_by_diam(density, slope):
     fit_x_arr = fit_x_arr[fin_idx]
     fit_y_arr = fit_y_arr[fin_idx] 
 
+    fit_y_arr = np.log10(fit_y_arr)
+
     popt, pcov = curve_fit(poisson, fit_x_arr, fit_y_arr, p0=[1.5])
     print popt
     print pcov
-
-    # fit to other diam bins
-    fit_x_arr = slope_arr_color[r_idx]
-    fit_y_arr = density_arr_color[r_idx]
-
-    gr = fit_gauss(fit_x_arr, fit_y_arr)
+    """
 
     # plot the actual points
-    ax.scatter(slope_arr_color[b_idx], density_arr_color[b_idx], s=8, c=color_arr[b_idx], alpha=0.4, edgecolors='none')
-    ax.scatter(slope_arr_color[r_idx], density_arr_color[r_idx], s=1, c=color_arr[r_idx], alpha=0.4, edgecolors='none')
+    ax.scatter(slope_arr_color[b_idx], np.log10(density_arr_color[b_idx]), s=8, c=color_arr[b_idx], alpha=0.4, edgecolors='none')
 
     # plot the best fit curves
     x_plot_arr = np.linspace(0,30,1000)
-    ax.plot(x_plot_arr, gb(x_plot_arr), ls='-', color='skyblue', lw=2)
-    ax.plot(x_plot_arr, gr(x_plot_arr), ls='-', color='pink', lw=2)
-    ax.plot(x_plot_arr, poisson(x_plot_arr, *popt), ls='-', color='forestgreen', lw=2)
+    #ax.plot(x_plot_arr, gb(x_plot_arr), ls='-', color='skyblue', lw=2)
+    #ax.plot(x_plot_arr, gr(x_plot_arr), ls='-', color='pink', lw=2)
+    #ax.plot(x_plot_arr, poisson(x_plot_arr, *popt), ls='-', color='forestgreen', lw=2)
 
     ax.minorticks_on()
     ax.tick_params('both', width=1, length=3, which='minor')
     ax.tick_params('both', width=1, length=4.7, which='major')
     ax.grid(True)
 
-    #fig.savefig(slope_extdir + 'slope_v_density_4_and_30_km.png', dpi=300, bbox_inches='tight')
-    #fig.savefig(slope_extdir + 'slope_v_density_4_and_30_km.eps', dpi=300, bbox_inches='tight')
-    plt.show()
+    fig.savefig(slope_extdir + 'slope_v_density_4_and_30_km.png', dpi=300, bbox_inches='tight')
+    fig.savefig(slope_extdir + 'slope_v_density_4_and_30_km.eps', dpi=300, bbox_inches='tight')
+
+    plt.clf()
+    plt.cla()
+    plt.close()
+
+    # plot other diam bin separately
+    fig1 = plt.figure()
+    ax1 = fig1.add_subplot(111)
+
+    ax1.set_xlabel(r'$\mathrm{Slope}$', fontsize=18)
+    ax1.set_ylabel(r'$\mathrm{Density}$', fontsize=18)
+
+    ax1.scatter(slope_arr_color[r_idx], np.log10(density_arr_color[r_idx]), s=8, c=color_arr[r_idx], alpha=0.4, edgecolors='none')
+
+    ax1.minorticks_on()
+    ax1.tick_params('both', width=1, length=3, which='minor')
+    ax1.tick_params('both', width=1, length=4.7, which='major')
+    ax1.grid(True)
+
+    fig1.savefig(slope_extdir + 'slope_v_density_30km.png', dpi=300, bbox_inches='tight')
+    fig1.savefig(slope_extdir + 'slope_v_density_30_km.eps', dpi=300, bbox_inches='tight')
+
+    #plt.show()
 
     plt.clf()
     plt.cla()
@@ -398,8 +419,8 @@ if __name__ == '__main__':
     nodata_idx = np.where(slope_arr == -9999.0)
     slope_arr[nodata_idx] = np.nan
 
-    #plot_by_diam(density, slope_arr)
-    plot_3d_hist(density, slope_arr)
+    plot_by_diam(density, slope_arr)
+    #plot_3d_hist(density, slope_arr)
 
     # total run time
     print '\n'
