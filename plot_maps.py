@@ -115,6 +115,47 @@ def fit_gauss(fit_x_arr, fit_y_arr):
 def poisson(k, lamb):
     return (lamb**k/factorial(k)) * np.exp(-lamb)
 
+def plot_crater_diam_hist():
+
+    # now read in crater diam from id and save them 
+    # read crater vertices file
+    crater_vert_cat = np.genfromtxt(slope_extdir + 'CRATER_FullHF_Vertices_coords.txt', \
+        dtype=None, names=True, delimiter=',')
+    crater_ids = np.unique(crater_vert_cat['ORIG_FID'])
+
+    # loop over all craters and store 
+    # their diameters in an array.
+    crater_diam_array = np.empty(len(crater_ids))
+    for i in range(len(crater_ids)):
+
+        current_id = crater_ids[i]
+        current_diam = get_diam(crater_vert_cat, current_id)
+        crater_diam_array[i] = current_diam
+
+    print len(np.where(crater_diam_array > 50)[0]), "craters larger than 50km"
+
+    # plot hist of diameters
+    # don't consider any craters larger than 50km
+    nolargediam_idx = np.where(crater_diam_array <= 50)[0]
+    crater_diam_array = crater_diam_array[nolargediam_idx]
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+
+    ax.hist(crater_diam_array, 15)
+    ax.axhline(y=10)
+
+    # color all selected crater diam bins a different color
+    
+
+    ax.set_yscale('log')
+
+    plt.show()
+    plt.clf()
+    plt.cla()
+    plt.close()
+
+    return None
 
 def get_diam_ref_arrays(density, slope):
 
@@ -372,6 +413,9 @@ if __name__ == '__main__':
     start = time.time()
     dt = datetime.datetime
     print "Starting at --", dt.now()
+
+    plot_crater_diam_hist()
+    sys.exit(0)
 
     use_point_density = False
     if use_point_density:
