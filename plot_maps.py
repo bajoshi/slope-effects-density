@@ -142,11 +142,25 @@ def plot_crater_diam_hist():
     fig = plt.figure()
     ax = fig.add_subplot(111)
 
-    ax.hist(crater_diam_array, 15)
-    ax.axhline(y=10)
+    ncount, edges, patches = ax.hist(crater_diam_array, 10, color='lightgray', align='mid')
+    ax.axhline(y=10, ls='--', color='k')
 
     # color all selected crater diam bins a different color
-    
+    print np.where(ncount >= 10)
+    print ncount, edges
+    max_crater_diam_bin = edges[min(np.where(ncount >= 10)[0])]
+    print max_crater_diam_bin
+
+    edges_plot = np.where((edges >= 0) & (edges <= 30))[0]
+    patches_plot = [patches[edge_ind] for edge_ind in edges_plot]
+    col = np.full(len(patches_plot), 'lightblue', dtype='|S9')
+    # make sure the length of the string given in the array initialization is the same as the color name
+    for c, p in zip(col, patches_plot):
+        plt.setp(p, 'facecolor', c)
+
+    ax.set_xlabel(r'$\mathrm{Crater\ Diameter}$', fontsize=15)
+    ax.set_ylabel(r'$\mathrm{N}$', fontsize=15)
+    ax.grid(True)
 
     ax.set_yscale('log')
 
