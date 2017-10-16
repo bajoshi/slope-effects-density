@@ -136,35 +136,33 @@ def plot_crater_diam_hist():
 
     # plot hist of diameters
     # don't consider any craters larger than 50km
-    nolargediam_idx = np.where(crater_diam_array <= 50)[0]
-    crater_diam_array = crater_diam_array[nolargediam_idx]
+    #nolargediam_idx = np.where(crater_diam_array <= 50)[0]
+    #crater_diam_array = crater_diam_array[nolargediam_idx]
 
     fig = plt.figure()
     ax = fig.add_subplot(111)
 
-    ncount, edges, patches = ax.hist(crater_diam_array, 10, color='lightgray', align='mid')
-    ax.axhline(y=10, ls='--', color='k')
+    ncount, edges, patches = ax.hist(crater_diam_array, 100, color='lightgray', align='mid')
+    ax.axhline(y=10, ls='--', lw=2, color='k')
 
     # color all selected crater diam bins a different color
-    print np.where(ncount >= 10)
-    print ncount, edges
-    max_crater_diam_bin = edges[min(np.where(ncount >= 10)[0])]
-    print max_crater_diam_bin
+    max_crater_diam_bin = edges[min(np.where(ncount < 10)[0]) - 1]
 
-    edges_plot = np.where((edges >= 0) & (edges <= 30))[0]
+    edges_plot = np.where(ncount >= 10)[0] #np.where((edges >= 0) & (edges <= max_crater_diam_bin))[0]
     patches_plot = [patches[edge_ind] for edge_ind in edges_plot]
     col = np.full(len(patches_plot), 'lightblue', dtype='|S9')
     # make sure the length of the string given in the array initialization is the same as the color name
     for c, p in zip(col, patches_plot):
         plt.setp(p, 'facecolor', c)
 
-    ax.set_xlabel(r'$\mathrm{Crater\ Diameter}$', fontsize=15)
+    ax.set_xlabel(r'$\mathrm{Crater\ Diameter\ [KM]}$', fontsize=15)
     ax.set_ylabel(r'$\mathrm{N}$', fontsize=15)
     ax.grid(True)
 
     ax.set_yscale('log')
 
-    plt.show()
+    fig.savefig(slope_extdir + 'crater_diam_hist.png', dpi=300, bbox_inches='tight')
+
     plt.clf()
     plt.cla()
     plt.close()
