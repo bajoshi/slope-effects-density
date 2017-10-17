@@ -210,7 +210,7 @@ def get_diam_ref_arrays(density, slope):
             current_id = current_crater_ids[0]
             current_diam = get_diam(crater_vert_cat, current_id)
 
-            if (current_diam > 5) and (current_diam < 30):
+            if (current_diam > 10) and (current_diam < 30):
                 continue
 
             else:
@@ -221,6 +221,9 @@ def get_diam_ref_arrays(density, slope):
                 if current_diam <= 5:
                     color_arr.append('b')
 
+                if (current_diam > 5) and (current_diam <= 10):
+                    color_arr.append('g')
+
                 if (current_diam >= 30) and (current_diam <= 35):
                     color_arr.append('r')
 
@@ -229,7 +232,7 @@ def get_diam_ref_arrays(density, slope):
                 current_id = current_crater_ids[j]
                 current_diam = get_diam(crater_vert_cat, current_id)
 
-                if (current_diam > 5) and (current_diam < 30):
+                if (current_diam > 10) and (current_diam < 30):
                     continue
 
                 else:
@@ -239,6 +242,9 @@ def get_diam_ref_arrays(density, slope):
 
                     if current_diam <= 5:
                         color_arr.append('b')
+
+                    if (current_diam > 5) and (current_diam <= 10):
+                        color_arr.append('g')
 
                     if (current_diam >= 30) and (current_diam <= 35):
                         color_arr.append('r')
@@ -267,6 +273,7 @@ def plot_by_diam(density, slope):
 
     b_idx = np.where(color_arr == 'b')[0]
     r_idx = np.where(color_arr == 'r')[0]
+    g_idx = np.where(color_arr == 'g')[0]
 
     # fit a curve 
     # first define fitting arrays
@@ -295,13 +302,15 @@ def plot_by_diam(density, slope):
     """
 
     # plot the actual points
-    ax.scatter(slope_arr_color[b_idx], density_arr_color[b_idx], s=8, c=color_arr[b_idx], alpha=0.4, edgecolors='none')
+    ax.scatter(slope_arr_color[b_idx], np.log10(density_arr_color[b_idx]), s=8, c=color_arr[b_idx], alpha=0.4, edgecolors='none')
 
     # plot the best fit curves
     #x_plot_arr = np.linspace(0,30,1000)
     #ax.plot(x_plot_arr, gb(x_plot_arr), ls='-', color='skyblue', lw=2)
     #ax.plot(x_plot_arr, gr(x_plot_arr), ls='-', color='pink', lw=2)
     #ax.plot(x_plot_arr, poisson(x_plot_arr, *popt), ls='-', color='forestgreen', lw=2)
+
+    ax.set_ylim(0, -8)
 
     ax.minorticks_on()
     ax.tick_params('both', width=1, length=3, which='minor')
@@ -322,7 +331,8 @@ def plot_by_diam(density, slope):
     ax1.set_xlabel(r'$\mathrm{Slope}$', fontsize=18)
     ax1.set_ylabel(r'$\mathrm{Density}$', fontsize=18)
 
-    ax1.scatter(slope_arr_color[r_idx], density_arr_color[r_idx], s=8, c=color_arr[r_idx], alpha=0.4, edgecolors='none')
+    ax1.scatter(slope_arr_color[r_idx], np.log10(density_arr_color[r_idx]), s=8, c=color_arr[r_idx], alpha=0.4, edgecolors='none')
+    ax1.set_ylim(0, -8)
 
     ax1.minorticks_on()
     ax1.tick_params('both', width=1, length=3, which='minor')
@@ -332,7 +342,27 @@ def plot_by_diam(density, slope):
     fig1.savefig(slope_extdir + 'slope_v_density_30to35km.png', dpi=300, bbox_inches='tight')
     fig1.savefig(slope_extdir + 'slope_v_density_30to35km.eps', dpi=300, bbox_inches='tight')
 
-    #plt.show()
+    plt.clf()
+    plt.cla()
+    plt.close()
+
+    # -----------------
+    fig2 = plt.figure()
+    ax2 = fig2.add_subplot(111)
+
+    ax2.set_xlabel(r'$\mathrm{Slope}$', fontsize=18)
+    ax2.set_ylabel(r'$\mathrm{Density}$', fontsize=18)
+
+    ax2.scatter(slope_arr_color[g_idx], np.log10(density_arr_color[g_idx]), s=8, c=color_arr[g_idx], alpha=0.4, edgecolors='none')
+    ax2.set_ylim(0, -8)
+
+    ax2.minorticks_on()
+    ax2.tick_params('both', width=1, length=3, which='minor')
+    ax2.tick_params('both', width=1, length=4.7, which='major')
+    ax2.grid(True)
+
+    fig2.savefig(slope_extdir + 'slope_v_density_5to10km.png', dpi=300, bbox_inches='tight')
+    fig2.savefig(slope_extdir + 'slope_v_density_5to10km.eps', dpi=300, bbox_inches='tight')
 
     plt.clf()
     plt.cla()
