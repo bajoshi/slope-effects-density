@@ -210,7 +210,7 @@ def get_diam_ref_arrays(density, slope):
             current_id = current_crater_ids[0]
             current_diam = get_diam(crater_vert_cat, current_id)
 
-            if (current_diam > 4) and (current_diam < 30):
+            if (current_diam > 5) and (current_diam < 30):
                 continue
 
             else:
@@ -218,10 +218,10 @@ def get_diam_ref_arrays(density, slope):
                 density_arr_color.append(density[i])
                 slope_arr_color.append(slope[i])
 
-                if current_diam <= 4:
+                if current_diam <= 5:
                     color_arr.append('b')
 
-                if current_diam >= 30:
+                if (current_diam >= 30) and (current_diam <= 35):
                     color_arr.append('r')
 
         elif len(current_crater_ids) > 1:
@@ -229,7 +229,7 @@ def get_diam_ref_arrays(density, slope):
                 current_id = current_crater_ids[j]
                 current_diam = get_diam(crater_vert_cat, current_id)
 
-                if (current_diam > 4) and (current_diam < 30):
+                if (current_diam > 5) and (current_diam < 30):
                     continue
 
                 else:
@@ -237,10 +237,10 @@ def get_diam_ref_arrays(density, slope):
                     density_arr_color.append(density[i])
                     slope_arr_color.append(slope[i])
 
-                    if current_diam <= 4:
+                    if current_diam <= 5:
                         color_arr.append('b')
 
-                    if current_diam >= 30:
+                    if (current_diam >= 30) and (current_diam <= 35):
                         color_arr.append('r')
 
     # convert to numpy arrays so you can do array ops
@@ -295,10 +295,10 @@ def plot_by_diam(density, slope):
     """
 
     # plot the actual points
-    ax.scatter(slope_arr_color[b_idx], np.log10(density_arr_color[b_idx]), s=8, c=color_arr[b_idx], alpha=0.4, edgecolors='none')
+    ax.scatter(slope_arr_color[b_idx], density_arr_color[b_idx], s=8, c=color_arr[b_idx], alpha=0.4, edgecolors='none')
 
     # plot the best fit curves
-    x_plot_arr = np.linspace(0,30,1000)
+    #x_plot_arr = np.linspace(0,30,1000)
     #ax.plot(x_plot_arr, gb(x_plot_arr), ls='-', color='skyblue', lw=2)
     #ax.plot(x_plot_arr, gr(x_plot_arr), ls='-', color='pink', lw=2)
     #ax.plot(x_plot_arr, poisson(x_plot_arr, *popt), ls='-', color='forestgreen', lw=2)
@@ -308,8 +308,8 @@ def plot_by_diam(density, slope):
     ax.tick_params('both', width=1, length=4.7, which='major')
     ax.grid(True)
 
-    fig.savefig(slope_extdir + 'slope_v_density_4_and_30_km.png', dpi=300, bbox_inches='tight')
-    fig.savefig(slope_extdir + 'slope_v_density_4_and_30_km.eps', dpi=300, bbox_inches='tight')
+    fig.savefig(slope_extdir + 'slope_v_density_0to5km.png', dpi=300, bbox_inches='tight')
+    fig.savefig(slope_extdir + 'slope_v_density_0to5km.eps', dpi=300, bbox_inches='tight')
 
     plt.clf()
     plt.cla()
@@ -322,15 +322,15 @@ def plot_by_diam(density, slope):
     ax1.set_xlabel(r'$\mathrm{Slope}$', fontsize=18)
     ax1.set_ylabel(r'$\mathrm{Density}$', fontsize=18)
 
-    ax1.scatter(slope_arr_color[r_idx], np.log10(density_arr_color[r_idx]), s=8, c=color_arr[r_idx], alpha=0.4, edgecolors='none')
+    ax1.scatter(slope_arr_color[r_idx], density_arr_color[r_idx], s=8, c=color_arr[r_idx], alpha=0.4, edgecolors='none')
 
     ax1.minorticks_on()
     ax1.tick_params('both', width=1, length=3, which='minor')
     ax1.tick_params('both', width=1, length=4.7, which='major')
     ax1.grid(True)
 
-    fig1.savefig(slope_extdir + 'slope_v_density_30km.png', dpi=300, bbox_inches='tight')
-    fig1.savefig(slope_extdir + 'slope_v_density_30_km.eps', dpi=300, bbox_inches='tight')
+    fig1.savefig(slope_extdir + 'slope_v_density_30to35km.png', dpi=300, bbox_inches='tight')
+    fig1.savefig(slope_extdir + 'slope_v_density_30to35km.eps', dpi=300, bbox_inches='tight')
 
     #plt.show()
 
@@ -426,8 +426,10 @@ if __name__ == '__main__':
     dt = datetime.datetime
     print "Starting at --", dt.now()
 
-    plot_crater_diam_hist()
-    sys.exit(0)
+    # uncomment the following two lines if you 
+    # want to make the crater diam histogram
+    #plot_crater_diam_hist()
+    #sys.exit(0)
 
     use_point_density = False
     if use_point_density:
