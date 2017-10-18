@@ -323,7 +323,8 @@ def plot_by_diam(density, slope):
     """
 
     # plot the actual points
-    ax.scatter(slope_arr_color[b_idx], np.log10(density_arr_color[b_idx]), s=8, c=color_arr[b_idx], alpha=0.4, edgecolors='none')
+    ax.scatter(slope_arr_color[b_idx], density_arr_color[b_idx], s=8, c=color_arr[b_idx], alpha=0.4, edgecolors='none')
+    ax.set_yscale('log')
 
     # plot the best fit curves
     #x_plot_arr = np.linspace(0,30,1000)
@@ -331,7 +332,7 @@ def plot_by_diam(density, slope):
     #ax.plot(x_plot_arr, gr(x_plot_arr), ls='-', color='pink', lw=2)
     #ax.plot(x_plot_arr, poisson(x_plot_arr, *popt), ls='-', color='forestgreen', lw=2)
 
-    ax.set_ylim(-8, 0)
+    #ax.set_ylim(-8, 0)
     ax.set_xlim(0, 30)
 
     ax.minorticks_on()
@@ -339,8 +340,8 @@ def plot_by_diam(density, slope):
     ax.tick_params('both', width=1, length=4.7, which='major')
     ax.grid(True)
 
-    fig.savefig(slope_extdir + 'slope_v_density_0to5km.png', dpi=300, bbox_inches='tight')
-    fig.savefig(slope_extdir + 'slope_v_density_0to5km.eps', dpi=300, bbox_inches='tight')
+    fig.savefig(slope_extdir + 'slope_v_density_0to5km_logscale.png', dpi=300, bbox_inches='tight')
+    fig.savefig(slope_extdir + 'slope_v_density_0to5km_logscale.eps', dpi=300, bbox_inches='tight')
 
     plt.clf()
     plt.cla()
@@ -353,8 +354,9 @@ def plot_by_diam(density, slope):
     ax1.set_xlabel(r'$\mathrm{Slope}$', fontsize=18)
     ax1.set_ylabel(r'$\mathrm{Density}$', fontsize=18)
 
-    ax1.scatter(slope_arr_color[r_idx], np.log10(density_arr_color[r_idx]), s=8, c=color_arr[r_idx], alpha=0.4, edgecolors='none')
-    ax1.set_ylim(-8, 0)
+    ax1.scatter(slope_arr_color[r_idx], density_arr_color[r_idx], s=8, c=color_arr[r_idx], alpha=0.4, edgecolors='none')
+    ax1.set_yscale('log')
+    #ax1.set_ylim(-8, 0)
     ax1.set_xlim(0, 30)
 
     ax1.minorticks_on()
@@ -362,8 +364,8 @@ def plot_by_diam(density, slope):
     ax1.tick_params('both', width=1, length=4.7, which='major')
     ax1.grid(True)
 
-    fig1.savefig(slope_extdir + 'slope_v_density_30to35km.png', dpi=300, bbox_inches='tight')
-    fig1.savefig(slope_extdir + 'slope_v_density_30to35km.eps', dpi=300, bbox_inches='tight')
+    fig1.savefig(slope_extdir + 'slope_v_density_30to35km_logscale.png', dpi=300, bbox_inches='tight')
+    fig1.savefig(slope_extdir + 'slope_v_density_30to35km_logscale.eps', dpi=300, bbox_inches='tight')
 
     plt.clf()
     plt.cla()
@@ -376,8 +378,9 @@ def plot_by_diam(density, slope):
     ax2.set_xlabel(r'$\mathrm{Slope}$', fontsize=18)
     ax2.set_ylabel(r'$\mathrm{Density}$', fontsize=18)
 
-    ax2.scatter(slope_arr_color[g_idx], np.log10(density_arr_color[g_idx]), s=8, c=color_arr[g_idx], alpha=0.4, edgecolors='none')
-    ax2.set_ylim(-8, 0)
+    ax2.scatter(slope_arr_color[g_idx], density_arr_color[g_idx], s=8, c=color_arr[g_idx], alpha=0.4, edgecolors='none')
+    ax2.set_yscale('log')
+    #ax2.set_ylim(-8, 0)
     ax2.set_xlim(0, 30)
 
     ax2.minorticks_on()
@@ -385,8 +388,8 @@ def plot_by_diam(density, slope):
     ax2.tick_params('both', width=1, length=4.7, which='major')
     ax2.grid(True)
 
-    fig2.savefig(slope_extdir + 'slope_v_density_5to10km.png', dpi=300, bbox_inches='tight')
-    fig2.savefig(slope_extdir + 'slope_v_density_5to10km.eps', dpi=300, bbox_inches='tight')
+    fig2.savefig(slope_extdir + 'slope_v_density_5to10km_logscale.png', dpi=300, bbox_inches='tight')
+    fig2.savefig(slope_extdir + 'slope_v_density_5to10km_logscale.eps', dpi=300, bbox_inches='tight')
 
     plt.clf()
     plt.cla()
@@ -399,8 +402,9 @@ def plot_by_diam(density, slope):
     ax3.set_xlabel(r'$\mathrm{Slope}$', fontsize=18)
     ax3.set_ylabel(r'$\mathrm{Density}$', fontsize=18)
 
-    ax3.scatter(slope_arr_color[c_idx], np.log10(density_arr_color[c_idx]), s=8, c=color_arr[c_idx], alpha=0.4, edgecolors='none')
-    ax3.set_ylim(-8, 0)
+    ax3.scatter(slope_arr_color[c_idx], density_arr_color[c_idx], s=8, c=color_arr[c_idx], alpha=0.4, edgecolors='none')
+    ax3.set_yscale('log')
+    #ax3.set_ylim(-8, 0)
     ax3.set_xlim(0, 30)
 
     ax3.minorticks_on()
@@ -408,8 +412,8 @@ def plot_by_diam(density, slope):
     ax3.tick_params('both', width=1, length=4.7, which='major')
     ax3.grid(True)
 
-    fig3.savefig(slope_extdir + 'slope_v_density_10to15km.png', dpi=300, bbox_inches='tight')
-    fig3.savefig(slope_extdir + 'slope_v_density_10to15km.eps', dpi=300, bbox_inches='tight')
+    fig3.savefig(slope_extdir + 'slope_v_density_10to15km_logscale.png', dpi=300, bbox_inches='tight')
+    fig3.savefig(slope_extdir + 'slope_v_density_10to15km_logscale.eps', dpi=300, bbox_inches='tight')
 
     plt.clf()
     plt.cla()
@@ -520,8 +524,8 @@ if __name__ == '__main__':
         # txt files) to numpy arrays. then load them in.
         pix_frac_path = slope_extdir + 'pix_area_fraction_clipped.txt'
         crater_frac_path = slope_extdir + 'crater_area_frac_in_pix_clipped.txt'
-        #su.raster_to_numpy(pix_frac_path)
-        #su.raster_to_numpy(crater_frac_path)
+        su.raster_to_numpy(pix_frac_path)
+        su.raster_to_numpy(crater_frac_path)
 
         # load all arrays
         # read in products
@@ -535,7 +539,7 @@ if __name__ == '__main__':
 
     # read in pixel coordinates
     slopemap_path = slope_extdir + 'hf_full_slopemap_clipped.txt'
-    #su.raster_to_numpy(slopemap_path)
+    su.raster_to_numpy(slopemap_path)
     slope_arr = np.load(slopemap_path.replace('.txt', '.npy'))
     slope_arr = slope_arr.ravel()
 

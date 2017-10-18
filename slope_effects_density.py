@@ -769,7 +769,7 @@ def get_density(crater_frac, pix_frac, total_pix):
             # Density = # of craters per sq. km.
             # If you ever have pixels that are not 1 sq. km in area then you should use
             # density[i] = crater_frac[i] / pix_area_arr_phys[i] (pix_area_arr_phys calculation currently commented out)
-            # with area_single_pix (see code above where it saves the pixel area frac) 
+            # with area_single_pix (see code where it saves the pixel area frac) 
             # set to the area of a pixel in the physical units you need.
         
         if (pix_frac[i] == 0.0) or (pix_frac[i] == -9999.0):
@@ -1137,7 +1137,7 @@ if __name__ == '__main__':
 
             # find pixel index using pixel center to append to the correct array element
             pix_index = pixel_indices[j]
-            pix_crater_area[pix_index] += inter_area_crater_frac #for each pixel, keep a running sum of the fractions of craters within it
+            pix_crater_area[pix_index] += inter_area_crater_frac  #for each pixel, keep a running sum of the fractions of craters within it
             if inter_area_crater_frac != 0.0:
                 pix_crater_id[pix_index].append(crater_ids[i])
 
