@@ -66,7 +66,7 @@ def plot_image(arr, vmin, vmax):
 
     return None
 
-def get_diam(crater_vert_cat, crater_id):
+def get_diam_mycalc(crater_vert_cat, crater_id):
 
     crater_vert = crater_vert_cat
 
@@ -81,6 +81,20 @@ def get_diam(crater_vert_cat, crater_id):
     # The area will be in sq. meters. 
     diam = np.sqrt(crater_poly.area() * 4 / np.pi)
     diam /= 1000  # convert to km
+
+    return diam
+
+def get_diam(crater_vert_cat, crater_id):
+    """
+    This function returns the diameter computed by ArcGIS.
+    Arc's diameter is favored over my calculation because 
+    it has taken the correct projection into account.
+    """
+
+    crater_vert = crater_vert_cat
+
+    current_crater_vert_idx = np.where(crater_vert['ORIG_FID'] == crater_id)
+    diam = crater_vert['Diam_km'][current_crater_vert_idx][0]
 
     return diam
 

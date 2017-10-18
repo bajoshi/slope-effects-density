@@ -1077,8 +1077,12 @@ if __name__ == '__main__':
         # Check the diameter of the crater and only proceed if 
         # the diameter is equal to or greater than 1 KM.
         # The area will be in sq. meters. 
-        current_diam = np.sqrt(crater_poly.area() * 4 / np.pi)
-        if current_diam < 1000:
+        #current_diam = np.sqrt(crater_poly.area() * 4 / np.pi)
+        # uncommenting my calc of diam. I should be using Arc's 
+        # calculation because it has taken the correct projection
+        # into account.
+        current_diam = crater_vert['Diam_km'][current_crater_vert_idx][0]
+        if current_diam < 1:
             continue
 
         # get all pixels within the crater's bounding box
