@@ -95,6 +95,7 @@ def get_diam(crater_vert_cat, crater_id):
 
     current_crater_vert_idx = np.where(crater_vert['ORIG_FID'] == crater_id)
     diam = crater_vert['Diam_km'][current_crater_vert_idx][0]
+    if diam < 1: print diam
 
     return diam
 
@@ -500,6 +501,22 @@ def make_plot(density, slope_arr):
 
     return None
 
+def convert_npy_array_tofits(npy_array, final_shape, savedir, final_name):
+    """
+    This code will convert the supplied numpy array
+    to a 2D fits image file. The length of the array 
+    must be consistent with the required final shape.
+    The given array should be in the binary numpy format.
+    """
+
+    from astropy.io import fits
+
+    npy_array = npy_array.reshape(final_shape)
+    hdu = fits.PrimaryHDU(data=npy_array)
+    hdu.writeto(savedir + final_name + '.fits', overwrite=True)
+
+    return None
+
 if __name__ == '__main__':
 
     # Start time
@@ -542,6 +559,15 @@ if __name__ == '__main__':
     su.raster_to_numpy(slopemap_path)
     slope_arr = np.load(slopemap_path.replace('.txt', '.npy'))
     slope_arr = slope_arr.ravel()
+
+    # use the following lines to convert arrays to fits files
+    """
+    rows = 2109
+    columns = 1949
+    convert_npy_array_tofits(density, (rows, columns), slope_extdir, 'density_array_raw')
+    convert_npy_array_tofits(slope_arr, (rows, columns), slope_extdir, 'slope_array_raw')
+    sys.exit(0)
+    """
 
     # save density raster
     #np.save(slope_extdir + 'density_arr_bool_clipped.npy', density)

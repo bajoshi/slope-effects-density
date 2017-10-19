@@ -1170,25 +1170,6 @@ if __name__ == '__main__':
 
     sys.exit(0)
 
-    # ----------------  loop over all pixels and measure crater density  ---------------- # 
-    # read in pix area and crater area files 
-    pix_frac = np.load(slope_extdir + 'pix_area_fraction.npy')
-    crater_frac = np.load(slope_extdir + 'crater_area_frac_in_pix.npy')
-
-    density = get_density(crater_frac, pix_frac, len(pix_centers))
-
-    np.save(slope_extdir + 'density.npy', density.reshape(rows,columns))
-    np.save(slope_extdir + 'slope_val.npy', slope.reshape(rows,columns))
-
-    # plot pixel crater fraction with slope overplotted
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-
-    ax.plot(np.log10(density), slope, 'o', color='k', markersize=1)
-
-    fig.savefig(slope_extdir + 'density_slope.png', dpi=300, bbox_inches='tight')
-    plt.show()
-
     # total run time
     print '\n'
     print "Total time taken --", (time.time() - start)/60, "minutes."
