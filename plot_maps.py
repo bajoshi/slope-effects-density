@@ -209,7 +209,7 @@ def get_diam_ref_arrays(density, slope):
     density_arr_color = []
     slope_arr_color = []
 
-    for i in range(1000000):#len(crater_id_in_pix_arr)):
+    for i in range(300000):#len(crater_id_in_pix_arr)):
 
         if (i % 100000) == 0.0:
             print '\r',
@@ -345,7 +345,7 @@ def plot_by_diam(density, slope):
     ax.set_ylim(1e-8, 1.5)
     ax.set_xlim(0, 30)
 
-    ax.axhline(y=5.1e-5)  
+    ax.axhline(y=5.1e-5, ls='--')  
     # this horizontal line shows the minimum value of density 
     # that is obtained for a pixel that is completely inside 
     # a crater and not overlapped by any other craters.
@@ -355,8 +355,8 @@ def plot_by_diam(density, slope):
     ax.tick_params('both', width=1, length=4.7, which='major')
     ax.grid(True)
 
-    fig.savefig(slope_extdir + 'slope_v_density_0to5km.png', dpi=300, bbox_inches='tight')
-    fig.savefig(slope_extdir + 'slope_v_density_0to5km.eps', dpi=300, bbox_inches='tight')
+    #fig.savefig(slope_extdir + 'slope_v_density_0to5km.png', dpi=300, bbox_inches='tight')
+    #fig.savefig(slope_extdir + 'slope_v_density_0to5km.eps', dpi=300, bbox_inches='tight')
 
     plt.clf()
     plt.cla()
@@ -378,7 +378,10 @@ def plot_by_diam(density, slope):
     ax1.set_ylim(1e-8, 1.5)
     ax1.set_xlim(0, 30)
 
-    ax1.axhline(y=1.04e-6)
+    check_idx = np.where((density_arr_color[r_idx] >= 1e-3) & (density_arr_color[r_idx] <= np.power(10, -2.9)))[0]
+    convert_idx_to_pixval(check_idx)
+
+    ax1.axhline(y=1.04e-6, ls='--')
     # this horizontal line shows the minimum value of density 
     # that is obtained for a pixel that is completely inside 
     # a crater and not overlapped by any other craters.
