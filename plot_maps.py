@@ -95,7 +95,7 @@ def get_diam(crater_vert_cat, crater_id):
 
     current_crater_vert_idx = np.where(crater_vert['ORIG_FID'] == crater_id)
     diam = crater_vert['Diam_km'][current_crater_vert_idx][0]
-    if diam < 1: print diam
+    if diam < 1: print "Diameter less than 1km:", diam, "km. This should not be here."
 
     return diam
 
@@ -209,7 +209,7 @@ def get_diam_ref_arrays(density, slope):
     density_arr_color = []
     slope_arr_color = []
 
-    for i in range(500000):#len(crater_id_in_pix_arr)):
+    for i in range(1000000):#len(crater_id_in_pix_arr)):
 
         if (i % 100000) == 0.0:
             print '\r',
@@ -225,7 +225,10 @@ def get_diam_ref_arrays(density, slope):
             current_id = current_crater_ids[0]
             current_diam = get_diam(crater_vert_cat, current_id)
 
-            if (current_diam > 15) and (current_diam < 30):
+            if (current_diam > 5) and (current_diam < 30):
+                continue
+
+            elif (current_diam > 35):
                 continue
 
             else:
@@ -236,21 +239,26 @@ def get_diam_ref_arrays(density, slope):
                 if current_diam <= 5:
                     color_arr.append('b')
 
-                if (current_diam > 5) and (current_diam <= 10):
-                    color_arr.append('g')
+                #elif (current_diam > 5) and (current_diam <= 10):
+                #    color_arr.append('g')
 
-                if (current_diam > 10) and (current_diam <= 15):
-                    color_arr.append('c')
+                #elif (current_diam > 10) and (current_diam <= 15):
+                #    color_arr.append('c')
 
-                if (current_diam >= 30) and (current_diam <= 35):
+                elif (current_diam >= 30) and (current_diam <= 35):
                     color_arr.append('r')
 
         elif len(current_crater_ids) > 1:
+            continue
+            """
             for j in range(len(current_crater_ids)):
                 current_id = current_crater_ids[j]
                 current_diam = get_diam(crater_vert_cat, current_id)
 
-                if (current_diam > 15) and (current_diam < 30):
+                if (current_diam > 5) and (current_diam < 30):
+                    continue
+
+                elif (current_diam > 35):
                     continue
 
                 else:
@@ -261,14 +269,15 @@ def get_diam_ref_arrays(density, slope):
                     if current_diam <= 5:
                         color_arr.append('b')
 
-                    if (current_diam > 5) and (current_diam <= 10):
-                        color_arr.append('g')
+                    #elif (current_diam > 5) and (current_diam <= 10):
+                    #    color_arr.append('g')
 
-                    if (current_diam > 10) and (current_diam <= 15):
-                        color_arr.append('c')
+                    #elif (current_diam > 10) and (current_diam <= 15):
+                    #    color_arr.append('c')
 
-                    if (current_diam >= 30) and (current_diam <= 35):
+                    elif (current_diam >= 30) and (current_diam <= 35):
                         color_arr.append('r')
+            """
 
     # convert to numpy arrays so you can do array ops
     density_arr_color = np.asarray(density_arr_color)
@@ -294,8 +303,8 @@ def plot_by_diam(density, slope):
 
     b_idx = np.where(color_arr == 'b')[0]
     r_idx = np.where(color_arr == 'r')[0]
-    g_idx = np.where(color_arr == 'g')[0]
-    c_idx = np.where(color_arr == 'c')[0]
+    #g_idx = np.where(color_arr == 'g')[0]
+    #c_idx = np.where(color_arr == 'c')[0]
 
     # fit a curve 
     # first define fitting arrays
@@ -325,7 +334,6 @@ def plot_by_diam(density, slope):
 
     # plot the actual points
     ax.scatter(slope_arr_color[b_idx], density_arr_color[b_idx], s=8, c=color_arr[b_idx], alpha=0.4, edgecolors='none')
-    ax.set_yscale('log')
 
     # plot the best fit curves
     #x_plot_arr = np.linspace(0,30,1000)
@@ -333,21 +341,64 @@ def plot_by_diam(density, slope):
     #ax.plot(x_plot_arr, gr(x_plot_arr), ls='-', color='pink', lw=2)
     #ax.plot(x_plot_arr, poisson(x_plot_arr, *popt), ls='-', color='forestgreen', lw=2)
 
-    #ax.set_ylim(-8, 0)
+    ax.set_yscale('log')
+    ax.set_ylim(1e-8, 1.5)
     ax.set_xlim(0, 30)
+
+    ax.axhline(y=5.1e-5)  
+    # this horizontal line shows the minimum value of density 
+    # that is obtained for a pixel that is completely inside 
+    # a crater and not overlapped by any other craters.
 
     ax.minorticks_on()
     ax.tick_params('both', width=1, length=3, which='minor')
     ax.tick_params('both', width=1, length=4.7, which='major')
     ax.grid(True)
 
-    fig.savefig(slope_extdir + 'slope_v_density_0to5km_logscale.png', dpi=300, bbox_inches='tight')
-    fig.savefig(slope_extdir + 'slope_v_density_0to5km_logscale.eps', dpi=300, bbox_inches='tight')
+    fig.savefig(slope_extdir + 'slope_v_density_0to5km.png', dpi=300, bbox_inches='tight')
+    fig.savefig(slope_extdir + 'slope_v_density_0to5km.eps', dpi=300, bbox_inches='tight')
 
     plt.clf()
     plt.cla()
     plt.close()
 
+    print np.nanmin(density_arr_color[b_idx])
+    print np.nanmax(density_arr_color[b_idx])
+
+    # ------------
+    fig1 = plt.figure()
+    ax1 = fig1.add_subplot(111)
+
+    ax1.set_xlabel(r'$\mathrm{Slope}$', fontsize=18)
+    ax1.set_ylabel(r'$\mathrm{Density}$', fontsize=18)
+
+    ax1.scatter(slope_arr_color[r_idx], density_arr_color[r_idx], s=8, c=color_arr[r_idx], alpha=0.4, edgecolors='none')
+
+    ax1.set_yscale('log')
+    ax1.set_ylim(1e-8, 1.5)
+    ax1.set_xlim(0, 30)
+
+    ax1.axhline(y=1.04e-6)
+    # this horizontal line shows the minimum value of density 
+    # that is obtained for a pixel that is completely inside 
+    # a crater and not overlapped by any other craters.
+
+    ax1.minorticks_on()
+    ax1.tick_params('both', width=1, length=3, which='minor')
+    ax1.tick_params('both', width=1, length=4.7, which='major')
+    ax1.grid(True)
+
+    fig1.savefig(slope_extdir + 'slope_v_density_30to35km.png', dpi=300, bbox_inches='tight')
+    fig1.savefig(slope_extdir + 'slope_v_density_30to35km.eps', dpi=300, bbox_inches='tight')
+
+    plt.clf()
+    plt.cla()
+    plt.close()
+
+    print np.nanmin(density_arr_color[r_idx])
+    print np.nanmax(density_arr_color[r_idx])
+
+    """
     # plot other diam bin separately
     fig1 = plt.figure()
     ax1 = fig1.add_subplot(111)
@@ -419,6 +470,7 @@ def plot_by_diam(density, slope):
     plt.clf()
     plt.cla()
     plt.close()
+    """
 
     return None
 
