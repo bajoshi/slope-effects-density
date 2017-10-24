@@ -208,14 +208,14 @@ def get_diam_ref_arrays(density, slope, crater_vert_cat, crater_id_in_pix_arr, s
     # pixels sorted by crater diameters.
     density_arr_color = []
     slope_arr_color = []
-    pix_1d_idx_arr_small = []
-    pix_1d_idx_arr_big = []
+    pix_1d_idx_arr = []
+    crater_id_diam = []
     # future:
     # this is a list of lists where the 1st list dimension has length equal to the number of diam bins
     # i.e. if there are say 2 diam bins then this is a 2 element list but each element is itself a list
     # containing pixel indices that fall into that diam bin
 
-    for i in range(500000):#len(crater_id_in_pix_arr)):
+    for i in range(600000):#len(crater_id_in_pix_arr)):
 
         if (i % 100000) == 0.0:
             print '\r',
@@ -244,7 +244,8 @@ def get_diam_ref_arrays(density, slope, crater_vert_cat, crater_id_in_pix_arr, s
 
                 if current_diam <= 5:
                     color_arr.append('b')
-                    pix_1d_idx_arr_small.append(i)
+                    pix_1d_idx_arr.append(i)
+                    crater_id_diam.append(current_id)
 
                 #elif (current_diam > 5) and (current_diam <= 10):
                 #    color_arr.append('g')
@@ -254,7 +255,8 @@ def get_diam_ref_arrays(density, slope, crater_vert_cat, crater_id_in_pix_arr, s
 
                 elif (current_diam >= 30) and (current_diam <= 35):
                     color_arr.append('r')
-                    pix_1d_idx_arr_big.append(i)
+                    pix_1d_idx_arr.append(i)
+                    crater_id_diam.append(current_id)
 
         elif len(current_crater_ids) > 1:
             continue
@@ -291,15 +293,17 @@ def get_diam_ref_arrays(density, slope, crater_vert_cat, crater_id_in_pix_arr, s
     density_arr_color = np.asarray(density_arr_color)
     slope_arr_color = np.asarray(slope_arr_color)
     color_arr = np.asarray(color_arr).astype(str)
+    pix_1d_idx_arr = np.asarray(pix_1d_idx_arr)
+    crater_id_diam = np.asarray(crater_id_diam)
 
-    return density_arr_color, slope_arr_color, color_arr, pix_1d_idx_arr_small, pix_1d_idx_arr_big
+    return density_arr_color, slope_arr_color, color_arr, pix_1d_idx_arr, crater_id_diam
 
 def plot_by_diam(density, slope_arr, start):
 
     crater_ids, crater_id_in_pix_arr, crater_vert_cat = get_ids()
 
     # get arrays where the crater diam has been identified by color
-    density_arr_color, slope_arr_color, color_arr, pix_1d_idx_arr_small, pix_1d_idx_arr_big = \
+    density_arr_color, slope_arr_color, color_arr, pix_1d_idx_arr, crater_id_diam = \
     get_diam_ref_arrays(density, slope_arr, crater_vert_cat, crater_id_in_pix_arr, start)
 
     # do the actual plotting
@@ -408,6 +412,8 @@ def plot_by_diam(density, slope_arr, start):
 
     check_idx = np.where((density_arr_color[r_idx] >= 1e-3) & (density_arr_color[r_idx] <= np.power(10, -2.9)))[0]
     print check_idx
+    print len(check_idx)
+    print pix_1d_idx_arr[r_idx][check_idx]
     #convert_idx_to_pixval(check_idx)
 
     print np.nanmin(density_arr_color[r_idx])
