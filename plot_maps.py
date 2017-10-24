@@ -184,15 +184,11 @@ def plot_crater_diam_hist():
 
     return None
 
-def get_diam_ref_arrays(density, slope):
+def get_ids():
 
     # first read in crater ids associated with each pixel
     with open(slope_extdir + 'pix_crater_id_fastcomp.pkl', 'rb') as crater_id_file:
         crater_id_in_pix_arr = cPickle.load(crater_id_file)
-    # this crater id array is of a different length than the 
-    # other "clipped" arrays because it cannot be clipped since
-    # it is a list of lists. i.e. it has the original length 
-    # of ~4.7 million pixels.
 
     # now read in crater diam from id and save them 
     # read crater vertices file
@@ -200,7 +196,11 @@ def get_diam_ref_arrays(density, slope):
         dtype=None, names=True, delimiter=',')
     crater_ids = np.unique(crater_vert_cat['ORIG_FID'])
 
-    # Now loop over all pixels
+    return crater_ids, crater_id_in_pix_arr, crater_vert_cat
+
+def get_diam_ref_arrays(density, slope, crater_vert_cat, crater_id_in_pix_arr, start):
+
+    # loop over all pixels
     color_arr = []  
     # create color array for storing what color point should 
     # be depending on the crater diam(s) on that pixel 
@@ -209,7 +209,7 @@ def get_diam_ref_arrays(density, slope):
     density_arr_color = []
     slope_arr_color = []
 
-    for i in range(300000):#len(crater_id_in_pix_arr)):
+    for i in range(500000):#len(crater_id_in_pix_arr)):
 
         if (i % 100000) == 0.0:
             print '\r',
@@ -286,10 +286,12 @@ def get_diam_ref_arrays(density, slope):
 
     return density_arr_color, slope_arr_color, color_arr
 
-def plot_by_diam(density, slope):
+def plot_by_diam(density, slope, start):
+
+    crater_ids, crater_id_in_pix_arr, crater_vert_cat = get_ids()
 
     # get arrays where the crater diam has been identified by color
-    density_arr_color, slope_arr_color, color_arr = get_diam_ref_arrays(density, slope)
+    density_arr_color, slope_arr_color, color_arr = get_diam_ref_arrays(density, slope, crater_vert_cat, crater_id_in_pix_arr, start)
 
     # do the actual plotting
     # perhaps you could make the blue points bigger than the
@@ -639,7 +641,7 @@ if __name__ == '__main__':
     nodata_idx = np.where(slope_arr == -9999.0)
     slope_arr[nodata_idx] = np.nan
 
-    plot_by_diam(density, slope_arr)
+    plot_by_diam(density, slope_arr, start)
     #plot_3d_hist(density, slope_arr)
 
     # total run time
