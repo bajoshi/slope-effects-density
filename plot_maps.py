@@ -208,6 +208,12 @@ def get_diam_ref_arrays(density, slope, crater_vert_cat, crater_id_in_pix_arr, s
     # pixels sorted by crater diameters.
     density_arr_color = []
     slope_arr_color = []
+    pix_1d_idx_arr_small = []
+    pix_1d_idx_arr_big = []
+    # future:
+    # this is a list of lists where the 1st list dimension has length equal to the number of diam bins
+    # i.e. if there are say 2 diam bins then this is a 2 element list but each element is itself a list
+    # containing pixel indices that fall into that diam bin
 
     for i in range(500000):#len(crater_id_in_pix_arr)):
 
@@ -238,6 +244,7 @@ def get_diam_ref_arrays(density, slope, crater_vert_cat, crater_id_in_pix_arr, s
 
                 if current_diam <= 5:
                     color_arr.append('b')
+                    pix_1d_idx_arr_small.append(i)
 
                 #elif (current_diam > 5) and (current_diam <= 10):
                 #    color_arr.append('g')
@@ -247,6 +254,7 @@ def get_diam_ref_arrays(density, slope, crater_vert_cat, crater_id_in_pix_arr, s
 
                 elif (current_diam >= 30) and (current_diam <= 35):
                     color_arr.append('r')
+                    pix_1d_idx_arr_big.append(i)
 
         elif len(current_crater_ids) > 1:
             continue
@@ -284,14 +292,15 @@ def get_diam_ref_arrays(density, slope, crater_vert_cat, crater_id_in_pix_arr, s
     slope_arr_color = np.asarray(slope_arr_color)
     color_arr = np.asarray(color_arr).astype(str)
 
-    return density_arr_color, slope_arr_color, color_arr
+    return density_arr_color, slope_arr_color, color_arr, pix_1d_idx_arr_small, pix_1d_idx_arr_big
 
-def plot_by_diam(density, slope, start):
+def plot_by_diam(density, slope_arr, start):
 
     crater_ids, crater_id_in_pix_arr, crater_vert_cat = get_ids()
 
     # get arrays where the crater diam has been identified by color
-    density_arr_color, slope_arr_color, color_arr = get_diam_ref_arrays(density, slope, crater_vert_cat, crater_id_in_pix_arr, start)
+    density_arr_color, slope_arr_color, color_arr, pix_1d_idx_arr_small, pix_1d_idx_arr_big = \
+    get_diam_ref_arrays(density, slope_arr, crater_vert_cat, crater_id_in_pix_arr, start)
 
     # do the actual plotting
     # perhaps you could make the blue points bigger than the
@@ -357,8 +366,8 @@ def plot_by_diam(density, slope, start):
     ax.tick_params('both', width=1, length=4.7, which='major')
     ax.grid(True)
 
-    #fig.savefig(slope_extdir + 'slope_v_density_0to5km.png', dpi=300, bbox_inches='tight')
-    #fig.savefig(slope_extdir + 'slope_v_density_0to5km.eps', dpi=300, bbox_inches='tight')
+    fig.savefig(slope_extdir + 'slope_v_density_0to5km.png', dpi=300, bbox_inches='tight')
+    fig.savefig(slope_extdir + 'slope_v_density_0to5km.eps', dpi=300, bbox_inches='tight')
 
     plt.clf()
     plt.cla()
@@ -380,9 +389,6 @@ def plot_by_diam(density, slope, start):
     ax1.set_ylim(1e-8, 1.5)
     ax1.set_xlim(0, 30)
 
-    check_idx = np.where((density_arr_color[r_idx] >= 1e-3) & (density_arr_color[r_idx] <= np.power(10, -2.9)))[0]
-    convert_idx_to_pixval(check_idx)
-
     ax1.axhline(y=1.04e-6, ls='--')
     # this horizontal line shows the minimum value of density 
     # that is obtained for a pixel that is completely inside 
@@ -399,6 +405,10 @@ def plot_by_diam(density, slope, start):
     plt.clf()
     plt.cla()
     plt.close()
+
+    check_idx = np.where((density_arr_color[r_idx] >= 1e-3) & (density_arr_color[r_idx] <= np.power(10, -2.9)))[0]
+    print check_idx
+    #convert_idx_to_pixval(check_idx)
 
     print np.nanmin(density_arr_color[r_idx])
     print np.nanmax(density_arr_color[r_idx])
