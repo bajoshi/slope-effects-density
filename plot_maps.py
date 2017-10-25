@@ -13,6 +13,7 @@ import time
 import datetime
 
 import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
 
 # Checks if os is windows or unix
 if os.name == 'posix':
@@ -215,7 +216,7 @@ def get_diam_ref_arrays(density, slope, crater_vert_cat, crater_id_in_pix_arr, s
     # i.e. if there are say 2 diam bins then this is a 2 element list but each element is itself a list
     # containing pixel indices that fall into that diam bin
 
-    for i in range(600000):#len(crater_id_in_pix_arr)):
+    for i in range(100000):#len(crater_id_in_pix_arr)):
 
         if (i % 100000) == 0.0:
             print '\r',
@@ -336,7 +337,74 @@ def plot_by_diam(density, slope_arr, start):
     make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, m_idx, '30to35',  1.04e-3, 1.42e-3)
 
     # Put all together
+    # plot these 7 bins on a 7 panel grid in a single plot
+    # and also all diam bins in the same plot
+    # ----------------------------- GRID PLOT ----------------------------- #
+    gs = gridspec.GridSpec(3,3)
+    gs.update(left=0.1, right=0.9, bottom=0.1, top=0.9, wspace=0.02, hspace=0.02)
 
+    fig = plt.figure(figsize=(9,9))
+    ax_b = fig.add_subplot(gs[0, 0])
+    ax_c = fig.add_subplot(gs[0, 1])
+    ax_g = fig.add_subplot(gs[0, 2])
+    ax_ol = fig.add_subplot(gs[1, 0])
+    ax_gr = fig.add_subplot(gs[1, 1])
+    ax_do = fig.add_subplot(gs[1, 2])
+    ax_m = fig.add_subplot(gs[2, 1])
+
+    all_axes = [ax_b, ax_c, ax_g, ax_ol, ax_gr, ax_do, ax_m]
+    all_diam_idx = [b_idx, c_idx, g_idx, ol_idx, gr_idx, do_idx, m_idx]
+    min_val_list = [0.051, 0.013, 5.66e-3, 3.18e-3, 2.04e-3, 1.42e-3, 1.04e-3]
+    max_val_list = [1.27, 0.051, 0.013, 5.66e-3, 3.18e-3, 2.04e-3, 1.42e-3]
+
+    ax_m.set_xlabel(r'$\mathrm{Slope}$', fontsize=18)
+    ax_ol.set_ylabel(r'$\mathrm{Density}$', fontsize=18)
+
+    for i in range(len(all_axes)):
+
+        all_axes[i].scatter(slope_arr_color[all_diam_idx[i]], density_arr_color[all_diam_idx[i]], s=5, c=color_arr[all_diam_idx[i]], alpha=0.4, edgecolors='none')
+        all_axes[i].set_yscale('log')
+        all_axes[i].set_ylim(1e-8, 2.0)
+        all_axes[i].set_xlim(0, 30)
+
+        all_axes[i].axhline(y=min_val_list[i], ls='--', color='steelblue')  # min value of density from biggest crater in bin
+        all_axes[i].axhline(y=max_val_list[i], ls='--', color='lightblue')  # max value of density from smallest crater in bin
+
+        all_axes[i].minorticks_on()
+        all_axes[i].tick_params('both', width=1, length=3, which='minor')
+        all_axes[i].tick_params('both', width=1, length=4.7, which='major')
+        all_axes[i].grid(True)
+
+    fig.savefig(slope_extdir + 'slope_v_density_all_grid.png', dpi=300, bbox_inches='tight')
+    fig.savefig(slope_extdir + 'slope_v_density_all_grid.eps', dpi=300, bbox_inches='tight')
+
+    plt.clf()
+    plt.cla()
+    plt.close()
+
+    # ----------------------------- ALL TOGETHER PLOT ----------------------------- #
+    # Uses some of the lists from the grid plot so don't comment that one out
+    fig = plt.figure(figsize=(9,9))
+    ax = fig.add_subplot(111)
+
+    ax.set_xlabel(r'$\mathrm{Slope}$', fontsize=18)
+    ax.set_ylabel(r'$\mathrm{Density}$', fontsize=18)
+
+    for i in range(len(all_axes)):
+
+        ax.scatter(slope_arr_color[all_diam_idx[i]], density_arr_color[all_diam_idx[i]], s=5, c=color_arr[all_diam_idx[i]], alpha=0.4, edgecolors='none')
+
+    ax.minorticks_on()
+    ax.tick_params('both', width=1, length=3, which='minor')
+    ax.tick_params('both', width=1, length=4.7, which='major')
+    ax.grid(True)
+
+    fig.savefig(slope_extdir + 'slope_v_density_all_together.png', dpi=300, bbox_inches='tight')
+    fig.savefig(slope_extdir + 'slope_v_density_all_together.eps', dpi=300, bbox_inches='tight')
+
+    plt.clf()
+    plt.cla()
+    plt.close()
 
     return None
 
