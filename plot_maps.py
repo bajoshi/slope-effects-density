@@ -307,16 +307,33 @@ def plot_by_diam(density, slope_arr, start):
     # perhaps you could make the blue points bigger than the
     # red points simply because there are fewer blue points.
     # i.e. weighting by the size of the crater.
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-
-    ax.set_xlabel(r'$\mathrm{Slope}$', fontsize=18)
-    ax.set_ylabel(r'$\mathrm{Density}$', fontsize=18)
-
     b_idx = np.where(color_arr == 'b')[0]
     r_idx = np.where(color_arr == 'r')[0]
     g_idx = np.where(color_arr == 'g')[0]
     c_idx = np.where(color_arr == 'c')[0]
+
+    # Put all together
+
+
+    return None
+
+def make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, diam_bin_idx, diam_bin, min_val, max_val):
+
+    fig = plt.figure()
+    ax3 = fig.add_subplot(111)
+
+    ax.set_xlabel(r'$\mathrm{Slope}$', fontsize=18)
+    ax.set_ylabel(r'$\mathrm{Density}$', fontsize=18)
+
+    ax.scatter(slope_arr_color[diam_bin_idx], density_arr_color[diam_bin_idx], s=5, c=color_arr[diam_bin_idx], alpha=0.4, edgecolors='none')
+    ax.set_yscale('log')
+    ax.set_ylim(1e-8, 2.0)
+    ax.set_xlim(0, 30)
+
+    ax.axhline(y=min_val, ls='--', color='steelblue')  # min value of density from biggest crater in bin
+    ax.axhline(y=max_val, ls='--', color='lightblue')  # max value of density from smallest crater in bin
+    # values are obtained for a pixel that is completely inside 
+    # a crater and not overlapped by any other craters.
 
     # fit a curve 
     # first define fitting arrays
@@ -344,121 +361,27 @@ def plot_by_diam(density, slope_arr, start):
     print pcov
     """
 
-    # plot the actual points
-    ax.scatter(slope_arr_color[b_idx], density_arr_color[b_idx], s=8, c=color_arr[b_idx], alpha=0.4, edgecolors='none')
-
     # plot the best fit curves
     #x_plot_arr = np.linspace(0,30,1000)
     #ax.plot(x_plot_arr, gb(x_plot_arr), ls='-', color='skyblue', lw=2)
     #ax.plot(x_plot_arr, gr(x_plot_arr), ls='-', color='pink', lw=2)
     #ax.plot(x_plot_arr, poisson(x_plot_arr, *popt), ls='-', color='forestgreen', lw=2)
 
-    ax.set_yscale('log')
-    ax.set_ylim(1e-8, 1.5)
-    ax.set_xlim(0, 30)
-
-    ax.axhline(y=0.051, ls='--', color='steelblue')  # min value of density from biggest crater in bin
-    ax.axhline(y=1.27, ls='--', color='lightblue')  # max value of density from smallest crater in bin
-    # values are obtained for a pixel that is completely inside 
-    # a crater and not overlapped by any other craters.
-
-    ax.minorticks_on()
-    ax.tick_params('both', width=1, length=3, which='minor')
-    ax.tick_params('both', width=1, length=4.7, which='major')
-    ax.grid(True)
-
-    fig.savefig(slope_extdir + 'slope_v_density_0to5km.png', dpi=300, bbox_inches='tight')
-    fig.savefig(slope_extdir + 'slope_v_density_0to5km.eps', dpi=300, bbox_inches='tight')
-
-    plt.clf()
-    plt.cla()
-    plt.close()
-
-    print np.nanmin(density_arr_color[b_idx])
-    print np.nanmax(density_arr_color[b_idx])
-
-    # ------------
-    fig1 = plt.figure()
-    ax1 = fig1.add_subplot(111)
-
-    ax1.set_xlabel(r'$\mathrm{Slope}$', fontsize=18)
-    ax1.set_ylabel(r'$\mathrm{Density}$', fontsize=18)
-
-    ax1.scatter(slope_arr_color[r_idx], density_arr_color[r_idx], s=8, c=color_arr[r_idx], alpha=0.4, edgecolors='none')
-
-    ax1.set_yscale('log')
-    ax1.set_ylim(1e-8, 1.5)
-    ax1.set_xlim(0, 30)
-
-    ax1.axhline(y=1.04e-3, ls='--', color='steelblue')  # min value of density from biggest crater in bin
-    ax1.axhline(y=1.415e-3, ls='--', color='lightblue')  # max value of density from smallest crater in bin
-    # values are obtained for a pixel that is completely inside 
-    # a crater and not overlapped by any other craters.
-
-    ax1.minorticks_on()
-    ax1.tick_params('both', width=1, length=3, which='minor')
-    ax1.tick_params('both', width=1, length=4.7, which='major')
-    ax1.grid(True)
-
-    fig1.savefig(slope_extdir + 'slope_v_density_30to35km.png', dpi=300, bbox_inches='tight')
-    fig1.savefig(slope_extdir + 'slope_v_density_30to35km.eps', dpi=300, bbox_inches='tight')
-
-    plt.clf()
-    plt.cla()
-    plt.close()
+    #print np.nanmin(density_arr_color[b_idx])
+    #print np.nanmax(density_arr_color[b_idx])
 
     #check_idx = np.where((density_arr_color[r_idx] >= 1e-3) & (density_arr_color[r_idx] <= np.power(10, -2.9)))[0]
     #print check_idx
     #print len(check_idx)
     #print pix_1d_idx_arr[r_idx][check_idx]
 
-    print np.nanmin(density_arr_color[r_idx])
-    print np.nanmax(density_arr_color[r_idx])
+    ax.minorticks_on()
+    ax.tick_params('both', width=1, length=3, which='minor')
+    ax.tick_params('both', width=1, length=4.7, which='major')
+    ax.grid(True)
 
-    # plot other diam bin separately
-    # -----------------
-    fig2 = plt.figure()
-    ax2 = fig2.add_subplot(111)
-
-    ax2.set_xlabel(r'$\mathrm{Slope}$', fontsize=18)
-    ax2.set_ylabel(r'$\mathrm{Density}$', fontsize=18)
-
-    ax2.scatter(slope_arr_color[g_idx], density_arr_color[g_idx], s=8, c=color_arr[g_idx], alpha=0.4, edgecolors='none')
-    ax2.set_yscale('log')
-    ax2.set_ylim(1e-8, 1.5)
-    ax2.set_xlim(0, 30)
-
-    ax2.minorticks_on()
-    ax2.tick_params('both', width=1, length=3, which='minor')
-    ax2.tick_params('both', width=1, length=4.7, which='major')
-    ax2.grid(True)
-
-    fig2.savefig(slope_extdir + 'slope_v_density_5to10km_logscale.png', dpi=300, bbox_inches='tight')
-    fig2.savefig(slope_extdir + 'slope_v_density_5to10km_logscale.eps', dpi=300, bbox_inches='tight')
-
-    plt.clf()
-    plt.cla()
-    plt.close()
-
-    # -----------------
-    fig3 = plt.figure()
-    ax3 = fig3.add_subplot(111)
-
-    ax3.set_xlabel(r'$\mathrm{Slope}$', fontsize=18)
-    ax3.set_ylabel(r'$\mathrm{Density}$', fontsize=18)
-
-    ax3.scatter(slope_arr_color[c_idx], density_arr_color[c_idx], s=8, c=color_arr[c_idx], alpha=0.4, edgecolors='none')
-    ax3.set_yscale('log')
-    ax3.set_ylim(1e-8, 1.5)
-    ax3.set_xlim(0, 30)
-
-    ax3.minorticks_on()
-    ax3.tick_params('both', width=1, length=3, which='minor')
-    ax3.tick_params('both', width=1, length=4.7, which='major')
-    ax3.grid(True)
-
-    fig3.savefig(slope_extdir + 'slope_v_density_10to15km_logscale.png', dpi=300, bbox_inches='tight')
-    fig3.savefig(slope_extdir + 'slope_v_density_10to15km_logscale.eps', dpi=300, bbox_inches='tight')
+    fig.savefig(slope_extdir + 'slope_v_density_' + diam_bin + 'km.png', dpi=300, bbox_inches='tight')
+    fig.savefig(slope_extdir + 'slope_v_density_' + diam_bin + 'km.eps', dpi=300, bbox_inches='tight')
 
     plt.clf()
     plt.cla()
