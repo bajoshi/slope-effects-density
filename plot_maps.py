@@ -215,7 +215,7 @@ def get_diam_ref_arrays(density, slope, crater_vert_cat, crater_id_in_pix_arr, s
     # i.e. if there are say 2 diam bins then this is a 2 element list but each element is itself a list
     # containing pixel indices that fall into that diam bin
 
-    for i in range(len(crater_id_in_pix_arr)):
+    for i in range(600000):#len(crater_id_in_pix_arr)):
 
         if (i % 100000) == 0.0:
             print '\r',
@@ -231,10 +231,7 @@ def get_diam_ref_arrays(density, slope, crater_vert_cat, crater_id_in_pix_arr, s
             current_id = current_crater_ids[0]
             current_diam = get_diam(crater_vert_cat, current_id)
 
-            if (current_diam > 15) and (current_diam < 30):
-                continue
-
-            elif (current_diam > 35):
+            if (current_diam > 35):
                 continue
 
             else:
@@ -243,18 +240,27 @@ def get_diam_ref_arrays(density, slope, crater_vert_cat, crater_id_in_pix_arr, s
                 slope_arr_color.append(slope[i])
 
                 if current_diam <= 5:
-                    color_arr.append('b')
+                    color_arr.append('blue')
                     pix_1d_idx_arr.append(i)
                     crater_id_diam.append(current_id)
 
                 elif (current_diam > 5) and (current_diam <= 10):
-                    color_arr.append('g')
+                    color_arr.append('cyan')
 
                 elif (current_diam > 10) and (current_diam <= 15):
-                    color_arr.append('c')
+                    color_arr.append('green')
 
-                elif (current_diam >= 30) and (current_diam <= 35):
-                    color_arr.append('r')
+                elif (current_diam > 15) and (current_diam <= 20):
+                    color_arr.append('olive')
+
+                elif (current_diam > 20) and (current_diam <= 25):
+                    color_arr.append('goldenrod')
+
+                elif (current_diam > 25) and (current_diam <= 30):
+                    color_arr.append('darkorchid')
+
+                elif (current_diam > 30) and (current_diam <= 35):
+                    color_arr.append('maroon')
                     pix_1d_idx_arr.append(i)
                     crater_id_diam.append(current_id)
 
@@ -263,10 +269,7 @@ def get_diam_ref_arrays(density, slope, crater_vert_cat, crater_id_in_pix_arr, s
                 current_id = current_crater_ids[j]
                 current_diam = get_diam(crater_vert_cat, current_id)
 
-                if (current_diam > 15) and (current_diam < 30):
-                    continue
-
-                elif (current_diam > 35):
+                if (current_diam > 35):
                     continue
 
                 else:
@@ -275,16 +278,25 @@ def get_diam_ref_arrays(density, slope, crater_vert_cat, crater_id_in_pix_arr, s
                     slope_arr_color.append(slope[i])
 
                     if current_diam <= 5:
-                        color_arr.append('b')
+                        color_arr.append('blue')
 
                     elif (current_diam > 5) and (current_diam <= 10):
-                        color_arr.append('g')
+                        color_arr.append('cyan')
 
                     elif (current_diam > 10) and (current_diam <= 15):
-                        color_arr.append('c')
+                        color_arr.append('green')
 
-                    elif (current_diam >= 30) and (current_diam <= 35):
-                        color_arr.append('r')
+                    elif (current_diam > 15) and (current_diam <= 20):
+                        color_arr.append('olive')
+
+                    elif (current_diam > 20) and (current_diam <= 25):
+                        color_arr.append('goldenrod')
+
+                    elif (current_diam > 25) and (current_diam <= 30):
+                        color_arr.append('darkorchid')
+
+                    elif (current_diam > 30) and (current_diam <= 35):
+                        color_arr.append('maroon')
 
     # convert to numpy arrays so you can do array ops
     density_arr_color = np.asarray(density_arr_color)
@@ -307,10 +319,21 @@ def plot_by_diam(density, slope_arr, start):
     # perhaps you could make the blue points bigger than the
     # red points simply because there are fewer blue points.
     # i.e. weighting by the size of the crater.
-    b_idx = np.where(color_arr == 'b')[0]
-    r_idx = np.where(color_arr == 'r')[0]
-    g_idx = np.where(color_arr == 'g')[0]
-    c_idx = np.where(color_arr == 'c')[0]
+    b_idx = np.where(color_arr == 'blue')[0]  # '1to5'
+    c_idx = np.where(color_arr == 'cyan')[0]  # '5to10'
+    g_idx = np.where(color_arr == 'green')[0]  # '10to15'
+    ol_idx = np.where(color_arr == 'olive')[0]  # '15to20'
+    gr_idx = np.where(color_arr == 'goldenrod')[0]  # '20to25'
+    do_idx = np.where(color_arr == 'darkorchid')[0]  # '25to30'
+    m_idx = np.where(color_arr == 'maroon')[0]  # '30to35'
+
+    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, b_idx, '1to5',    0.051, 1.27)
+    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, c_idx, '5to10',   0.013, 0.051)
+    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, g_idx, '10to15',  5.66e-3, 0.013)
+    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, ol_idx, '15to20', 3.18e-3, 5.66e-3)
+    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, gr_idx, '20to25', 2.04e-3, 3.18e-3)
+    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, do_idx, '25to30', 1.42e-3, 2.04e-3)
+    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, m_idx, '30to35',  1.04e-3, 1.42e-3)
 
     # Put all together
 
