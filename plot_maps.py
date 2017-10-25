@@ -343,7 +343,7 @@ def plot_by_diam(density, slope_arr, start):
     gs = gridspec.GridSpec(3,3)
     gs.update(left=0.1, right=0.9, bottom=0.1, top=0.9, wspace=0.02, hspace=0.02)
 
-    fig = plt.figure(figsize=(9,9))
+    fig = plt.figure()
     ax_b = fig.add_subplot(gs[0, 0])
     ax_c = fig.add_subplot(gs[0, 1])
     ax_g = fig.add_subplot(gs[0, 2])
@@ -375,6 +375,16 @@ def plot_by_diam(density, slope_arr, start):
         all_axes[i].tick_params('both', width=1, length=4.7, which='major')
         all_axes[i].grid(True)
 
+        if i < 3:
+            all_axes[i].set_xticklabels([])
+
+        if i == 1 or i == 2 or i == 4 or i == 5:
+            all_axes[i].set_yticklabels([])
+
+
+    ax_ol.set_xticklabels(['0', '10', '20', ''])
+    ax_do.set_xticklabels(['', '10', '20', '30'])
+
     fig.savefig(slope_extdir + 'slope_v_density_all_grid.png', dpi=300, bbox_inches='tight')
     fig.savefig(slope_extdir + 'slope_v_density_all_grid.eps', dpi=300, bbox_inches='tight')
 
@@ -384,7 +394,7 @@ def plot_by_diam(density, slope_arr, start):
 
     # ----------------------------- ALL TOGETHER PLOT ----------------------------- #
     # Uses some of the lists from the grid plot so don't comment that one out
-    fig = plt.figure(figsize=(9,9))
+    fig = plt.figure()
     ax = fig.add_subplot(111)
 
     ax.set_xlabel(r'$\mathrm{Slope}$', fontsize=18)
