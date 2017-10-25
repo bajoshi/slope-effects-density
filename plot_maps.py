@@ -231,7 +231,7 @@ def get_diam_ref_arrays(density, slope, crater_vert_cat, crater_id_in_pix_arr, s
             current_id = current_crater_ids[0]
             current_diam = get_diam(crater_vert_cat, current_id)
 
-            if (current_diam > 5) and (current_diam < 30):
+            if (current_diam > 15) and (current_diam < 30):
                 continue
 
             elif (current_diam > 35):
@@ -263,7 +263,7 @@ def get_diam_ref_arrays(density, slope, crater_vert_cat, crater_id_in_pix_arr, s
                 current_id = current_crater_ids[j]
                 current_diam = get_diam(crater_vert_cat, current_id)
 
-                if (current_diam > 5) and (current_diam < 30):
+                if (current_diam > 15) and (current_diam < 30):
                     continue
 
                 elif (current_diam > 35):
@@ -357,8 +357,8 @@ def plot_by_diam(density, slope_arr, start):
     ax.set_ylim(1e-8, 1.5)
     ax.set_xlim(0, 30)
 
-    ax1.axhline(y=0.051, ls='--', color='steelblue')  # min value of density from biggest crater in bin
-    ax1.axhline(y=1.27, ls='--', color='lightblue')  # max value of density from smallest crater in bin
+    ax.axhline(y=0.051, ls='--', color='steelblue')  # min value of density from biggest crater in bin
+    ax.axhline(y=1.27, ls='--', color='lightblue')  # max value of density from smallest crater in bin
     # values are obtained for a pixel that is completely inside 
     # a crater and not overlapped by any other craters.
 
