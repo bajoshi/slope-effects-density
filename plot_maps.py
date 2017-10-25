@@ -216,7 +216,7 @@ def get_diam_ref_arrays(density, slope, crater_vert_cat, crater_id_in_pix_arr, s
     # i.e. if there are say 2 diam bins then this is a 2 element list but each element is itself a list
     # containing pixel indices that fall into that diam bin
 
-    for i in range(100000):#len(crater_id_in_pix_arr)):
+    for i in range(len(crater_id_in_pix_arr)):
 
         if (i % 100000) == 0.0:
             print '\r',
@@ -411,7 +411,7 @@ def plot_by_diam(density, slope_arr, start):
 def make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, diam_bin_idx, diam_bin, min_val, max_val):
 
     fig = plt.figure()
-    ax3 = fig.add_subplot(111)
+    ax = fig.add_subplot(111)
 
     ax.set_xlabel(r'$\mathrm{Slope}$', fontsize=18)
     ax.set_ylabel(r'$\mathrm{Density}$', fontsize=18)
