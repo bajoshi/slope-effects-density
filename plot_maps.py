@@ -378,6 +378,9 @@ def plot_by_diam(density, slope_arr, start):
         if i < 3:
             all_axes[i].set_xticklabels([])
 
+        if i == 4:
+            all_axes[i].set_xticklabels([])
+
         if i == 1 or i == 2 or i == 4 or i == 5:
             all_axes[i].set_yticklabels([])
 
