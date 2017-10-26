@@ -405,8 +405,9 @@ def plot_by_diam(density, slope_arr, start):
 
     for i in range(len(all_axes)):
 
-        ax.scatter(slope_arr_color[all_diam_idx[i]], density_arr_color[all_diam_idx[i]], s=5, c=color_arr[all_diam_idx[i]], alpha=0.4, edgecolors='none')
+        ax.scatter(slope_arr_color[all_diam_idx[i]], density_arr_color[all_diam_idx[i]], s=1, c=color_arr[all_diam_idx[i]], alpha=0.4, edgecolors='none')
 
+    ax.set_yscale('log')
     ax.minorticks_on()
     ax.tick_params('both', width=1, length=3, which='minor')
     ax.tick_params('both', width=1, length=4.7, which='major')
@@ -432,7 +433,7 @@ def make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, diam_bin_i
     ax.scatter(slope_arr_color[diam_bin_idx], density_arr_color[diam_bin_idx], s=5, c=color_arr[diam_bin_idx], alpha=0.4, edgecolors='none')
     ax.set_yscale('log')
     ax.set_ylim(1e-8, 2.0)
-    ax.set_xlim(0, 30)
+    ax.set_xlim(0, 35)
 
     ax.axhline(y=min_val, ls='--', color='steelblue')  # min value of density from biggest crater in bin
     ax.axhline(y=max_val, ls='--', color='lightblue')  # max value of density from smallest crater in bin
