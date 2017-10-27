@@ -408,6 +408,7 @@ def plot_by_diam(density, slope_arr, start):
         ax.scatter(slope_arr_color[all_diam_idx[i]], density_arr_color[all_diam_idx[i]], s=1, c=color_arr[all_diam_idx[i]], alpha=0.4, edgecolors='none')
 
     ax.set_yscale('log')
+    ax.set_ylim(1e-8, 2.0)
     ax.set_xlim(0, 35)
     
     ax.minorticks_on()
