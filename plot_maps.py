@@ -246,7 +246,7 @@ def get_diam_ref_arrays(density, slope, crater_vert_cat, crater_id_in_pix_arr, s
                     crater_id_diam.append(current_id)
 
                 elif (current_diam > 5) and (current_diam <= 10):
-                    color_arr.append('cyan')
+                    color_arr.append('darkcyan')
 
                 elif (current_diam > 10) and (current_diam <= 15):
                     color_arr.append('green')
@@ -282,7 +282,7 @@ def get_diam_ref_arrays(density, slope, crater_vert_cat, crater_id_in_pix_arr, s
                         color_arr.append('blue')
 
                     elif (current_diam > 5) and (current_diam <= 10):
-                        color_arr.append('cyan')
+                        color_arr.append('darkcyan')
 
                     elif (current_diam > 10) and (current_diam <= 15):
                         color_arr.append('green')
@@ -321,7 +321,7 @@ def plot_by_diam(density, slope_arr, start):
     # red points simply because there are fewer blue points.
     # i.e. weighting by the size of the crater.
     b_idx = np.where(color_arr == 'blue')[0]  # '1to5'
-    c_idx = np.where(color_arr == 'cyan')[0]  # '5to10'
+    c_idx = np.where(color_arr == 'darkcyan')[0]  # '5to10'
     g_idx = np.where(color_arr == 'green')[0]  # '10to15'
     ol_idx = np.where(color_arr == 'olive')[0]  # '15to20'
     gr_idx = np.where(color_arr == 'goldenrod')[0]  # '20to25'
