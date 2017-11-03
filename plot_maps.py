@@ -240,10 +240,11 @@ def get_diam_ref_arrays(density, slope, crater_vert_cat, crater_id_in_pix_arr, s
                 density_arr_color.append(density[i])
                 slope_arr_color.append(slope[i])
 
+                if current_diam <= 2:
+                    color_arr.append('')
+
                 if current_diam <= 5:
                     color_arr.append('blue')
-                    pix_1d_idx_arr.append(i)
-                    crater_id_diam.append(current_id)
 
                 elif (current_diam > 5) and (current_diam <= 10):
                     color_arr.append('darkcyan')
@@ -262,8 +263,6 @@ def get_diam_ref_arrays(density, slope, crater_vert_cat, crater_id_in_pix_arr, s
 
                 elif (current_diam > 30) and (current_diam <= 35):
                     color_arr.append('maroon')
-                    pix_1d_idx_arr.append(i)
-                    crater_id_diam.append(current_id)
 
         elif len(current_crater_ids) > 1:
             for j in range(len(current_crater_ids)):
@@ -303,17 +302,15 @@ def get_diam_ref_arrays(density, slope, crater_vert_cat, crater_id_in_pix_arr, s
     density_arr_color = np.asarray(density_arr_color)
     slope_arr_color = np.asarray(slope_arr_color)
     color_arr = np.asarray(color_arr).astype(str)
-    pix_1d_idx_arr = np.asarray(pix_1d_idx_arr)
-    crater_id_diam = np.asarray(crater_id_diam)
 
-    return density_arr_color, slope_arr_color, color_arr, pix_1d_idx_arr, crater_id_diam
+    return density_arr_color, slope_arr_color, color_arr
 
 def plot_by_diam(density, slope_arr, start):
 
     crater_ids, crater_id_in_pix_arr, crater_vert_cat = get_ids()
 
     # get arrays where the crater diam has been identified by color
-    density_arr_color, slope_arr_color, color_arr, pix_1d_idx_arr, crater_id_diam = \
+    density_arr_color, slope_arr_color, color_arr = \
     get_diam_ref_arrays(density, slope_arr, crater_vert_cat, crater_id_in_pix_arr, start)
 
     # do the actual plotting
