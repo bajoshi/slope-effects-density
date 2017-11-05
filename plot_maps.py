@@ -261,7 +261,7 @@ def get_diam_ref_arrays(density, slope, crater_vert_cat, crater_id_in_pix_arr, s
     # i.e. if there are say 2 diam bins then this is a 2 element list but each element is itself a list
     # containing pixel indices that fall into that diam bin
 
-    for i in range(500000):#len(crater_id_in_pix_arr)):
+    for i in range(100000):#len(crater_id_in_pix_arr)):
 
         if (i % 100000) == 0.0:
             print '\r',
@@ -365,13 +365,16 @@ def plot_by_diam(density, slope_arr, start):
         diam_bin_idx = get_diam_idx(color_arr, diam_bins[j])
         all_diam_idx.append(diam_bin_idx)
 
-        diam_bin_min = int(diam_bin[j].split('to')[0])
-        diam_bin_max = int(diam_bin[j].split('to')[1])
+        diam_bin_min = int(diam_bins[j].split('to')[0])
+        diam_bin_max = int(diam_bins[j].split('to')[1])
         min_val_list.append(4e6 / (np.pi * (diam_bin_max*1e3)**2))
         max_val_list.append(4e6 / (np.pi * (diam_bin_min*1e3)**2))
 
     ax_25to30.set_xlabel(r'$\mathrm{Slope}$', fontsize=18)
+    ax_25to30.xaxis.set_label_coords(1.05, -0.1)
+
     ax_9to10.set_ylabel(r'$\mathrm{Density}$', fontsize=18)
+    ax_9to10.yaxis.set_label_coords(-0.1, 1.05)
 
     for i in range(len(all_axes)):
 
