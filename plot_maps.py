@@ -261,7 +261,7 @@ def get_diam_ref_arrays(density, slope, crater_vert_cat, crater_id_in_pix_arr, s
     # i.e. if there are say 2 diam bins then this is a 2 element list but each element is itself a list
     # containing pixel indices that fall into that diam bin
 
-    for i in range(100000):#len(crater_id_in_pix_arr)):
+    for i in range(len(crater_id_in_pix_arr)):
 
         if (i % 100000) == 0.0:
             print '\r',
@@ -370,11 +370,11 @@ def plot_by_diam(density, slope_arr, start):
         min_val_list.append(4e6 / (np.pi * (diam_bin_max*1e3)**2))
         max_val_list.append(4e6 / (np.pi * (diam_bin_min*1e3)**2))
 
-    ax_25to30.set_xlabel(r'$\mathrm{Slope}$', fontsize=18)
-    ax_25to30.xaxis.set_label_coords(1.05, -0.1)
+    ax_25to30.set_xlabel(r'$\mathrm{Slope}$', fontsize=15)
+    ax_25to30.xaxis.set_label_coords(1.05, -0.25)
 
-    ax_9to10.set_ylabel(r'$\mathrm{Density}$', fontsize=18)
-    ax_9to10.yaxis.set_label_coords(-0.1, 1.05)
+    ax_9to10.set_ylabel(r'$\mathrm{Density}$', fontsize=15)
+    ax_9to10.yaxis.set_label_coords(-0.3, 1.05)
 
     for i in range(len(all_axes)):
 
@@ -383,13 +383,12 @@ def plot_by_diam(density, slope_arr, start):
         all_axes[i].set_ylim(1e-8, 2.0)
         all_axes[i].set_xlim(0, 35)
 
-        all_axes[i].axhline(y=min_val_list[i], ls='--', color='k')  # min value of density from biggest crater in bin
-        all_axes[i].axhline(y=max_val_list[i], ls='--', color='k')  # max value of density from smallest crater in bin
+        all_axes[i].axhline(y=min_val_list[i], ls='--', color='k', lw=1)  # min value of density from biggest crater in bin
+        all_axes[i].axhline(y=max_val_list[i], ls='--', color='k', lw=1)  # max value of density from smallest crater in bin
 
         all_axes[i].minorticks_on()
-        all_axes[i].tick_params('both', width=1, length=3, which='minor')
-        all_axes[i].tick_params('both', width=1, length=4.7, which='major')
-        all_axes[i].grid(True)
+        all_axes[i].tick_params('both', width=1, length=3, which='minor', labelsize=6)
+        all_axes[i].tick_params('both', width=1, length=4.7, which='major', labelsize=6)
 
         if i <= 11:
             all_axes[i].set_xticklabels([])
@@ -398,9 +397,9 @@ def plot_by_diam(density, slope_arr, start):
             all_axes[i].set_yticklabels([])
 
     ax_9to10.set_xticklabels(['0', '10', '20', ''])
-    ax_25to30.set_xticklabels(['0', '10', '20', ''])
     ax_20to25.set_xticklabels(['', '10', '20', '30'])
-    ax_30to35.set_xticklabels(['', '10', '20', '30'])
+    ax_25to30.set_xticklabels(['0', '10', '20', '30'])
+    ax_30to35.set_xticklabels(['0', '10', '20', '30'])
 
     fig.savefig(slope_extdir + 'slope_v_density_all_grid.png', dpi=300, bbox_inches='tight')
     fig.savefig(slope_extdir + 'slope_v_density_all_grid.eps', dpi=300, bbox_inches='tight')
