@@ -390,6 +390,15 @@ def plot_by_diam(density, slope_arr, start):
         all_axes[i].tick_params('both', width=1, length=3, which='minor', labelsize=6)
         all_axes[i].tick_params('both', width=1, length=4.7, which='major', labelsize=6)
 
+        # add text on figure to indicate diameter bin
+        diam_bin_min = int(diam_bins[i].split('to')[0])
+        diam_bin_max = int(diam_bins[i].split('to')[1])
+        diambinbox = TextArea(str(diam_bin_min) + ' to ' + str(diam_bin_max) + ' km', textprops=dict(color='k', size=5))
+        anc_diambinbox = AnchoredOffsetbox(loc=2, child=diambinbox, pad=0.0, frameon=False,\
+                                             bbox_to_anchor=(0.65, 0.1),\
+                                             bbox_transform=all_axes[i].transAxes, borderpad=0.0)
+        all_axes[i].add_artist(anc_diambinbox)
+
         if i <= 11:
             all_axes[i].set_xticklabels([])
 
@@ -543,9 +552,9 @@ def make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, diam_bin_m
     """
 
     # add text on figure to indicate diameter bin
-    diambinbox = TextArea(str(diam_bin_min) + ' to ' + str(diam_bin_max) + ' km', textprops=dict(color='k', size=7))
+    diambinbox = TextArea(str(diam_bin_min) + ' to ' + str(diam_bin_max) + ' km', textprops=dict(color='k', size=10))
     anc_diambinbox = AnchoredOffsetbox(loc=2, child=diambinbox, pad=0.0, frameon=False,\
-                                         bbox_to_anchor=(0.7, 0.05),\
+                                         bbox_to_anchor=(0.75, 0.05),\
                                          bbox_transform=ax.transAxes, borderpad=0.0)
     ax.add_artist(anc_diambinbox)
 
