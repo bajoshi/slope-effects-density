@@ -336,28 +336,42 @@ def plot_by_diam(density, slope_arr, start):
     make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, 30, 35)
 
     # Put all together
-    # plot these 7 bins on a 7 panel grid in a single plot
-    # and also all diam bins in the same plot
     # ----------------------------- GRID PLOT ----------------------------- #
-    gs = gridspec.GridSpec(3,3)
+    gs = gridspec.GridSpec(4,4)
     gs.update(left=0.1, right=0.9, bottom=0.1, top=0.9, wspace=0.02, hspace=0.02)
 
     fig = plt.figure()
-    ax_b = fig.add_subplot(gs[0, 0])
-    ax_c = fig.add_subplot(gs[0, 1])
-    ax_g = fig.add_subplot(gs[0, 2])
-    ax_ol = fig.add_subplot(gs[1, 0])
-    ax_gr = fig.add_subplot(gs[1, 1])
-    ax_do = fig.add_subplot(gs[1, 2])
-    ax_m = fig.add_subplot(gs[2, 1])
+    ax_1to2   = fig.add_subplot(gs[0, 0])
+    ax_2to3   = fig.add_subplot(gs[0, 1])
+    ax_3to4   = fig.add_subplot(gs[0, 2])
+    ax_4to5   = fig.add_subplot(gs[0, 3])
+    ax_5to6   = fig.add_subplot(gs[1, 0])
+    ax_6to7   = fig.add_subplot(gs[1, 1])
+    ax_7to8   = fig.add_subplot(gs[1, 2])
+    ax_8to9   = fig.add_subplot(gs[1, 3])
+    ax_9to10  = fig.add_subplot(gs[2, 0])
+    ax_10to15 = fig.add_subplot(gs[2, 1])
+    ax_15to20 = fig.add_subplot(gs[2, 2])
+    ax_20to25 = fig.add_subplot(gs[2, 3])
+    ax_25to30 = fig.add_subplot(gs[3, 1])
+    ax_30to35 = fig.add_subplot(gs[3, 2])
 
-    all_axes = [ax_b, ax_c, ax_g, ax_ol, ax_gr, ax_do, ax_m]
-    all_diam_idx = [b_idx, c_idx, g_idx, ol_idx, gr_idx, do_idx, m_idx]
-    min_val_list = [0.051, 0.013, 5.66e-3, 3.18e-3, 2.04e-3, 1.42e-3, 1.04e-3]
-    max_val_list = [1.27, 0.051, 0.013, 5.66e-3, 3.18e-3, 2.04e-3, 1.42e-3]
+    all_axes = [ax_1to2, ax_2to3, ax_3to4, ax_4to5, ax_5to6, ax_6to7, ax_7to8, ax_8to9, ax_9to10, ax_10to15, ax_15to20, ax_20to25, ax_25to30, ax_30to35]
+    diam_bins = ['1to2', '2to3', '3to4', '4to5', '5to6', '6to7', '7to8', '8to9', '9to10', '10to15', '15to20', '20to25', '25to30', '30to35']
+    all_diam_idx = []
+    min_val_list = []
+    max_val_list = []
+    for j in range(len(all_axes)):
+        diam_bin_idx = get_diam_idx(color_arr, diam_bins[j])
+        all_diam_idx.append(diam_bin_idx)
 
-    ax_m.set_xlabel(r'$\mathrm{Slope}$', fontsize=18)
-    ax_ol.set_ylabel(r'$\mathrm{Density}$', fontsize=18)
+        diam_bin_min = int(diam_bin[j].split('to')[0])
+        diam_bin_max = int(diam_bin[j].split('to')[1])
+        min_val_list.append(4e6 / (np.pi * (diam_bin_max*1e3)**2))
+        max_val_list.append(4e6 / (np.pi * (diam_bin_min*1e3)**2))
+
+    ax_25to30.set_xlabel(r'$\mathrm{Slope}$', fontsize=18)
+    ax_9to10.set_ylabel(r'$\mathrm{Density}$', fontsize=18)
 
     for i in range(len(all_axes)):
 
@@ -374,17 +388,16 @@ def plot_by_diam(density, slope_arr, start):
         all_axes[i].tick_params('both', width=1, length=4.7, which='major')
         all_axes[i].grid(True)
 
-        if i < 3:
+        if i <= 11:
             all_axes[i].set_xticklabels([])
 
-        if i == 4:
-            all_axes[i].set_xticklabels([])
-
-        if i == 1 or i == 2 or i == 4 or i == 5:
+        if i == 1 or i == 2 or i == 3 or i == 5 or i == 6 or i == 7 or i == 9 or i == 10 or i == 11 or i == 13:
             all_axes[i].set_yticklabels([])
 
-    ax_ol.set_xticklabels(['0', '10', '20', ''])
-    ax_do.set_xticklabels(['', '10', '20', '30'])
+    ax_9to10.set_xticklabels(['0', '10', '20', ''])
+    ax_25to30.set_xticklabels(['0', '10', '20', ''])
+    ax_20to25.set_xticklabels(['', '10', '20', '30'])
+    ax_30to35.set_xticklabels(['', '10', '20', '30'])
 
     fig.savefig(slope_extdir + 'slope_v_density_all_grid.png', dpi=300, bbox_inches='tight')
     fig.savefig(slope_extdir + 'slope_v_density_all_grid.eps', dpi=300, bbox_inches='tight')
@@ -423,19 +436,8 @@ def plot_by_diam(density, slope_arr, start):
 
     return None
 
-def make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, diam_bin_min, diam_bin_max):
+def get_diam_idx(color_arr, diam_bin):
 
-    # perhaps you could make the blue points bigger than the
-    # red points simply because there are fewer blue points.
-    # i.e. weighting by the size of the crater.???
-
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-
-    ax.set_xlabel(r'$\mathrm{Slope}$', fontsize=18)
-    ax.set_ylabel(r'$\mathrm{Density}$', fontsize=18)
-
-    diam_bin = str(diam_bin_min) + 'to' + str(diam_bin_max)
     # the following variable names start with an underscore
     # because python variable names cannot start with a number
     if diam_bin == '1to2':
@@ -467,6 +469,23 @@ def make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, diam_bin_m
     elif diam_bin == '30to35':
         diam_bin_idx = np.where(color_arr == 'maroon')[0]  # '30to35'
 
+    return diam_bin_idx
+
+def make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, diam_bin_min, diam_bin_max):
+
+    # perhaps you could make the blue points bigger than the
+    # red points simply because there are fewer blue points.
+    # i.e. weighting by the size of the crater.???
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+
+    ax.set_xlabel(r'$\mathrm{Slope}$', fontsize=18)
+    ax.set_ylabel(r'$\mathrm{Density}$', fontsize=18)
+
+    diam_bin = str(diam_bin_min) + 'to' + str(diam_bin_max)
+    diam_bin_idx = get_diam_idx(color_arr, diam_bin)
+
     ax.scatter(slope_arr_color[diam_bin_idx], density_arr_color[diam_bin_idx], s=5, c=color_arr[diam_bin_idx], alpha=0.4, edgecolors='none')
     ax.set_yscale('log')
     ax.set_ylim(1e-8, 2.0)
@@ -481,9 +500,9 @@ def make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, diam_bin_m
     # values are obtained for a pixel that is completely inside 
     # a crater and not overlapped by any other craters.
 
+    """
     # fit a curve 
     # first define fitting arrays
-    """
     fit_x_arr = slope_arr_color[b_idx]
     fit_y_arr = density_arr_color[b_idx]
 
@@ -505,28 +524,30 @@ def make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, diam_bin_m
     popt, pcov = curve_fit(poisson, fit_x_arr, fit_y_arr, p0=[1.5])
     print popt
     print pcov
-    """
 
     # plot the best fit curves
-    #x_plot_arr = np.linspace(0,30,1000)
-    #ax.plot(x_plot_arr, gb(x_plot_arr), ls='-', color='skyblue', lw=2)
-    #ax.plot(x_plot_arr, gr(x_plot_arr), ls='-', color='pink', lw=2)
-    #ax.plot(x_plot_arr, poisson(x_plot_arr, *popt), ls='-', color='forestgreen', lw=2)
+    ax_plot_arr = np.linspace(0,30,1000)
+    ax.plot(x_plot_arr, gb(x_plot_arr), ls='-', color='skyblue', lw=2)
+    ax.plot(x_plot_arr, gr(x_plot_arr), ls='-', color='pink', lw=2)
+    ax.plot(x_plot_arr, poisson(x_plot_arr, *popt), ls='-', color='forestgreen', lw=2)
 
-    #print np.nanmin(density_arr_color[b_idx])
-    #print np.nanmax(density_arr_color[b_idx])
+    print np.nanmin(density_arr_color[b_idx])
+    print np.nanmax(density_arr_color[b_idx])
 
-    #check_idx = np.where((density_arr_color[r_idx] >= 1e-3) & (density_arr_color[r_idx] <= np.power(10, -2.9)))[0]
-    #print check_idx
-    #print len(check_idx)
-    #print pix_1d_idx_arr[r_idx][check_idx]
+    check_idx = np.where((density_arr_color[r_idx] >= 1e-3) & (density_arr_color[r_idx] <= np.power(10, -2.9)))[0]
+    print check_idx
+    print len(check_idx)
+    print pix_1d_idx_arr[r_idx][check_idx]
+    """
 
-    alphabox = TextArea(r'$\alpha$ = ' + str(best_alpha), textprops=dict(color='r', size=9))
-    anc_alphabox = AnchoredOffsetbox(loc=2, child=alphabox, pad=0.0, frameon=False,\
-                                         bbox_to_anchor=(0.03, 0.7),\
-                                         bbox_transform=ax1.transAxes, borderpad=0.0)
-    ax1.add_artist(anc_alphabox) 
+    # add text on figure to indicate diameter bin
+    diambinbox = TextArea(str(diam_bin_min) + ' to ' + str(diam_bin_max) + ' km', textprops=dict(color='k', size=7))
+    anc_diambinbox = AnchoredOffsetbox(loc=2, child=diambinbox, pad=0.0, frameon=False,\
+                                         bbox_to_anchor=(0.7, 0.05),\
+                                         bbox_transform=ax.transAxes, borderpad=0.0)
+    ax.add_artist(anc_diambinbox)
 
+    # add ticks and grid
     ax.minorticks_on()
     ax.tick_params('both', width=1, length=3, which='minor')
     ax.tick_params('both', width=1, length=4.7, which='major')
