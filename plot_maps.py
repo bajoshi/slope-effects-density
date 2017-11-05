@@ -14,6 +14,7 @@ import datetime
 
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
+from matplotlib.offsetbox import AnchoredOffsetbox, TextArea, AnchoredText
 
 # Checks if os is windows or unix
 if os.name == 'posix':
@@ -199,6 +200,50 @@ def get_ids():
 
     return crater_ids, crater_id_in_pix_arr, crater_vert_cat
 
+def assign_color(current_diam):
+
+    if current_diam <= 2:
+        return 'midnightblue'
+
+    elif (current_diam > 2) and (current_diam <= 3):
+        return 'blue'
+
+    elif (current_diam > 3) and (current_diam <= 4):
+        return 'royalblue'
+
+    elif (current_diam > 4) and (current_diam <= 5):
+        return 'dodgerblue'
+
+    elif (current_diam > 5) and (current_diam <= 6):
+        return 'deepskyblue'
+
+    elif (current_diam > 6) and (current_diam <= 7):
+        return 'steelblue'
+
+    elif (current_diam > 7) and (current_diam <= 8):
+        return 'slateblue'
+
+    elif (current_diam > 8) and (current_diam <= 9):
+        return 'rebeccapurple'
+
+    elif (current_diam > 9) and (current_diam <= 10):
+        return 'darkcyan'
+
+    elif (current_diam > 10) and (current_diam <= 15):
+        return 'green'
+
+    elif (current_diam > 15) and (current_diam <= 20):
+        return 'olive'
+
+    elif (current_diam > 20) and (current_diam <= 25):
+        return 'goldenrod'
+
+    elif (current_diam > 25) and (current_diam <= 30):
+        return 'darkorchid'
+
+    elif (current_diam > 30) and (current_diam <= 35):
+        return 'maroon'
+
 def get_diam_ref_arrays(density, slope, crater_vert_cat, crater_id_in_pix_arr, start):
 
     # loop over all pixels
@@ -216,7 +261,7 @@ def get_diam_ref_arrays(density, slope, crater_vert_cat, crater_id_in_pix_arr, s
     # i.e. if there are say 2 diam bins then this is a 2 element list but each element is itself a list
     # containing pixel indices that fall into that diam bin
 
-    for i in range(len(crater_id_in_pix_arr)):
+    for i in range(500000):#len(crater_id_in_pix_arr)):
 
         if (i % 100000) == 0.0:
             print '\r',
@@ -240,29 +285,8 @@ def get_diam_ref_arrays(density, slope, crater_vert_cat, crater_id_in_pix_arr, s
                 density_arr_color.append(density[i])
                 slope_arr_color.append(slope[i])
 
-                if current_diam <= 2:
-                    color_arr.append('')
-
-                if current_diam <= 5:
-                    color_arr.append('blue')
-
-                elif (current_diam > 5) and (current_diam <= 10):
-                    color_arr.append('darkcyan')
-
-                elif (current_diam > 10) and (current_diam <= 15):
-                    color_arr.append('green')
-
-                elif (current_diam > 15) and (current_diam <= 20):
-                    color_arr.append('olive')
-
-                elif (current_diam > 20) and (current_diam <= 25):
-                    color_arr.append('goldenrod')
-
-                elif (current_diam > 25) and (current_diam <= 30):
-                    color_arr.append('darkorchid')
-
-                elif (current_diam > 30) and (current_diam <= 35):
-                    color_arr.append('maroon')
+                color_to_append = assign_color(current_diam)
+                color_arr.append(color_to_append)
 
         elif len(current_crater_ids) > 1:
             for j in range(len(current_crater_ids)):
@@ -277,26 +301,8 @@ def get_diam_ref_arrays(density, slope, crater_vert_cat, crater_id_in_pix_arr, s
                     density_arr_color.append(density[i])
                     slope_arr_color.append(slope[i])
 
-                    if current_diam <= 5:
-                        color_arr.append('blue')
-
-                    elif (current_diam > 5) and (current_diam <= 10):
-                        color_arr.append('darkcyan')
-
-                    elif (current_diam > 10) and (current_diam <= 15):
-                        color_arr.append('green')
-
-                    elif (current_diam > 15) and (current_diam <= 20):
-                        color_arr.append('olive')
-
-                    elif (current_diam > 20) and (current_diam <= 25):
-                        color_arr.append('goldenrod')
-
-                    elif (current_diam > 25) and (current_diam <= 30):
-                        color_arr.append('darkorchid')
-
-                    elif (current_diam > 30) and (current_diam <= 35):
-                        color_arr.append('maroon')
+                    color_to_append = assign_color(current_diam)
+                    color_arr.append(color_to_append)
 
     # convert to numpy arrays so you can do array ops
     density_arr_color = np.asarray(density_arr_color)
@@ -314,24 +320,20 @@ def plot_by_diam(density, slope_arr, start):
     get_diam_ref_arrays(density, slope_arr, crater_vert_cat, crater_id_in_pix_arr, start)
 
     # do the actual plotting
-    # perhaps you could make the blue points bigger than the
-    # red points simply because there are fewer blue points.
-    # i.e. weighting by the size of the crater.
-    b_idx = np.where(color_arr == 'blue')[0]  # '1to5'
-    c_idx = np.where(color_arr == 'darkcyan')[0]  # '5to10'
-    g_idx = np.where(color_arr == 'green')[0]  # '10to15'
-    ol_idx = np.where(color_arr == 'olive')[0]  # '15to20'
-    gr_idx = np.where(color_arr == 'goldenrod')[0]  # '20to25'
-    do_idx = np.where(color_arr == 'darkorchid')[0]  # '25to30'
-    m_idx = np.where(color_arr == 'maroon')[0]  # '30to35'
-
-    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, b_idx, '1to5',    0.051, 1.27)
-    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, c_idx, '5to10',   0.013, 0.051)
-    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, g_idx, '10to15',  5.66e-3, 0.013)
-    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, ol_idx, '15to20', 3.18e-3, 5.66e-3)
-    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, gr_idx, '20to25', 2.04e-3, 3.18e-3)
-    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, do_idx, '25to30', 1.42e-3, 2.04e-3)
-    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, m_idx, '30to35',  1.04e-3, 1.42e-3)
+    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, 1, 2)
+    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, 2, 3)
+    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, 3, 4)
+    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, 4, 5)
+    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, 5, 6)
+    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, 6, 7)
+    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, 7, 8)
+    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, 8, 9)
+    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, 9, 10)
+    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, 10, 15)
+    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, 15, 20)
+    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, 20, 25)
+    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, 25, 30)
+    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, 30, 35)
 
     # Put all together
     # plot these 7 bins on a 7 panel grid in a single plot
@@ -364,8 +366,8 @@ def plot_by_diam(density, slope_arr, start):
         all_axes[i].set_ylim(1e-8, 2.0)
         all_axes[i].set_xlim(0, 35)
 
-        all_axes[i].axhline(y=min_val_list[i], ls='--', color='steelblue')  # min value of density from biggest crater in bin
-        all_axes[i].axhline(y=max_val_list[i], ls='--', color='lightblue')  # max value of density from smallest crater in bin
+        all_axes[i].axhline(y=min_val_list[i], ls='--', color='k')  # min value of density from biggest crater in bin
+        all_axes[i].axhline(y=max_val_list[i], ls='--', color='k')  # max value of density from smallest crater in bin
 
         all_axes[i].minorticks_on()
         all_axes[i].tick_params('both', width=1, length=3, which='minor')
@@ -380,7 +382,6 @@ def plot_by_diam(density, slope_arr, start):
 
         if i == 1 or i == 2 or i == 4 or i == 5:
             all_axes[i].set_yticklabels([])
-
 
     ax_ol.set_xticklabels(['0', '10', '20', ''])
     ax_do.set_xticklabels(['', '10', '20', '30'])
@@ -422,7 +423,11 @@ def plot_by_diam(density, slope_arr, start):
 
     return None
 
-def make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, diam_bin_idx, diam_bin, min_val, max_val):
+def make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, diam_bin_min, diam_bin_max):
+
+    # perhaps you could make the blue points bigger than the
+    # red points simply because there are fewer blue points.
+    # i.e. weighting by the size of the crater.???
 
     fig = plt.figure()
     ax = fig.add_subplot(111)
@@ -430,13 +435,49 @@ def make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, diam_bin_i
     ax.set_xlabel(r'$\mathrm{Slope}$', fontsize=18)
     ax.set_ylabel(r'$\mathrm{Density}$', fontsize=18)
 
+    diam_bin = str(diam_bin_min) + 'to' + str(diam_bin_max)
+    # the following variable names start with an underscore
+    # because python variable names cannot start with a number
+    if diam_bin == '1to2':
+        diam_bin_idx = np.where(color_arr == 'midnightblue')[0]  # '1to2'
+    elif diam_bin == '2to3':
+        diam_bin_idx = np.where(color_arr == 'blue')[0]  # '2to3'
+    elif diam_bin == '3to4':
+        diam_bin_idx = np.where(color_arr == 'royalblue')[0]  # '3to4'
+    elif diam_bin == '4to5':
+        diam_bin_idx = np.where(color_arr == 'dodgerblue')[0]  # '4to5'
+    elif diam_bin == '5to6':
+        diam_bin_idx = np.where(color_arr == 'deepskyblue')[0]  # '5to6'
+    elif diam_bin == '6to7':
+        diam_bin_idx = np.where(color_arr == 'steelblue')[0]  # '6to7'
+    elif diam_bin == '7to8':
+        diam_bin_idx = np.where(color_arr == 'slateblue')[0]  # '7to8'
+    elif diam_bin == '8to9':
+        diam_bin_idx = np.where(color_arr == 'rebeccapurple')[0]  # '8to9'
+    elif diam_bin == '9to10':
+        diam_bin_idx = np.where(color_arr == 'darkcyan')[0]  # '9to10'
+    elif diam_bin == '10to15':
+        diam_bin_idx = np.where(color_arr == 'green')[0]  # '10to15'
+    elif diam_bin == '15to20':
+        diam_bin_idx = np.where(color_arr == 'olive')[0]  # '15to20'
+    elif diam_bin == '20to25':
+        diam_bin_idx = np.where(color_arr == 'goldenrod')[0]  # '20to25'
+    elif diam_bin == '25to30':
+        diam_bin_idx = np.where(color_arr == 'darkorchid')[0]  # '25to30'
+    elif diam_bin == '30to35':
+        diam_bin_idx = np.where(color_arr == 'maroon')[0]  # '30to35'
+
     ax.scatter(slope_arr_color[diam_bin_idx], density_arr_color[diam_bin_idx], s=5, c=color_arr[diam_bin_idx], alpha=0.4, edgecolors='none')
     ax.set_yscale('log')
     ax.set_ylim(1e-8, 2.0)
     ax.set_xlim(0, 35)
 
-    ax.axhline(y=min_val, ls='--', color='steelblue')  # min value of density from biggest crater in bin
-    ax.axhline(y=max_val, ls='--', color='lightblue')  # max value of density from smallest crater in bin
+    min_val = 4e6 / (np.pi * (diam_bin_max*1e3)**2)
+    max_val = 4e6 / (np.pi * (diam_bin_min*1e3)**2)
+    # note that the min and max values come from the biggest and smallest crater respectively
+
+    ax.axhline(y=min_val, ls='--', color='k', lw=1)  # min value of density from biggest crater in bin
+    ax.axhline(y=max_val, ls='--', color='k', lw=1)  # max value of density from smallest crater in bin
     # values are obtained for a pixel that is completely inside 
     # a crater and not overlapped by any other craters.
 
@@ -479,6 +520,12 @@ def make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, diam_bin_i
     #print check_idx
     #print len(check_idx)
     #print pix_1d_idx_arr[r_idx][check_idx]
+
+    alphabox = TextArea(r'$\alpha$ = ' + str(best_alpha), textprops=dict(color='r', size=9))
+    anc_alphabox = AnchoredOffsetbox(loc=2, child=alphabox, pad=0.0, frameon=False,\
+                                         bbox_to_anchor=(0.03, 0.7),\
+                                         bbox_transform=ax1.transAxes, borderpad=0.0)
+    ax1.add_artist(anc_alphabox) 
 
     ax.minorticks_on()
     ax.tick_params('both', width=1, length=3, which='minor')
