@@ -408,7 +408,7 @@ def plot_by_diam(density, slope_arr, start):
             extent=[xbins.min(), xbins.max(), ybins.min(), ybins.max()], \
             colors='lime', linestyles='solid', interpolation='None', zorder=10)
         all_axes[i].clabel(c, inline=True, colors='darkgoldenrod', inline_spacing=8, \
-            fontsize=8, fontweight='black', fmt='%d', lw=2, ls='-')
+            fontsize=4, fontweight='black', fmt='%d', lw=2, ls='-')
 
         all_axes[i].axhline(y=min_val_list[i], ls='--', color='k', lw=1)  # min value of density from biggest crater in bin
         all_axes[i].axhline(y=max_val_list[i], ls='--', color='k', lw=1)  # max value of density from smallest crater in bin
@@ -554,7 +554,7 @@ def make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, diam_bin_m
         extent=[xbins.min(), xbins.max(), ybins.min(), ybins.max()], \
         colors='lime', linestyles='solid', interpolation='None', zorder=10)
     ax.clabel(c, inline=True, colors='darkgoldenrod', inline_spacing=8, \
-        fontsize=10, fontweight='black', fmt='%d', lw=2, ls='-')
+        fontsize=6, fontweight='black', fmt='%d', lw=2, ls='-')
 
     """
     # fit a curve 
