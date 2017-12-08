@@ -393,13 +393,21 @@ def plot_by_diam(density, slope_arr, start):
         all_axes[i].set_xlim(0, 35)
 
         # plot contours for point density
-        counts, xbins, ybins = np.histogram2d(slope_arr_color[all_diam_idx[i]], density_arr_color[all_diam_idx[i]], \
+        # make sure the arrays dont have NaNs
+        slope_fin_idx = np.where(np.isfinite(slope_arr_color[all_diam_idx[i]]))[0]
+        density_fin_idx = np.where(np.isfinite(density_arr_color[all_diam_idx[i]]))[0]
+        fin_idx = np.intersect1d(slope_fin_idx, density_fin_idx)
+
+        slope_arr_color_plot = slope_arr_color[all_diam_idx[i]][fin_idx]
+        density_arr_color_plot = density_arr_color[all_diam_idx[i]][fin_idx]
+
+        counts, xbins, ybins = np.histogram2d(slope_arr_color_plot, density_arr_color_plot, \
             bins=25, normed=False)
         levels_to_plot = [10, 50, 200, 500, 1e3, 2e3, 5e3]
-        c = ax.contour(counts.transpose(), levels=levels_to_plot, \
+        c = all_axes[i].contour(counts.transpose(), levels=levels_to_plot, \
             extent=[xbins.min(), xbins.max(), ybins.min(), ybins.max()], \
             colors='lime', linestyles='solid', interpolation='None', zorder=10)
-        ax.clabel(c, inline=True, colors='darkgoldenrod', inline_spacing=8, \
+        all_axes[i].clabel(c, inline=True, colors='darkgoldenrod', inline_spacing=8, \
             fontsize=8, fontweight='black', fmt='%d', lw=2, ls='-')
 
         all_axes[i].axhline(y=min_val_list[i], ls='--', color='k', lw=1)  # min value of density from biggest crater in bin
@@ -531,7 +539,15 @@ def make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, diam_bin_m
     # a crater and not overlapped by any other craters.
 
     # plot contours for point density
-    counts, xbins, ybins = np.histogram2d(slope_arr_color[diam_bin_idx], density_arr_color[diam_bin_idx], \
+    # make sure the arrays dont have NaNs
+    slope_fin_idx = np.where(np.isfinite(slope_arr_color[diam_bin_idx]))[0]
+    density_fin_idx = np.where(np.isfinite(density_arr_color[diam_bin_idx]))[0]
+    fin_idx = np.intersect1d(slope_fin_idx, density_fin_idx)
+
+    slope_arr_color_plot = slope_arr_color[diam_bin_idx][fin_idx]
+    density_arr_color_plot = density_arr_color[diam_bin_idx][fin_idx]
+
+    counts, xbins, ybins = np.histogram2d(slope_arr_color_plot, density_arr_color_plot, \
         bins=25, normed=False)
     levels_to_plot = [10, 50, 200, 500, 1e3, 2e3, 5e3]
     c = ax.contour(counts.transpose(), levels=levels_to_plot, \
