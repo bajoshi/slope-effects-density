@@ -265,7 +265,7 @@ def get_diam_ref_arrays(density, slope, crater_vert_cat, crater_id_in_pix_arr, s
     # i.e. if there are say 2 diam bins then this is a 2 element list but each element is itself a list
     # containing pixel indices that fall into that diam bin
 
-    for i in range(500000):#len(crater_id_in_pix_arr)):
+    for i in range(len(crater_id_in_pix_arr)):
 
         if (i % 100000) == 0.0:
             print '\r',
@@ -317,6 +317,8 @@ def get_diam_ref_arrays(density, slope, crater_vert_cat, crater_id_in_pix_arr, s
     np.save(slope_extdir + 'density_arr_color.npy', density_arr_color)
     np.save(slope_extdir + 'slope_arr_color.npy', slope_arr_color)
     np.save(slope_extdir + 'color_arr.npy', color_arr)
+
+    print "Arrays saved."
 
     return density_arr_color, slope_arr_color, color_arr
 
@@ -476,8 +478,6 @@ def plot_by_diam(density, slope_arr, start):
 
 def get_diam_idx(color_arr, diam_bin):
 
-    # the following variable names start with an underscore
-    # because python variable names cannot start with a number
     if diam_bin == '1to2':
         diam_bin_idx = np.where(color_arr == 'midnightblue')[0]  # '1to2'
     elif diam_bin == '2to3':
