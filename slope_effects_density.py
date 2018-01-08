@@ -1047,6 +1047,27 @@ if __name__ == '__main__':
     # find intersecting area for each pixel and keep a running sum
     pix_crater_area = np.zeros(len(pix_x_cen_arr))
 
+    ##### ---- see comment block below about keeping track of individual crater contributions ---- #####
+    # Define crater diamter bins
+    # the numbers at the end here indicate 
+    # the start and end of the diamter bin
+    # the endpoint is NOT included. E.g. 1-2 includes 1<= D < 2
+    # I've set the dtype to float32 to save space
+    crater_frac_diambin_1_2   = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
+    crater_frac_diambin_2_3   = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
+    crater_frac_diambin_3_4   = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
+    crater_frac_diambin_4_5   = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
+    crater_frac_diambin_5_6   = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
+    crater_frac_diambin_6_7   = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
+    crater_frac_diambin_7_8   = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
+    crater_frac_diambin_8_9   = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
+    crater_frac_diambin_9_10  = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
+    crater_frac_diambin_10_15 = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
+    crater_frac_diambin_15_20 = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
+    crater_frac_diambin_20_25 = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
+    crater_frac_diambin_25_30 = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
+    crater_frac_diambin_30_35 = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
+
     # also create a blank array for associating 
     # crater ids with each pixel. I need a blank 
     # array of lists so that I can append to each element.
@@ -1141,6 +1162,46 @@ if __name__ == '__main__':
             if inter_area_crater_frac != 0.0:
                 pix_crater_id[pix_index].append(crater_ids[i])
 
+            # --------------  Code to keep individual crater contributions to density separate  -------------- #
+            """
+            The above code keeps track of the cumulative crater fraction within all pixels. I want to know what
+            the separte contributions are, to the crater fraction, from each crater with my selected diameter bins.
+            Currently, this code is rather unwieldy because it does the cumulative and individual crater 
+            contributions to crater fraction within pixels separately. I would like to have a generic
+            code that saves some(?) crater fraction array which can later be used to get both the 
+            cumulative and individual crater contributions to the crater fraction with all pixels.
+            """
+
+            # This should still be a cumulative sum within each diamter bin
+            if current_diam >= 1 and current_diam < 2:
+                crater_frac_diambin_1_2[pix_index] += inter_area_crater_frac
+            elif current_diam >= 2 and current_diam < 3:
+                crater_frac_diambin_2_3[pix_index] += inter_area_crater_frac
+            elif current_diam >= 3 and current_diam < 4:
+                crater_frac_diambin_3_4[pix_index] += inter_area_crater_frac
+            elif current_diam >= 4 and current_diam < 5:
+                crater_frac_diambin_4_5[pix_index] += inter_area_crater_frac
+            elif current_diam >= 5 and current_diam < 6:
+                crater_frac_diambin_5_6[pix_index] += inter_area_crater_frac
+            elif current_diam >= 6 and current_diam < 7:
+                crater_frac_diambin_6_7[pix_index] += inter_area_crater_frac
+            elif current_diam >= 7 and current_diam < 8:
+                crater_frac_diambin_7_8[pix_index] += inter_area_crater_frac
+            elif current_diam >= 8 and current_diam < 9:
+                crater_frac_diambin_8_9[pix_index] += inter_area_crater_frac
+            elif current_diam >= 9 and current_diam < 10:
+                crater_frac_diambin_9_10[pix_index] += inter_area_crater_frac
+            elif current_diam >= 10 and current_diam < 15:
+                crater_frac_diambin_10_15[pix_index] += inter_area_crater_frac
+            elif current_diam >= 15 and current_diam < 20:
+                crater_frac_diambin_15_20[pix_index] += inter_area_crater_frac
+            elif current_diam >= 20 and current_diam < 25:
+                crater_frac_diambin_20_25[pix_index] += inter_area_crater_frac
+            elif current_diam >= 25 and current_diam < 30:
+                crater_frac_diambin_25_30[pix_index] += inter_area_crater_frac
+            elif current_diam >= 30 and current_diam < 35:
+                crater_frac_diambin_30_35[pix_index] += inter_area_crater_frac
+
     # pix_crater_area /= 1e6 -- normalized to 1 sq km if needed (comment out if using fractions)
 
     """
@@ -1156,6 +1217,22 @@ if __name__ == '__main__':
     # craters and the invalid_idx definition would be commented out otherwise
     #pix_crater_area[invalid_idx] = -9999.0
 
+    # save individual crater contributions as numpy arrays
+    np.save(slope_extdir + 'crater_frac_diambin_1_2.npy', crater_frac_diambin_1_2)
+    np.save(slope_extdir + 'crater_frac_diambin_2_3.npy', crater_frac_diambin_2_3)
+    np.save(slope_extdir + 'crater_frac_diambin_3_4.npy', crater_frac_diambin_3_4)
+    np.save(slope_extdir + 'crater_frac_diambin_4_5.npy', crater_frac_diambin_4_5)
+    np.save(slope_extdir + 'crater_frac_diambin_5_6.npy', crater_frac_diambin_5_6)
+    np.save(slope_extdir + 'crater_frac_diambin_6_7.npy', crater_frac_diambin_6_7)
+    np.save(slope_extdir + 'crater_frac_diambin_7_8.npy', crater_frac_diambin_7_8)
+    np.save(slope_extdir + 'crater_frac_diambin_8_9.npy', crater_frac_diambin_8_9)
+    np.save(slope_extdir + 'crater_frac_diambin_9_10.npy', crater_frac_diambin_9_10)
+    np.save(slope_extdir + 'crater_frac_diambin_10_15.npy', crater_frac_diambin_10_15)
+    np.save(slope_extdir + 'crater_frac_diambin_15_20.npy', crater_frac_diambin_15_20)
+    np.save(slope_extdir + 'crater_frac_diambin_20_25.npy', crater_frac_diambin_20_25)
+    np.save(slope_extdir + 'crater_frac_diambin_25_30.npy', crater_frac_diambin_25_30)
+    np.save(slope_extdir + 'crater_frac_diambin_30_35.npy', crater_frac_diambin_30_35)
+
     # save as numpy binary array and csv
     np.save(slope_extdir + 'crater_area_frac_in_pix_fastcomp.npy', pix_crater_area)
     save_csv(pix_crater_area, 'pix_crater_area', float, slope_extdir + 'crater_area_fraction_in_pixel_fastcomp.csv', 'crater_area_fraction_in_pixel')
@@ -1167,8 +1244,6 @@ if __name__ == '__main__':
     su.numpy_to_asciiraster(slope_extdir + 'crater_area_frac_in_pix_fastcomp.npy', (rows, columns), pix_x_cen_arr, pix_y_cen_arr)
 
     print "\n","Crater fractional area in each pixel computation done and saved."
-
-    sys.exit(0)
 
     # total run time
     print '\n'
