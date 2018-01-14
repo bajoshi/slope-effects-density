@@ -57,7 +57,7 @@ def make_plot_diam_bin_with_contour(density_arr_color, slope_arr_color, color_ar
     counts = convolve(counts, kernel, boundary='extend')
 
     print np.min(counts), np.max(counts)
-    levels_to_plot, cb_lw, vmin = get_levels_to_plot(diam_bin)
+    levels_to_plot, cb_lw, vmin = get_levels_to_plot(diam_bin, cumulative=True)
     norm = mpl.colors.Normalize(vmin=vmin, vmax=max(levels_to_plot))
 
     c = ax.contour(counts.transpose(), levels=levels_to_plot, \
@@ -91,7 +91,7 @@ def make_plot_diam_bin_with_contour(density_arr_color, slope_arr_color, color_ar
 
     return None
 
-def get_levels_to_plot(diam_bin):
+def get_levels_to_plot(diam_bin, cumulative=False):
 
     if diam_bin == '1to2':
         levels_to_plot = [10, 100, 200, 335, 450]
@@ -102,15 +102,21 @@ def get_levels_to_plot(diam_bin):
         cb_lw = 35.0
         vmin = -40
     elif diam_bin == '3to4':
-        levels_to_plot = [3, 15, 30, 50, 68]
+        if cumulative:
+            levels_to_plot = [3, 15, 30, 50, 68]
+        levels_to_plot = [3, 15, 30, 50, 85]
         cb_lw = 35.0
         vmin = -20
     elif diam_bin == '4to5':
-        levels_to_plot = [3, 10, 15, 24, 34]
+        if cumulative:
+            levels_to_plot = [3, 10, 15, 24, 34]
+        levels_to_plot = [3, 10, 15, 24, 36]
         cb_lw = 35.0
         vmin = -8
     elif diam_bin == '5to6':
-        levels_to_plot = [2, 10, 18, 25, 37]
+        if cumulative:
+            levels_to_plot = [2, 10, 18, 25, 37]
+        levels_to_plot = [2, 10, 18, 25, 45]
         cb_lw = 35.0
         vmin = -10
     elif diam_bin == '6to7':
@@ -118,11 +124,15 @@ def get_levels_to_plot(diam_bin):
         cb_lw = 35.0
         vmin = -10
     elif diam_bin == '7to8':
-        levels_to_plot = [2, 8, 13, 18, 24]
+        if cumulative:
+            levels_to_plot = [2, 8, 13, 18, 24]
+        levels_to_plot = [2, 8, 13, 18, 35]
         cb_lw = 35.0
         vmin = -5
     elif diam_bin == '8to9':
-        levels_to_plot = [2, 8, 13, 18, 23]
+        if cumulative:
+            levels_to_plot = [2, 8, 13, 18, 23]
+        levels_to_plot = [2, 8, 13, 18, 38]
         cb_lw = 35.0
         vmin = -5
     elif diam_bin == '9to10':
@@ -138,11 +148,15 @@ def get_levels_to_plot(diam_bin):
         cb_lw = 28.0
         vmin = -20
     elif diam_bin == '20to25':
-        levels_to_plot = [5, 50, 140, 200, 250, 280]
+        if cumulative:
+            levels_to_plot = [5, 50, 140, 200, 250, 280]
+        levels_to_plot = [5, 50, 140, 200, 250, 275]
         cb_lw = 28.0
         vmin = -50
     elif diam_bin == '25to30':
-        levels_to_plot = [5, 50, 140, 200, 250, 280]
+        if cumulative:
+            levels_to_plot = [5, 50, 140, 200, 250, 280]
+        levels_to_plot = [5, 50, 140, 200, 250, 300]
         cb_lw = 28.0
         vmin = -50
     elif diam_bin == '30to35':
@@ -152,7 +166,7 @@ def get_levels_to_plot(diam_bin):
 
     return levels_to_plot, cb_lw, vmin
 
-if __name__ == '__main__':
+def make_cumulative_plots():
 
     # read arrays
     density_arr_color = np.load(slope_extdir + 'density_arr_color.npy')
@@ -174,5 +188,120 @@ if __name__ == '__main__':
     make_plot_diam_bin_with_contour(density_arr_color, slope_arr_color, color_arr, 20, 25)
     make_plot_diam_bin_with_contour(density_arr_color, slope_arr_color, color_arr, 25, 30)
     make_plot_diam_bin_with_contour(density_arr_color, slope_arr_color, color_arr, 30, 35)
+
+    return None
+
+def make_no_overlap_plots(density_arr, slope_arr, diam_bin_min, diam_bin_max, color):
+
+    # make figure
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+
+    ax.set_xlabel(r'$\mathrm{Slope}$', fontsize=16)
+    ax.set_ylabel(r'$\mathrm{log(Density)}$', fontsize=16)
+
+    x = slope_arr
+    y = density_arr
+
+    ax.scatter(x, np.log10(y), s=5, c=color, alpha=0.3, edgecolors='none')
+    ax.set_ylim(-8, 0.5)
+    ax.set_xlim(0, 35)
+
+    # draw contours
+    # make sure the arrays dont have NaNs
+    slope_fin_idx = np.where(np.isfinite(x))[0]
+    density_fin_idx = np.where(np.isfinite(y))[0]
+    fin_idx = np.intersect1d(slope_fin_idx, density_fin_idx)
+
+    xp = x[fin_idx]
+    yp = y[fin_idx]
+
+    counts, xbins, ybins = np.histogram2d(xp, np.log10(yp), bins=25, normed=False)
+    # smooth counts to get smoother contours
+    kernel = Gaussian2DKernel(stddev=1.4)
+    counts = convolve(counts, kernel, boundary='extend')
+
+    print np.min(counts), np.max(counts)
+    diam_bin = str(diam_bin_min) + 'to' + str(diam_bin_max)
+    levels_to_plot, cb_lw, vmin = get_levels_to_plot(diam_bin, cumulative=False)
+    norm = mpl.colors.Normalize(vmin=vmin, vmax=max(levels_to_plot))
+
+    c = ax.contour(counts.transpose(), levels=levels_to_plot, \
+        extent=[xbins.min(), xbins.max(), ybins.min(), ybins.max()], \
+        cmap=cm.viridis, linestyles='solid', linewidths=2, \
+        interpolation='None', zorder=10, norm=norm)
+
+    # plot colorbar inside figure
+    cbaxes = inset_axes(ax, width='3%', height='52%', loc=7, bbox_to_anchor=[-0.05, -0.2, 1, 1], bbox_transform=ax.transAxes)
+    cb = plt.colorbar(c, cax=cbaxes, ticks=[min(levels_to_plot), max(levels_to_plot)], orientation='vertical')
+    cb.ax.get_children()[0].set_linewidths(cb_lw)
+
+    # add text on figure to indicate diameter bin
+    diambinbox = TextArea(str(diam_bin_min) + ' to ' + str(diam_bin_max) + ' km', textprops=dict(color='k', size=14))
+    anc_diambinbox = AnchoredOffsetbox(loc=2, child=diambinbox, pad=0.0, frameon=False,\
+                                         bbox_to_anchor=(0.6, 0.1),\
+                                         bbox_transform=ax.transAxes, borderpad=0.0)
+    ax.add_artist(anc_diambinbox)
+
+    # add ticks and grid
+    ax.minorticks_on()
+    ax.tick_params('both', width=1, length=3, which='minor')
+    ax.tick_params('both', width=1, length=4.7, which='major')
+    ax.grid(True)
+
+    # save the figure
+    fig.savefig(slope_extdir + 'slope_v_density_withcontour_nooverlap' + diam_bin + 'km.png', dpi=300, bbox_inches='tight')
+
+    return None
+
+if __name__ == '__main__':
+
+    # read in all arrays
+    density_diambin_1_2 = np.load(slope_extdir + 'density_diambin_1_2.npy')
+    density_diambin_2_3 = np.load(slope_extdir + 'density_diambin_2_3.npy')
+    density_diambin_3_4 = np.load(slope_extdir + 'density_diambin_3_4.npy')
+    density_diambin_4_5 = np.load(slope_extdir + 'density_diambin_4_5.npy')
+    density_diambin_5_6 = np.load(slope_extdir + 'density_diambin_5_6.npy')
+    density_diambin_6_7 = np.load(slope_extdir + 'density_diambin_6_7.npy')
+    density_diambin_7_8 = np.load(slope_extdir + 'density_diambin_7_8.npy')
+    density_diambin_8_9 = np.load(slope_extdir + 'density_diambin_8_9.npy')
+    density_diambin_9_10 = np.load(slope_extdir + 'density_diambin_9_10.npy')
+    density_diambin_10_15 = np.load(slope_extdir + 'density_diambin_10_15.npy')
+    density_diambin_15_20 = np.load(slope_extdir + 'density_diambin_15_20.npy')
+    density_diambin_20_25 = np.load(slope_extdir + 'density_diambin_20_25.npy')
+    density_diambin_25_30 = np.load(slope_extdir + 'density_diambin_25_30.npy')
+    density_diambin_30_35 = np.load(slope_extdir + 'density_diambin_30_35.npy')
+
+    slope_diambin_1_2 = np.load(slope_extdir + 'slope_diambin_1_2.npy')
+    slope_diambin_2_3 = np.load(slope_extdir + 'slope_diambin_2_3.npy')
+    slope_diambin_3_4 = np.load(slope_extdir + 'slope_diambin_3_4.npy')
+    slope_diambin_4_5 = np.load(slope_extdir + 'slope_diambin_4_5.npy')
+    slope_diambin_5_6 = np.load(slope_extdir + 'slope_diambin_5_6.npy')
+    slope_diambin_6_7 = np.load(slope_extdir + 'slope_diambin_6_7.npy')
+    slope_diambin_7_8 = np.load(slope_extdir + 'slope_diambin_7_8.npy')
+    slope_diambin_8_9 = np.load(slope_extdir + 'slope_diambin_8_9.npy')
+    slope_diambin_9_10 = np.load(slope_extdir + 'slope_diambin_9_10.npy')
+    slope_diambin_10_15 = np.load(slope_extdir + 'slope_diambin_10_15.npy')
+    slope_diambin_15_20 = np.load(slope_extdir + 'slope_diambin_15_20.npy')
+    slope_diambin_20_25 = np.load(slope_extdir + 'slope_diambin_20_25.npy')
+    slope_diambin_25_30 = np.load(slope_extdir + 'slope_diambin_25_30.npy')
+    slope_diambin_30_35 = np.load(slope_extdir + 'slope_diambin_30_35.npy')
+
+    # make plots with only contributions from craters that 
+    # actually fall within the specified diameter bin
+    make_no_overlap_plots(density_diambin_1_2, slope_diambin_1_2, 1, 2, 'midnightblue')
+    make_no_overlap_plots(density_diambin_2_3, slope_diambin_2_3, 2, 3, 'blue')
+    make_no_overlap_plots(density_diambin_3_4, slope_diambin_3_4, 3, 4, 'royalblue')
+    make_no_overlap_plots(density_diambin_4_5, slope_diambin_4_5, 4, 5, 'dodgerblue')
+    make_no_overlap_plots(density_diambin_5_6, slope_diambin_5_6, 5, 6, 'deepskyblue')
+    make_no_overlap_plots(density_diambin_6_7, slope_diambin_6_7, 6, 7, 'steelblue')
+    make_no_overlap_plots(density_diambin_7_8, slope_diambin_7_8, 7, 8, 'slateblue')
+    make_no_overlap_plots(density_diambin_8_9, slope_diambin_8_9, 8, 9, 'rebeccapurple')
+    make_no_overlap_plots(density_diambin_9_10, slope_diambin_9_10, 9, 10, 'darkcyan')
+    make_no_overlap_plots(density_diambin_10_15, slope_diambin_10_15, 10, 15, 'green')
+    make_no_overlap_plots(density_diambin_15_20, slope_diambin_15_20, 15, 20, 'olive')
+    make_no_overlap_plots(density_diambin_20_25, slope_diambin_20_25, 20, 25, 'goldenrod')
+    make_no_overlap_plots(density_diambin_25_30, slope_diambin_25_30, 25, 30, 'darkorchid')
+    make_no_overlap_plots(density_diambin_30_35, slope_diambin_30_35, 30, 35, 'maroon')
 
     sys.exit(0)

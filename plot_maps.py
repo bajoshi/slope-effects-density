@@ -322,160 +322,6 @@ def get_diam_ref_arrays(density, slope, crater_vert_cat, crater_id_in_pix_arr, s
 
     return density_arr_color, slope_arr_color, color_arr
 
-def plot_by_diam(density, slope_arr, start):
-
-    crater_ids, crater_id_in_pix_arr, crater_vert_cat = get_ids()
-
-    # get arrays where the crater diam has been identified by color
-    density_arr_color, slope_arr_color, color_arr = \
-    get_diam_ref_arrays(density, slope_arr, crater_vert_cat, crater_id_in_pix_arr, start)
-
-    # do the actual plotting
-    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, 1, 2)
-    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, 2, 3)
-    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, 3, 4)
-    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, 4, 5)
-    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, 5, 6)
-    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, 6, 7)
-    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, 7, 8)
-    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, 8, 9)
-    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, 9, 10)
-    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, 10, 15)
-    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, 15, 20)
-    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, 20, 25)
-    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, 25, 30)
-    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, 30, 35)
-
-    # Put all together
-    # ----------------------------- GRID PLOT ----------------------------- #
-    gs = gridspec.GridSpec(4,4)
-    gs.update(left=0.1, right=0.9, bottom=0.1, top=0.9, wspace=0.02, hspace=0.02)
-
-    fig = plt.figure()
-    ax_1to2   = fig.add_subplot(gs[0, 0])
-    ax_2to3   = fig.add_subplot(gs[0, 1])
-    ax_3to4   = fig.add_subplot(gs[0, 2])
-    ax_4to5   = fig.add_subplot(gs[0, 3])
-    ax_5to6   = fig.add_subplot(gs[1, 0])
-    ax_6to7   = fig.add_subplot(gs[1, 1])
-    ax_7to8   = fig.add_subplot(gs[1, 2])
-    ax_8to9   = fig.add_subplot(gs[1, 3])
-    ax_9to10  = fig.add_subplot(gs[2, 0])
-    ax_10to15 = fig.add_subplot(gs[2, 1])
-    ax_15to20 = fig.add_subplot(gs[2, 2])
-    ax_20to25 = fig.add_subplot(gs[2, 3])
-    ax_25to30 = fig.add_subplot(gs[3, 1])
-    ax_30to35 = fig.add_subplot(gs[3, 2])
-
-    all_axes = [ax_1to2, ax_2to3, ax_3to4, ax_4to5, ax_5to6, ax_6to7, ax_7to8, ax_8to9, ax_9to10, ax_10to15, ax_15to20, ax_20to25, ax_25to30, ax_30to35]
-    diam_bins = ['1to2', '2to3', '3to4', '4to5', '5to6', '6to7', '7to8', '8to9', '9to10', '10to15', '15to20', '20to25', '25to30', '30to35']
-    all_diam_idx = []
-    min_val_list = []
-    max_val_list = []
-    for j in range(len(all_axes)):
-        diam_bin_idx = get_diam_idx(color_arr, diam_bins[j])
-        all_diam_idx.append(diam_bin_idx)
-
-        diam_bin_min = int(diam_bins[j].split('to')[0])
-        diam_bin_max = int(diam_bins[j].split('to')[1])
-        min_val_list.append(4e6 / (np.pi * (diam_bin_max*1e3)**2))
-        max_val_list.append(4e6 / (np.pi * (diam_bin_min*1e3)**2))
-
-    ax_25to30.set_xlabel(r'$\mathrm{Slope}$', fontsize=15)
-    ax_25to30.xaxis.set_label_coords(1.05, -0.25)
-
-    ax_9to10.set_ylabel(r'$\mathrm{Density}$', fontsize=15)
-    ax_9to10.yaxis.set_label_coords(-0.3, 1.05)
-
-    for i in range(len(all_axes)):
-
-        all_axes[i].scatter(slope_arr_color[all_diam_idx[i]], density_arr_color[all_diam_idx[i]], s=5, c=color_arr[all_diam_idx[i]], alpha=0.4, edgecolors='none')
-        all_axes[i].set_yscale('log')
-        all_axes[i].set_ylim(1e-8, 2.0)
-        all_axes[i].set_xlim(0, 35)
-
-        # plot contours for point density
-        # make sure the arrays dont have NaNs
-        slope_fin_idx = np.where(np.isfinite(slope_arr_color[all_diam_idx[i]]))[0]
-        density_fin_idx = np.where(np.isfinite(density_arr_color[all_diam_idx[i]]))[0]
-        fin_idx = np.intersect1d(slope_fin_idx, density_fin_idx)
-
-        slope_arr_color_plot = slope_arr_color[all_diam_idx[i]][fin_idx]
-        density_arr_color_plot = density_arr_color[all_diam_idx[i]][fin_idx]
-
-        counts, xbins, ybins = np.histogram2d(slope_arr_color_plot, density_arr_color_plot, \
-            bins=25, normed=False)
-        levels_to_plot = [10, 50, 200, 500, 1e3, 2e3, 5e3]
-        c = all_axes[i].contour(counts.transpose(), levels=levels_to_plot, \
-            extent=[xbins.min(), xbins.max(), ybins.min(), ybins.max()], \
-            colors='lime', linestyles='solid', interpolation='None', zorder=10)
-        all_axes[i].clabel(c, inline=True, colors='darkgoldenrod', inline_spacing=8, \
-            fontsize=4, fontweight='black', fmt='%d', lw=2, ls='-')
-
-        all_axes[i].axhline(y=min_val_list[i], ls='--', color='k', lw=1)  # min value of density from biggest crater in bin
-        all_axes[i].axhline(y=max_val_list[i], ls='--', color='k', lw=1)  # max value of density from smallest crater in bin
-
-        all_axes[i].minorticks_on()
-        all_axes[i].tick_params('both', width=1, length=3, which='minor', labelsize=6)
-        all_axes[i].tick_params('both', width=1, length=4.7, which='major', labelsize=6)
-
-        # add text on figure to indicate diameter bin
-        diam_bin_min = int(diam_bins[i].split('to')[0])
-        diam_bin_max = int(diam_bins[i].split('to')[1])
-        diambinbox = TextArea(str(diam_bin_min) + ' to ' + str(diam_bin_max) + ' km', textprops=dict(color='k', size=5))
-        anc_diambinbox = AnchoredOffsetbox(loc=2, child=diambinbox, pad=0.0, frameon=False,\
-                                             bbox_to_anchor=(0.65, 0.16),\
-                                             bbox_transform=all_axes[i].transAxes, borderpad=0.0)
-        all_axes[i].add_artist(anc_diambinbox)
-
-        if i <= 11:
-            all_axes[i].set_xticklabels([])
-
-        if i == 1 or i == 2 or i == 3 or i == 5 or i == 6 or i == 7 or i == 9 or i == 10 or i == 11 or i == 13:
-            all_axes[i].set_yticklabels([])
-
-    ax_9to10.set_xticklabels(['0', '10', '20', ''])
-    ax_20to25.set_xticklabels(['', '10', '20', '30'])
-    ax_25to30.set_xticklabels(['0', '10', '20', '30'])
-    ax_30to35.set_xticklabels(['0', '10', '20', '30'])
-
-    fig.savefig(slope_extdir + 'slope_v_density_all_grid.png', dpi=300, bbox_inches='tight')
-    fig.savefig(slope_extdir + 'slope_v_density_all_grid.eps', dpi=300, bbox_inches='tight')
-
-    plt.clf()
-    plt.cla()
-    plt.close()
-
-    # ----------------------------- ALL TOGETHER PLOT ----------------------------- #
-    # Uses some of the lists from the grid plot so don't comment that one out
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-
-    ax.set_xlabel(r'$\mathrm{Slope}$', fontsize=18)
-    ax.set_ylabel(r'$\mathrm{Density}$', fontsize=18)
-
-    for i in range(len(all_axes)):
-
-        ax.scatter(slope_arr_color[all_diam_idx[i]], density_arr_color[all_diam_idx[i]], s=1, c=color_arr[all_diam_idx[i]], alpha=0.4, edgecolors='none')
-
-    ax.set_yscale('log')
-    ax.set_ylim(1e-8, 2.0)
-    ax.set_xlim(0, 35)
-    
-    ax.minorticks_on()
-    ax.tick_params('both', width=1, length=3, which='minor')
-    ax.tick_params('both', width=1, length=4.7, which='major')
-    ax.grid(True)
-
-    fig.savefig(slope_extdir + 'slope_v_density_all_together.png', dpi=300, bbox_inches='tight')
-    fig.savefig(slope_extdir + 'slope_v_density_all_together.eps', dpi=300, bbox_inches='tight')
-
-    plt.clf()
-    plt.cla()
-    plt.close()
-
-    return None
-
 def get_diam_idx(color_arr, diam_bin):
 
     if diam_bin == '1to2':
@@ -713,6 +559,398 @@ def convert_npy_array_tofits(npy_array, final_shape, savedir, final_name):
 
     return None
 
+def get_specific_diambin_arrays(slope, pix_frac, crater_vert_cat, crater_id_in_pix_arr, start):
+
+    # Create empty lists for each specific diameter bin
+    density_diambin_1_2   = []
+    density_diambin_2_3   = []
+    density_diambin_3_4   = []
+    density_diambin_4_5   = []
+    density_diambin_5_6   = []
+    density_diambin_6_7   = []
+    density_diambin_7_8   = []
+    density_diambin_8_9   = []
+    density_diambin_9_10  = []
+    density_diambin_10_15 = []
+    density_diambin_15_20 = []
+    density_diambin_20_25 = []
+    density_diambin_25_30 = []
+    density_diambin_30_35 = []
+
+    slope_diambin_1_2   = []
+    slope_diambin_2_3   = []
+    slope_diambin_3_4   = []
+    slope_diambin_4_5   = []
+    slope_diambin_5_6   = []
+    slope_diambin_6_7   = []
+    slope_diambin_7_8   = []
+    slope_diambin_8_9   = []
+    slope_diambin_9_10  = []
+    slope_diambin_10_15 = []
+    slope_diambin_15_20 = []
+    slope_diambin_20_25 = []
+    slope_diambin_25_30 = []
+    slope_diambin_30_35 = []
+
+    # read in all invidual diambin crater contributions
+    crater_frac_diambin_1_2   = np.load(slope_extdir + 'crater_frac_diambin_1_2.npy')
+    crater_frac_diambin_2_3   = np.load(slope_extdir + 'crater_frac_diambin_2_3.npy')
+    crater_frac_diambin_3_4   = np.load(slope_extdir + 'crater_frac_diambin_3_4.npy')
+    crater_frac_diambin_4_5   = np.load(slope_extdir + 'crater_frac_diambin_4_5.npy')
+    crater_frac_diambin_5_6   = np.load(slope_extdir + 'crater_frac_diambin_5_6.npy')
+    crater_frac_diambin_6_7   = np.load(slope_extdir + 'crater_frac_diambin_6_7.npy')
+    crater_frac_diambin_7_8   = np.load(slope_extdir + 'crater_frac_diambin_7_8.npy')
+    crater_frac_diambin_8_9   = np.load(slope_extdir + 'crater_frac_diambin_8_9.npy')
+    crater_frac_diambin_9_10  = np.load(slope_extdir + 'crater_frac_diambin_9_10.npy')
+    crater_frac_diambin_10_15 = np.load(slope_extdir + 'crater_frac_diambin_10_15.npy')
+    crater_frac_diambin_15_20 = np.load(slope_extdir + 'crater_frac_diambin_15_20.npy')
+    crater_frac_diambin_20_25 = np.load(slope_extdir + 'crater_frac_diambin_20_25.npy')
+    crater_frac_diambin_25_30 = np.load(slope_extdir + 'crater_frac_diambin_25_30.npy')
+    crater_frac_diambin_30_35 = np.load(slope_extdir + 'crater_frac_diambin_30_35.npy')
+
+    # loop over all pixels
+    for i in range(len(crater_id_in_pix_arr)):
+
+        if (i % 100000) == 0.0:
+            print '\r',
+            print "At pixel number:",'{0:.2e}'.format(i),\
+            "; time taken up to now:",'{0:.2f}'.format((time.time() - start)/60),"minutes.",
+            sys.stdout.flush()
+
+        current_crater_ids = crater_id_in_pix_arr[i]
+        if len(current_crater_ids) == 0:
+            continue    
+
+        elif len(current_crater_ids) == 1:
+            current_id = current_crater_ids[0]
+            current_diam = get_diam(crater_vert_cat, current_id)
+
+            if (current_diam > 35):
+                continue
+
+            else:
+                append_to_density_slope_diambin_lists(current_diam, i, pix_frac, slope, density_diambin_1_2, density_diambin_2_3, density_diambin_3_4,\
+                    density_diambin_4_5, density_diambin_5_6, density_diambin_6_7, density_diambin_7_8, density_diambin_8_9,\
+                    density_diambin_9_10, density_diambin_10_15, density_diambin_15_20, density_diambin_20_25, density_diambin_25_30,\
+                    density_diambin_30_35, slope_diambin_1_2, slope_diambin_2_3, slope_diambin_3_4, slope_diambin_4_5, slope_diambin_5_6,\
+                    slope_diambin_6_7, slope_diambin_7_8, slope_diambin_8_9, slope_diambin_9_10, slope_diambin_10_15, slope_diambin_15_20,\
+                    slope_diambin_20_25, slope_diambin_25_30, slope_diambin_30_35, crater_frac_diambin_1_2, crater_frac_diambin_2_3,\
+                    crater_frac_diambin_3_4, crater_frac_diambin_4_5, crater_frac_diambin_5_6, crater_frac_diambin_6_7,\
+                    crater_frac_diambin_7_8, crater_frac_diambin_8_9, crater_frac_diambin_9_10, crater_frac_diambin_10_15,\
+                    crater_frac_diambin_15_20, crater_frac_diambin_20_25, crater_frac_diambin_25_30, crater_frac_diambin_30_35)
+
+        elif len(current_crater_ids) > 1:
+            for j in range(len(current_crater_ids)):
+                current_id = current_crater_ids[j]
+                current_diam = get_diam(crater_vert_cat, current_id)
+
+                if (current_diam > 35):
+                    continue
+
+                else:
+                    append_to_density_slope_diambin_lists(current_diam, i, pix_frac, slope, density_diambin_1_2, density_diambin_2_3, density_diambin_3_4,\
+                        density_diambin_4_5, density_diambin_5_6, density_diambin_6_7, density_diambin_7_8, density_diambin_8_9,\
+                        density_diambin_9_10, density_diambin_10_15, density_diambin_15_20, density_diambin_20_25, density_diambin_25_30,\
+                        density_diambin_30_35, slope_diambin_1_2, slope_diambin_2_3, slope_diambin_3_4, slope_diambin_4_5, slope_diambin_5_6,\
+                        slope_diambin_6_7, slope_diambin_7_8, slope_diambin_8_9, slope_diambin_9_10, slope_diambin_10_15, slope_diambin_15_20,\
+                        slope_diambin_20_25, slope_diambin_25_30, slope_diambin_30_35, crater_frac_diambin_1_2, crater_frac_diambin_2_3,\
+                        crater_frac_diambin_3_4, crater_frac_diambin_4_5, crater_frac_diambin_5_6, crater_frac_diambin_6_7,\
+                        crater_frac_diambin_7_8, crater_frac_diambin_8_9, crater_frac_diambin_9_10, crater_frac_diambin_10_15,\
+                        crater_frac_diambin_15_20, crater_frac_diambin_20_25, crater_frac_diambin_25_30, crater_frac_diambin_30_35)
+
+    # convert to numpy arrays so you can do array ops and save them
+    density_diambin_1_2 = np.asarray(density_diambin_1_2)
+    density_diambin_2_3 = np.asarray(density_diambin_2_3)
+    density_diambin_3_4 = np.asarray(density_diambin_3_4)
+    density_diambin_4_5 = np.asarray(density_diambin_4_5)
+    density_diambin_5_6 = np.asarray(density_diambin_5_6)
+    density_diambin_6_7 = np.asarray(density_diambin_6_7)
+    density_diambin_7_8 = np.asarray(density_diambin_7_8)
+    density_diambin_8_9 = np.asarray(density_diambin_8_9)
+    density_diambin_9_10 = np.asarray(density_diambin_9_10)
+    density_diambin_10_15 = np.asarray(density_diambin_10_15)
+    density_diambin_15_20 = np.asarray(density_diambin_15_20)
+    density_diambin_20_25 = np.asarray(density_diambin_20_25)
+    density_diambin_25_30 = np.asarray(density_diambin_25_30)
+    density_diambin_30_35 = np.asarray(density_diambin_30_35)
+
+    slope_diambin_1_2 = np.asarray(slope_diambin_1_2)
+    slope_diambin_2_3 = np.asarray(slope_diambin_2_3)
+    slope_diambin_3_4 = np.asarray(slope_diambin_3_4)
+    slope_diambin_4_5 = np.asarray(slope_diambin_4_5)
+    slope_diambin_5_6 = np.asarray(slope_diambin_5_6)
+    slope_diambin_6_7 = np.asarray(slope_diambin_6_7)
+    slope_diambin_7_8 = np.asarray(slope_diambin_7_8)
+    slope_diambin_8_9 = np.asarray(slope_diambin_8_9)
+    slope_diambin_9_10 = np.asarray(slope_diambin_9_10)
+    slope_diambin_10_15 = np.asarray(slope_diambin_10_15)
+    slope_diambin_15_20 = np.asarray(slope_diambin_15_20)
+    slope_diambin_20_25 = np.asarray(slope_diambin_20_25)
+    slope_diambin_25_30 = np.asarray(slope_diambin_25_30)
+    slope_diambin_30_35 = np.asarray(slope_diambin_30_35)
+
+    # save the arrays
+    np.save(slope_extdir + 'density_diambin_1_2.npy', density_diambin_1_2)
+    np.save(slope_extdir + 'density_diambin_2_3.npy', density_diambin_2_3)
+    np.save(slope_extdir + 'density_diambin_3_4.npy', density_diambin_3_4)
+    np.save(slope_extdir + 'density_diambin_4_5.npy', density_diambin_4_5)
+    np.save(slope_extdir + 'density_diambin_5_6.npy', density_diambin_5_6)
+    np.save(slope_extdir + 'density_diambin_6_7.npy', density_diambin_6_7)
+    np.save(slope_extdir + 'density_diambin_7_8.npy', density_diambin_7_8)
+    np.save(slope_extdir + 'density_diambin_8_9.npy', density_diambin_8_9)
+    np.save(slope_extdir + 'density_diambin_9_10.npy', density_diambin_9_10)
+    np.save(slope_extdir + 'density_diambin_10_15.npy', density_diambin_10_15)
+    np.save(slope_extdir + 'density_diambin_15_20.npy', density_diambin_15_20)
+    np.save(slope_extdir + 'density_diambin_20_25.npy', density_diambin_20_25)
+    np.save(slope_extdir + 'density_diambin_25_30.npy', density_diambin_25_30)
+    np.save(slope_extdir + 'density_diambin_30_35.npy', density_diambin_30_35)
+
+    np.save(slope_extdir + 'slope_diambin_1_2.npy', slope_diambin_1_2)
+    np.save(slope_extdir + 'slope_diambin_2_3.npy', slope_diambin_2_3)
+    np.save(slope_extdir + 'slope_diambin_3_4.npy', slope_diambin_3_4)
+    np.save(slope_extdir + 'slope_diambin_4_5.npy', slope_diambin_4_5)
+    np.save(slope_extdir + 'slope_diambin_5_6.npy', slope_diambin_5_6)
+    np.save(slope_extdir + 'slope_diambin_6_7.npy', slope_diambin_6_7)
+    np.save(slope_extdir + 'slope_diambin_7_8.npy', slope_diambin_7_8)
+    np.save(slope_extdir + 'slope_diambin_8_9.npy', slope_diambin_8_9)
+    np.save(slope_extdir + 'slope_diambin_9_10.npy', slope_diambin_9_10)
+    np.save(slope_extdir + 'slope_diambin_10_15.npy', slope_diambin_10_15)
+    np.save(slope_extdir + 'slope_diambin_15_20.npy', slope_diambin_15_20)
+    np.save(slope_extdir + 'slope_diambin_20_25.npy', slope_diambin_20_25)
+    np.save(slope_extdir + 'slope_diambin_25_30.npy', slope_diambin_25_30)
+    np.save(slope_extdir + 'slope_diambin_30_35.npy', slope_diambin_30_35)
+
+    print "Arrays saved."
+
+    return None
+
+def append_to_density_slope_diambin_lists(current_diam, pix_idx, pix_frac, slope, density_diambin_1_2, density_diambin_2_3, density_diambin_3_4,\
+    density_diambin_4_5, density_diambin_5_6, density_diambin_6_7, density_diambin_7_8, density_diambin_8_9,\
+    density_diambin_9_10, density_diambin_10_15, density_diambin_15_20, density_diambin_20_25, density_diambin_25_30,\
+    density_diambin_30_35, slope_diambin_1_2, slope_diambin_2_3, slope_diambin_3_4, slope_diambin_4_5, slope_diambin_5_6,\
+    slope_diambin_6_7, slope_diambin_7_8, slope_diambin_8_9, slope_diambin_9_10, slope_diambin_10_15, slope_diambin_15_20,\
+    slope_diambin_20_25, slope_diambin_25_30, slope_diambin_30_35, crater_frac_diambin_1_2, crater_frac_diambin_2_3,\
+    crater_frac_diambin_3_4, crater_frac_diambin_4_5, crater_frac_diambin_5_6, crater_frac_diambin_6_7,\
+    crater_frac_diambin_7_8, crater_frac_diambin_8_9, crater_frac_diambin_9_10, crater_frac_diambin_10_15,\
+    crater_frac_diambin_15_20, crater_frac_diambin_20_25, crater_frac_diambin_25_30, crater_frac_diambin_30_35):
+
+    if current_diam >= 1.0 and current_diam < 2.0:
+        density_diambin_1_2.append(crater_frac_diambin_1_2[pix_idx] / pix_frac[pix_idx])
+        slope_diambin_1_2.append(slope[pix_idx])
+    
+    elif current_diam >= 2.0 and current_diam < 3.0:
+        density_diambin_2_3.append(crater_frac_diambin_2_3[pix_idx] / pix_frac[pix_idx])
+        slope_diambin_2_3.append(slope[pix_idx])
+    
+    elif current_diam >= 3.0 and current_diam < 4.0:
+        density_diambin_3_4.append(crater_frac_diambin_3_4[pix_idx] / pix_frac[pix_idx])
+        slope_diambin_3_4.append(slope[pix_idx])
+    
+    elif current_diam >= 4.0 and current_diam < 5.0:
+        density_diambin_4_5.append(crater_frac_diambin_4_5[pix_idx] / pix_frac[pix_idx])
+        slope_diambin_4_5.append(slope[pix_idx])
+    
+    elif current_diam >= 5.0 and current_diam < 6.0:
+        density_diambin_5_6.append(crater_frac_diambin_5_6[pix_idx] / pix_frac[pix_idx])
+        slope_diambin_5_6.append(slope[pix_idx])
+    
+    elif current_diam >= 6.0 and current_diam < 7.0:
+        density_diambin_6_7.append(crater_frac_diambin_6_7[pix_idx] / pix_frac[pix_idx])
+        slope_diambin_6_7.append(slope[pix_idx])
+    
+    elif current_diam >= 7.0 and current_diam < 8.0:
+        density_diambin_7_8.append(crater_frac_diambin_7_8[pix_idx] / pix_frac[pix_idx])
+        slope_diambin_7_8.append(slope[pix_idx])
+    
+    elif current_diam >= 8.0 and current_diam < 9.0:
+        density_diambin_8_9.append(crater_frac_diambin_8_9[pix_idx] / pix_frac[pix_idx])
+        slope_diambin_8_9.append(slope[pix_idx])
+    
+    elif current_diam >= 9.0 and current_diam < 10.0:
+        density_diambin_9_10.append(crater_frac_diambin_9_10[pix_idx] / pix_frac[pix_idx])
+        slope_diambin_9_10.append(slope[pix_idx])
+
+    elif current_diam >= 10.0 and current_diam < 15.0:
+        density_diambin_10_15.append(crater_frac_diambin_10_15[pix_idx] / pix_frac[pix_idx])
+        slope_diambin_10_15.append(slope[pix_idx])
+
+    elif current_diam >= 15.0 and current_diam < 20.0:
+        density_diambin_15_20.append(crater_frac_diambin_15_20[pix_idx] / pix_frac[pix_idx])
+        slope_diambin_15_20.append(slope[pix_idx])
+
+    elif current_diam >= 20.0 and current_diam < 25.0:
+        density_diambin_20_25.append(crater_frac_diambin_20_25[pix_idx] / pix_frac[pix_idx])
+        slope_diambin_20_25.append(slope[pix_idx])
+    
+    elif current_diam >= 25.0 and current_diam < 30.0:
+        density_diambin_25_30.append(crater_frac_diambin_25_30[pix_idx] / pix_frac[pix_idx])
+        slope_diambin_25_30.append(slope[pix_idx])
+    
+    elif current_diam >= 30.0 and current_diam < 35.0:
+        density_diambin_30_35.append(crater_frac_diambin_30_35[pix_idx] / pix_frac[pix_idx])
+        slope_diambin_30_35.append(slope[pix_idx])
+
+    return None
+
+def plot_by_diam(density, slope_arr, pix_frac, start):
+
+    crater_ids, crater_id_in_pix_arr, crater_vert_cat = get_ids()
+
+    # ------------ for cumulative numbers ------------ # 
+    # get arrays where the crater diam has been identified by color
+    #density_arr_color, slope_arr_color, color_arr = \
+    #get_diam_ref_arrays(density, slope_arr, crater_vert_cat, crater_id_in_pix_arr, start)
+
+    # ------------ to get crater contributions included only from within diambin ------------ # 
+    get_specific_diambin_arrays(slope_arr, pix_frac, crater_vert_cat, crater_id_in_pix_arr, start)
+    sys.exit(0)
+
+    # do the actual plotting
+    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, 1, 2)
+    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, 2, 3)
+    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, 3, 4)
+    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, 4, 5)
+    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, 5, 6)
+    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, 6, 7)
+    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, 7, 8)
+    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, 8, 9)
+    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, 9, 10)
+    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, 10, 15)
+    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, 15, 20)
+    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, 20, 25)
+    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, 25, 30)
+    make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, 30, 35)
+
+    # Put all together
+    # ----------------------------- GRID PLOT ----------------------------- #
+    gs = gridspec.GridSpec(4,4)
+    gs.update(left=0.1, right=0.9, bottom=0.1, top=0.9, wspace=0.02, hspace=0.02)
+
+    fig = plt.figure()
+    ax_1to2   = fig.add_subplot(gs[0, 0])
+    ax_2to3   = fig.add_subplot(gs[0, 1])
+    ax_3to4   = fig.add_subplot(gs[0, 2])
+    ax_4to5   = fig.add_subplot(gs[0, 3])
+    ax_5to6   = fig.add_subplot(gs[1, 0])
+    ax_6to7   = fig.add_subplot(gs[1, 1])
+    ax_7to8   = fig.add_subplot(gs[1, 2])
+    ax_8to9   = fig.add_subplot(gs[1, 3])
+    ax_9to10  = fig.add_subplot(gs[2, 0])
+    ax_10to15 = fig.add_subplot(gs[2, 1])
+    ax_15to20 = fig.add_subplot(gs[2, 2])
+    ax_20to25 = fig.add_subplot(gs[2, 3])
+    ax_25to30 = fig.add_subplot(gs[3, 1])
+    ax_30to35 = fig.add_subplot(gs[3, 2])
+
+    all_axes = [ax_1to2, ax_2to3, ax_3to4, ax_4to5, ax_5to6, ax_6to7, ax_7to8, ax_8to9, ax_9to10, ax_10to15, ax_15to20, ax_20to25, ax_25to30, ax_30to35]
+    diam_bins = ['1to2', '2to3', '3to4', '4to5', '5to6', '6to7', '7to8', '8to9', '9to10', '10to15', '15to20', '20to25', '25to30', '30to35']
+    all_diam_idx = []
+    min_val_list = []
+    max_val_list = []
+    for j in range(len(all_axes)):
+        diam_bin_idx = get_diam_idx(color_arr, diam_bins[j])
+        all_diam_idx.append(diam_bin_idx)
+
+        diam_bin_min = int(diam_bins[j].split('to')[0])
+        diam_bin_max = int(diam_bins[j].split('to')[1])
+        min_val_list.append(4e6 / (np.pi * (diam_bin_max*1e3)**2))
+        max_val_list.append(4e6 / (np.pi * (diam_bin_min*1e3)**2))
+
+    ax_25to30.set_xlabel(r'$\mathrm{Slope}$', fontsize=15)
+    ax_25to30.xaxis.set_label_coords(1.05, -0.25)
+
+    ax_9to10.set_ylabel(r'$\mathrm{Density}$', fontsize=15)
+    ax_9to10.yaxis.set_label_coords(-0.3, 1.05)
+
+    for i in range(len(all_axes)):
+
+        all_axes[i].scatter(slope_arr_color[all_diam_idx[i]], density_arr_color[all_diam_idx[i]], s=5, c=color_arr[all_diam_idx[i]], alpha=0.4, edgecolors='none')
+        all_axes[i].set_yscale('log')
+        all_axes[i].set_ylim(1e-8, 2.0)
+        all_axes[i].set_xlim(0, 35)
+
+        # plot contours for point density
+        # make sure the arrays dont have NaNs
+        slope_fin_idx = np.where(np.isfinite(slope_arr_color[all_diam_idx[i]]))[0]
+        density_fin_idx = np.where(np.isfinite(density_arr_color[all_diam_idx[i]]))[0]
+        fin_idx = np.intersect1d(slope_fin_idx, density_fin_idx)
+
+        slope_arr_color_plot = slope_arr_color[all_diam_idx[i]][fin_idx]
+        density_arr_color_plot = density_arr_color[all_diam_idx[i]][fin_idx]
+
+        counts, xbins, ybins = np.histogram2d(slope_arr_color_plot, density_arr_color_plot, \
+            bins=25, normed=False)
+        levels_to_plot = [10, 50, 200, 500, 1e3, 2e3, 5e3]
+        c = all_axes[i].contour(counts.transpose(), levels=levels_to_plot, \
+            extent=[xbins.min(), xbins.max(), ybins.min(), ybins.max()], \
+            colors='lime', linestyles='solid', interpolation='None', zorder=10)
+        all_axes[i].clabel(c, inline=True, colors='darkgoldenrod', inline_spacing=8, \
+            fontsize=4, fontweight='black', fmt='%d', lw=2, ls='-')
+
+        all_axes[i].axhline(y=min_val_list[i], ls='--', color='k', lw=1)  # min value of density from biggest crater in bin
+        all_axes[i].axhline(y=max_val_list[i], ls='--', color='k', lw=1)  # max value of density from smallest crater in bin
+
+        all_axes[i].minorticks_on()
+        all_axes[i].tick_params('both', width=1, length=3, which='minor', labelsize=6)
+        all_axes[i].tick_params('both', width=1, length=4.7, which='major', labelsize=6)
+
+        # add text on figure to indicate diameter bin
+        diam_bin_min = int(diam_bins[i].split('to')[0])
+        diam_bin_max = int(diam_bins[i].split('to')[1])
+        diambinbox = TextArea(str(diam_bin_min) + ' to ' + str(diam_bin_max) + ' km', textprops=dict(color='k', size=5))
+        anc_diambinbox = AnchoredOffsetbox(loc=2, child=diambinbox, pad=0.0, frameon=False,\
+                                             bbox_to_anchor=(0.65, 0.16),\
+                                             bbox_transform=all_axes[i].transAxes, borderpad=0.0)
+        all_axes[i].add_artist(anc_diambinbox)
+
+        if i <= 11:
+            all_axes[i].set_xticklabels([])
+
+        if i == 1 or i == 2 or i == 3 or i == 5 or i == 6 or i == 7 or i == 9 or i == 10 or i == 11 or i == 13:
+            all_axes[i].set_yticklabels([])
+
+    ax_9to10.set_xticklabels(['0', '10', '20', ''])
+    ax_20to25.set_xticklabels(['', '10', '20', '30'])
+    ax_25to30.set_xticklabels(['0', '10', '20', '30'])
+    ax_30to35.set_xticklabels(['0', '10', '20', '30'])
+
+    fig.savefig(slope_extdir + 'slope_v_density_all_grid.png', dpi=300, bbox_inches='tight')
+    fig.savefig(slope_extdir + 'slope_v_density_all_grid.eps', dpi=300, bbox_inches='tight')
+
+    plt.clf()
+    plt.cla()
+    plt.close()
+
+    # ----------------------------- ALL TOGETHER PLOT ----------------------------- #
+    # Uses some of the lists from the grid plot so don't comment that one out
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+
+    ax.set_xlabel(r'$\mathrm{Slope}$', fontsize=18)
+    ax.set_ylabel(r'$\mathrm{Density}$', fontsize=18)
+
+    for i in range(len(all_axes)):
+
+        ax.scatter(slope_arr_color[all_diam_idx[i]], density_arr_color[all_diam_idx[i]], s=1, c=color_arr[all_diam_idx[i]], alpha=0.4, edgecolors='none')
+
+    ax.set_yscale('log')
+    ax.set_ylim(1e-8, 2.0)
+    ax.set_xlim(0, 35)
+    
+    ax.minorticks_on()
+    ax.tick_params('both', width=1, length=3, which='minor')
+    ax.tick_params('both', width=1, length=4.7, which='major')
+    ax.grid(True)
+
+    fig.savefig(slope_extdir + 'slope_v_density_all_together.png', dpi=300, bbox_inches='tight')
+    fig.savefig(slope_extdir + 'slope_v_density_all_together.eps', dpi=300, bbox_inches='tight')
+
+    plt.clf()
+    plt.cla()
+    plt.close()
+
+    return None
+
 if __name__ == '__main__':
 
     # Start time
@@ -780,7 +1018,7 @@ if __name__ == '__main__':
     nodata_idx = np.where(slope_arr == -9999.0)
     slope_arr[nodata_idx] = np.nan
 
-    plot_by_diam(density, slope_arr, start)
+    plot_by_diam(density, slope_arr, pix_frac, start)
     #plot_3d_hist(density, slope_arr)
 
     # total run time
