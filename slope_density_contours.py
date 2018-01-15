@@ -191,7 +191,7 @@ def make_cumulative_plots():
 
     return None
 
-def make_no_overlap_plots(density_arr, slope_arr, diam_bin_min, diam_bin_max, color):
+def make_no_overlap_Nvalue_plots(density_arr, slope_arr, diam_bin_min, diam_bin_max, color):
 
     # make figure
     fig = plt.figure()
@@ -254,7 +254,7 @@ def make_no_overlap_plots(density_arr, slope_arr, diam_bin_min, diam_bin_max, co
 
     return None
 
-if __name__ == '__main__':
+def call_no_overlap_plots():
 
     # read in all arrays
     density_diambin_1_2 = np.load(slope_extdir + 'density_diambin_1_2.npy')
@@ -289,19 +289,77 @@ if __name__ == '__main__':
 
     # make plots with only contributions from craters that 
     # actually fall within the specified diameter bin
-    make_no_overlap_plots(density_diambin_1_2, slope_diambin_1_2, 1, 2, 'midnightblue')
-    make_no_overlap_plots(density_diambin_2_3, slope_diambin_2_3, 2, 3, 'blue')
-    make_no_overlap_plots(density_diambin_3_4, slope_diambin_3_4, 3, 4, 'royalblue')
-    make_no_overlap_plots(density_diambin_4_5, slope_diambin_4_5, 4, 5, 'dodgerblue')
-    make_no_overlap_plots(density_diambin_5_6, slope_diambin_5_6, 5, 6, 'deepskyblue')
-    make_no_overlap_plots(density_diambin_6_7, slope_diambin_6_7, 6, 7, 'steelblue')
-    make_no_overlap_plots(density_diambin_7_8, slope_diambin_7_8, 7, 8, 'slateblue')
-    make_no_overlap_plots(density_diambin_8_9, slope_diambin_8_9, 8, 9, 'rebeccapurple')
-    make_no_overlap_plots(density_diambin_9_10, slope_diambin_9_10, 9, 10, 'darkcyan')
-    make_no_overlap_plots(density_diambin_10_15, slope_diambin_10_15, 10, 15, 'green')
-    make_no_overlap_plots(density_diambin_15_20, slope_diambin_15_20, 15, 20, 'olive')
-    make_no_overlap_plots(density_diambin_20_25, slope_diambin_20_25, 20, 25, 'goldenrod')
-    make_no_overlap_plots(density_diambin_25_30, slope_diambin_25_30, 25, 30, 'darkorchid')
-    make_no_overlap_plots(density_diambin_30_35, slope_diambin_30_35, 30, 35, 'maroon')
+    make_no_overlap_Nvalue_plots(density_diambin_1_2, slope_diambin_1_2, 1, 2, 'midnightblue')
+    make_no_overlap_Nvalue_plots(density_diambin_2_3, slope_diambin_2_3, 2, 3, 'blue')
+    make_no_overlap_Nvalue_plots(density_diambin_3_4, slope_diambin_3_4, 3, 4, 'royalblue')
+    make_no_overlap_Nvalue_plots(density_diambin_4_5, slope_diambin_4_5, 4, 5, 'dodgerblue')
+    make_no_overlap_Nvalue_plots(density_diambin_5_6, slope_diambin_5_6, 5, 6, 'deepskyblue')
+    make_no_overlap_Nvalue_plots(density_diambin_6_7, slope_diambin_6_7, 6, 7, 'steelblue')
+    make_no_overlap_Nvalue_plots(density_diambin_7_8, slope_diambin_7_8, 7, 8, 'slateblue')
+    make_no_overlap_Nvalue_plots(density_diambin_8_9, slope_diambin_8_9, 8, 9, 'rebeccapurple')
+    make_no_overlap_Nvalue_plots(density_diambin_9_10, slope_diambin_9_10, 9, 10, 'darkcyan')
+    make_no_overlap_Nvalue_plots(density_diambin_10_15, slope_diambin_10_15, 10, 15, 'green')
+    make_no_overlap_Nvalue_plots(density_diambin_15_20, slope_diambin_15_20, 15, 20, 'olive')
+    make_no_overlap_Nvalue_plots(density_diambin_20_25, slope_diambin_20_25, 20, 25, 'goldenrod')
+    make_no_overlap_Nvalue_plots(density_diambin_25_30, slope_diambin_25_30, 25, 30, 'darkorchid')
+    make_no_overlap_Nvalue_plots(density_diambin_30_35, slope_diambin_30_35, 30, 35, 'maroon')
+
+    return None
+
+def call_Nvalue_plots():
+
+    # read in all arrays
+    density_diambin_1 = np.load(slope_extdir + 'density_diambin_1.npy')
+    density_diambin_2 = np.load(slope_extdir + 'density_diambin_2.npy')
+    density_diambin_3 = np.load(slope_extdir + 'density_diambin_3.npy')
+    density_diambin_4 = np.load(slope_extdir + 'density_diambin_4.npy')
+    density_diambin_5 = np.load(slope_extdir + 'density_diambin_5.npy')
+    density_diambin_6 = np.load(slope_extdir + 'density_diambin_6.npy')
+    density_diambin_7 = np.load(slope_extdir + 'density_diambin_7.npy')
+    density_diambin_8 = np.load(slope_extdir + 'density_diambin_8.npy')
+    density_diambin_9 = np.load(slope_extdir + 'density_diambin_9.npy')
+    density_diambin_10 = np.load(slope_extdir + 'density_diambin_10.npy')
+    density_diambin_15 = np.load(slope_extdir + 'density_diambin_15.npy')
+    density_diambin_20 = np.load(slope_extdir + 'density_diambin_20.npy')
+    density_diambin_25 = np.load(slope_extdir + 'density_diambin_25.npy')
+    density_diambin_30 = np.load(slope_extdir + 'density_diambin_30.npy')
+
+    slope_diambin_1 = np.load(slope_extdir + 'slope_diambin_1.npy')
+    slope_diambin_2 = np.load(slope_extdir + 'slope_diambin_2.npy')
+    slope_diambin_3 = np.load(slope_extdir + 'slope_diambin_3.npy')
+    slope_diambin_4 = np.load(slope_extdir + 'slope_diambin_4.npy')
+    slope_diambin_5 = np.load(slope_extdir + 'slope_diambin_5.npy')
+    slope_diambin_6 = np.load(slope_extdir + 'slope_diambin_6.npy')
+    slope_diambin_7 = np.load(slope_extdir + 'slope_diambin_7.npy')
+    slope_diambin_8 = np.load(slope_extdir + 'slope_diambin_8.npy')
+    slope_diambin_9 = np.load(slope_extdir + 'slope_diambin_9.npy')
+    slope_diambin_10 = np.load(slope_extdir + 'slope_diambin_10.npy')
+    slope_diambin_15 = np.load(slope_extdir + 'slope_diambin_15.npy')
+    slope_diambin_20 = np.load(slope_extdir + 'slope_diambin_20.npy')
+    slope_diambin_25 = np.load(slope_extdir + 'slope_diambin_25.npy')
+    slope_diambin_30 = np.load(slope_extdir + 'slope_diambin_30.npy')
+
+    # make plots with only contributions from craters that 
+    # actually fall within the specified diameter bin
+    make_no_overlap_Nvalue_plots(density_diambin_1, slope_diambin_1, 1, 2, 'midnightblue')
+    make_no_overlap_Nvalue_plots(density_diambin_2, slope_diambin_2, 2, 3, 'blue')
+    make_no_overlap_Nvalue_plots(density_diambin_3, slope_diambin_3, 3, 4, 'royalblue')
+    make_no_overlap_Nvalue_plots(density_diambin_4, slope_diambin_4, 4, 5, 'dodgerblue')
+    make_no_overlap_Nvalue_plots(density_diambin_5, slope_diambin_5, 5, 6, 'deepskyblue')
+    make_no_overlap_Nvalue_plots(density_diambin_6, slope_diambin_6, 6, 7, 'steelblue')
+    make_no_overlap_Nvalue_plots(density_diambin_7, slope_diambin_7, 7, 8, 'slateblue')
+    make_no_overlap_Nvalue_plots(density_diambin_8, slope_diambin_8, 8, 9, 'rebeccapurple')
+    make_no_overlap_Nvalue_plots(density_diambin_9, slope_diambin_9, 9, 10, 'darkcyan')
+    make_no_overlap_Nvalue_plots(density_diambin_10, slope_diambin_10, 10, 15, 'green')
+    make_no_overlap_Nvalue_plots(density_diambin_15, slope_diambin_15, 15, 20, 'olive')
+    make_no_overlap_Nvalue_plots(density_diambin_20, slope_diambin_20, 20, 25, 'goldenrod')
+    make_no_overlap_Nvalue_plots(density_diambin_25, slope_diambin_25, 25, 30, 'darkorchid')
+    make_no_overlap_Nvalue_plots(density_diambin_30, slope_diambin_30, 30, 35, 'maroon')
+
+    return None
+
+if __name__ == '__main__':    
+
+    call_Nvalue_plots()
 
     sys.exit(0)
