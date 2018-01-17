@@ -91,10 +91,25 @@ def make_plot_diam_bin_with_contour(density_arr_color, slope_arr_color, color_ar
 
     return None
 
-def get_levels_to_plot(diam_bin, cumulative=False):
+def get_levels_to_plot(diam_bin, plottype):
+
+    if plottype == 'cumulative':
+        cumulative = True
+        nooverlap = False
+        nvalue = False
+    elif plottype == 'nooverlap':
+        nooverlap = True
+        cumulative = False
+        nvalue = False
+    elif plottype == 'Nvalue':
+        nvalue = True
+        cumulative = False
+        nooverlap = False
 
     if diam_bin == '1to2':
         levels_to_plot = [10, 100, 200, 335, 450]
+        if nvalue:
+            levels_to_plot = [20, 150, 600, 900, 1200]
         cb_lw = 35.0
         vmin = -150
     elif diam_bin == '2to3':
@@ -104,19 +119,24 @@ def get_levels_to_plot(diam_bin, cumulative=False):
     elif diam_bin == '3to4':
         if cumulative:
             levels_to_plot = [3, 15, 30, 50, 68]
-        levels_to_plot = [3, 15, 30, 50, 85]
+        elif nooverlap:
+            levels_to_plot = [3, 15, 30, 50, 85]
+        elif nvalue:
+            levels_to_plot = [3, 15, 30, 50, 85]
         cb_lw = 35.0
         vmin = -20
     elif diam_bin == '4to5':
         if cumulative:
             levels_to_plot = [3, 10, 15, 24, 34]
-        levels_to_plot = [3, 10, 15, 24, 36]
+        elif nooverlap:
+            levels_to_plot = [3, 10, 15, 24, 36]
         cb_lw = 35.0
         vmin = -8
     elif diam_bin == '5to6':
         if cumulative:
             levels_to_plot = [2, 10, 18, 25, 37]
-        levels_to_plot = [2, 10, 18, 25, 45]
+        elif nooverlap:
+            levels_to_plot = [2, 10, 18, 25, 45]
         cb_lw = 35.0
         vmin = -10
     elif diam_bin == '6to7':
@@ -126,13 +146,15 @@ def get_levels_to_plot(diam_bin, cumulative=False):
     elif diam_bin == '7to8':
         if cumulative:
             levels_to_plot = [2, 8, 13, 18, 24]
-        levels_to_plot = [2, 8, 13, 18, 35]
+        elif nooverlap:
+            levels_to_plot = [2, 8, 13, 18, 35]
         cb_lw = 35.0
         vmin = -5
     elif diam_bin == '8to9':
         if cumulative:
             levels_to_plot = [2, 8, 13, 18, 23]
-        levels_to_plot = [2, 8, 13, 18, 38]
+        elif nooverlap:
+            levels_to_plot = [2, 8, 13, 18, 38]
         cb_lw = 35.0
         vmin = -5
     elif diam_bin == '9to10':
@@ -150,13 +172,15 @@ def get_levels_to_plot(diam_bin, cumulative=False):
     elif diam_bin == '20to25':
         if cumulative:
             levels_to_plot = [5, 50, 140, 200, 250, 280]
-        levels_to_plot = [5, 50, 140, 200, 250, 275]
+        elif nooverlap:
+            levels_to_plot = [5, 50, 140, 200, 250, 275]
         cb_lw = 28.0
         vmin = -50
     elif diam_bin == '25to30':
         if cumulative:
             levels_to_plot = [5, 50, 140, 200, 250, 280]
-        levels_to_plot = [5, 50, 140, 200, 250, 300]
+        elif nooverlap:
+            levels_to_plot = [5, 50, 140, 200, 250, 300]
         cb_lw = 28.0
         vmin = -50
     elif diam_bin == '30to35':
@@ -223,7 +247,8 @@ def make_no_overlap_Nvalue_plots(density_arr, slope_arr, diam_bin_min, diam_bin_
 
     print np.min(counts), np.max(counts)
     diam_bin = str(diam_bin_min) + 'to' + str(diam_bin_max)
-    levels_to_plot, cb_lw, vmin = get_levels_to_plot(diam_bin, cumulative=False)
+    plottype = 'Nvalue'
+    levels_to_plot, cb_lw, vmin = get_levels_to_plot(diam_bin, plottype=plottype)
     norm = mpl.colors.Normalize(vmin=vmin, vmax=max(levels_to_plot))
 
     c = ax.contour(counts.transpose(), levels=levels_to_plot, \
@@ -250,7 +275,10 @@ def make_no_overlap_Nvalue_plots(density_arr, slope_arr, diam_bin_min, diam_bin_
     ax.grid(True)
 
     # save the figure
-    fig.savefig(slope_extdir + 'slope_v_density_withcontour_nooverlap' + diam_bin + 'km.png', dpi=300, bbox_inches='tight')
+    if plottype == 'Nvalue':
+        fig.savefig(slope_extdir + 'slope_v_density_withcontour_Nvalue' + diam_bin + 'km.png', dpi=300, bbox_inches='tight')
+    elif plottype == 'nooverlap':
+        fig.savefig(slope_extdir + 'slope_v_density_withcontour_nooverlap' + diam_bin + 'km.png', dpi=300, bbox_inches='tight')
 
     return None
 
@@ -341,9 +369,12 @@ def call_Nvalue_plots():
 
     # make plots with only contributions from craters that 
     # actually fall within the specified diameter bin
-    make_no_overlap_Nvalue_plots(density_diambin_1, slope_diambin_1, 1, 2, 'midnightblue')
-    make_no_overlap_Nvalue_plots(density_diambin_2, slope_diambin_2, 2, 3, 'blue')
+    #make_no_overlap_Nvalue_plots(density_diambin_1, slope_diambin_1, 1, 2, 'midnightblue')
+
+    #make_no_overlap_Nvalue_plots(density_diambin_2, slope_diambin_2, 2, 3, 'blue')
+
     make_no_overlap_Nvalue_plots(density_diambin_3, slope_diambin_3, 3, 4, 'royalblue')
+    sys.exit(0)
     make_no_overlap_Nvalue_plots(density_diambin_4, slope_diambin_4, 4, 5, 'dodgerblue')
     make_no_overlap_Nvalue_plots(density_diambin_5, slope_diambin_5, 5, 6, 'deepskyblue')
     make_no_overlap_Nvalue_plots(density_diambin_6, slope_diambin_6, 6, 7, 'steelblue')

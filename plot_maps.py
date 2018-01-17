@@ -1029,7 +1029,7 @@ def make_arrays_for_Nvalue_plots(slope, pix_frac, crater_vert_cat, crater_id_in_
     crater_frac_diambin_20 = sum(allarr[11:])
     crater_frac_diambin_25 = sum(allarr[12:])
     crater_frac_diambin_30 = sum(allarr[13:])
-
+    
     # loop over all pixels
     for i in range(len(crater_id_in_pix_arr)):
 
@@ -1158,55 +1158,55 @@ def append_to_density_slope_Nvalue_lists(current_diam, pix_idx, pix_frac, slope,
         density_diambin_1.append(crater_frac_diambin_1[pix_idx] / pix_frac[pix_idx])
         slope_diambin_1.append(slope[pix_idx])
     
-    elif current_diam >= 2.0:
+    if current_diam >= 2.0:
         density_diambin_2.append(crater_frac_diambin_2[pix_idx] / pix_frac[pix_idx])
         slope_diambin_2.append(slope[pix_idx])
     
-    elif current_diam >= 3.0:
+    if current_diam >= 3.0:
         density_diambin_3.append(crater_frac_diambin_3[pix_idx] / pix_frac[pix_idx])
         slope_diambin_3.append(slope[pix_idx])
     
-    elif current_diam >= 4.0:
+    if current_diam >= 4.0:
         density_diambin_4.append(crater_frac_diambin_4[pix_idx] / pix_frac[pix_idx])
         slope_diambin_4.append(slope[pix_idx])
     
-    elif current_diam >= 5.0:
+    if current_diam >= 5.0:
         density_diambin_5.append(crater_frac_diambin_5[pix_idx] / pix_frac[pix_idx])
         slope_diambin_5.append(slope[pix_idx])
     
-    elif current_diam >= 6.0:
+    if current_diam >= 6.0:
         density_diambin_6.append(crater_frac_diambin_6[pix_idx] / pix_frac[pix_idx])
         slope_diambin_6.append(slope[pix_idx])
     
-    elif current_diam >= 7.0:
+    if current_diam >= 7.0:
         density_diambin_7.append(crater_frac_diambin_7[pix_idx] / pix_frac[pix_idx])
         slope_diambin_7.append(slope[pix_idx])
     
-    elif current_diam >= 8.0:
+    if current_diam >= 8.0:
         density_diambin_8.append(crater_frac_diambin_8[pix_idx] / pix_frac[pix_idx])
         slope_diambin_8.append(slope[pix_idx])
     
-    elif current_diam >= 9.0:
+    if current_diam >= 9.0:
         density_diambin_9.append(crater_frac_diambin_9[pix_idx] / pix_frac[pix_idx])
         slope_diambin_9.append(slope[pix_idx])
 
-    elif current_diam >= 10.0:
+    if current_diam >= 10.0:
         density_diambin_10.append(crater_frac_diambin_10[pix_idx] / pix_frac[pix_idx])
         slope_diambin_10.append(slope[pix_idx])
 
-    elif current_diam >= 15.0:
+    if current_diam >= 15.0:
         density_diambin_15.append(crater_frac_diambin_15[pix_idx] / pix_frac[pix_idx])
         slope_diambin_15.append(slope[pix_idx])
 
-    elif current_diam >= 20.0:
+    if current_diam >= 20.0:
         density_diambin_20.append(crater_frac_diambin_20[pix_idx] / pix_frac[pix_idx])
         slope_diambin_20.append(slope[pix_idx])
     
-    elif current_diam >= 25.0:
+    if current_diam >= 25.0:
         density_diambin_25.append(crater_frac_diambin_25[pix_idx] / pix_frac[pix_idx])
         slope_diambin_25.append(slope[pix_idx])
     
-    elif current_diam >= 30.0:
+    if current_diam >= 30.0:
         density_diambin_30.append(crater_frac_diambin_30[pix_idx] / pix_frac[pix_idx])
         slope_diambin_30.append(slope[pix_idx])
 
