@@ -6,11 +6,20 @@ from astropy.convolution import convolve, Gaussian2DKernel
 import sys
 import os
 
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 from matplotlib.offsetbox import AnchoredOffsetbox, TextArea, AnchoredText
 import matplotlib as mpl
+
+# modify rc Params
+mpl.rcParams["font.family"] = "serif"
+mpl.rcParams["font.sans-serif"] = ["Computer Modern Sans"]
+mpl.rcParams["text.usetex"] = True
+mpl.rcParams["text.latex.preamble"] = r"\usepackage{cmbright}"
+mpl.rcParams["xtick.direction"] = "in"
+mpl.rcParams["ytick.direction"] = "in"
 
 home = os.getenv('HOME')
 slopedir = home + '/Desktop/slope-effects-density/'
@@ -56,8 +65,8 @@ def make_plot_diam_bin_with_contour(density_arr_color, slope_arr_color, color_ar
     kernel = Gaussian2DKernel(stddev=1.4)
     counts = convolve(counts, kernel, boundary='extend')
 
-    print np.min(counts), np.max(counts)
-    levels_to_plot, cb_lw, vmin = get_levels_to_plot(diam_bin, cumulative=True)
+    print "Min and max point number density values in bins", str("{:.3}".format(np.min(counts))), str("{:.3}".format(np.max(counts)))
+    levels_to_plot, cb_lw, vmin = get_levels_to_plot(diam_bin, plottype='cumulative')
     norm = mpl.colors.Normalize(vmin=vmin, vmax=max(levels_to_plot))
 
     c = ax.contour(counts.transpose(), levels=levels_to_plot, \
@@ -114,6 +123,8 @@ def get_levels_to_plot(diam_bin, plottype):
         vmin = -150
     elif diam_bin == '2to3':
         levels_to_plot = [3, 20, 50, 80, 120]
+        if nvalue:
+            levels_to_plot = [5, 100, 300, 600, 1100]
         cb_lw = 35.0
         vmin = -40
     elif diam_bin == '3to4':
@@ -122,7 +133,7 @@ def get_levels_to_plot(diam_bin, plottype):
         elif nooverlap:
             levels_to_plot = [3, 15, 30, 50, 85]
         elif nvalue:
-            levels_to_plot = [3, 15, 30, 50, 85]
+            levels_to_plot = [5, 150, 350, 600, 1000]
         cb_lw = 35.0
         vmin = -20
     elif diam_bin == '4to5':
@@ -130,6 +141,8 @@ def get_levels_to_plot(diam_bin, plottype):
             levels_to_plot = [3, 10, 15, 24, 34]
         elif nooverlap:
             levels_to_plot = [3, 10, 15, 24, 36]
+        elif nvalue:
+            levels_to_plot = [5, 150, 350, 600, 1000]
         cb_lw = 35.0
         vmin = -8
     elif diam_bin == '5to6':
@@ -137,10 +150,14 @@ def get_levels_to_plot(diam_bin, plottype):
             levels_to_plot = [2, 10, 18, 25, 37]
         elif nooverlap:
             levels_to_plot = [2, 10, 18, 25, 45]
+        elif nvalue:
+            levels_to_plot = [5, 150, 350, 600, 1000]
         cb_lw = 35.0
         vmin = -10
     elif diam_bin == '6to7':
         levels_to_plot = [2, 10, 18, 25, 37]
+        if nvalue:
+            levels_to_plot = [5, 150, 350, 600, 1000]
         cb_lw = 35.0
         vmin = -10
     elif diam_bin == '7to8':
@@ -148,6 +165,8 @@ def get_levels_to_plot(diam_bin, plottype):
             levels_to_plot = [2, 8, 13, 18, 24]
         elif nooverlap:
             levels_to_plot = [2, 8, 13, 18, 35]
+        elif nvalue:
+            levels_to_plot = [5, 150, 350, 600, 1000]
         cb_lw = 35.0
         vmin = -5
     elif diam_bin == '8to9':
@@ -155,18 +174,26 @@ def get_levels_to_plot(diam_bin, plottype):
             levels_to_plot = [2, 8, 13, 18, 23]
         elif nooverlap:
             levels_to_plot = [2, 8, 13, 18, 38]
+        elif nvalue:
+            levels_to_plot = [5, 150, 350, 600, 1000]
         cb_lw = 35.0
         vmin = -5
     elif diam_bin == '9to10':
         levels_to_plot = [1, 4, 7, 9, 12]
+        if nvalue:
+            levels_to_plot = [5, 150, 350, 700, 1000]
         cb_lw = 35.0
         vmin = -2
     elif diam_bin == '10to15':
         levels_to_plot = [5, 20, 40, 65, 83, 95]
+        if nvalue:
+            levels_to_plot = [5, 70, 150, 400, 700, 900]
         cb_lw = 28.0
         vmin = -20
     elif diam_bin == '15to20':
         levels_to_plot = [3, 12, 30, 50, 68, 80]
+        if nvalue:
+            levels_to_plot = [5, 70, 150, 400, 700, 900]
         cb_lw = 28.0
         vmin = -20
     elif diam_bin == '20to25':
@@ -174,6 +201,8 @@ def get_levels_to_plot(diam_bin, plottype):
             levels_to_plot = [5, 50, 140, 200, 250, 280]
         elif nooverlap:
             levels_to_plot = [5, 50, 140, 200, 250, 275]
+        elif nvalue:
+            levels_to_plot = [5, 70, 150, 400, 700, 850]
         cb_lw = 28.0
         vmin = -50
     elif diam_bin == '25to30':
@@ -181,10 +210,14 @@ def get_levels_to_plot(diam_bin, plottype):
             levels_to_plot = [5, 50, 140, 200, 250, 280]
         elif nooverlap:
             levels_to_plot = [5, 50, 140, 200, 250, 300]
+        elif nvalue:
+            levels_to_plot = [5, 70, 150, 300, 450, 550]
         cb_lw = 28.0
         vmin = -50
     elif diam_bin == '30to35':
         levels_to_plot = [5, 50, 140, 200, 250, 280]
+        if nvalue:
+            levels_to_plot = [5, 30, 70, 140, 190, 260]
         cb_lw = 28.0
         vmin = -60
 
@@ -215,7 +248,7 @@ def make_cumulative_plots():
 
     return None
 
-def make_no_overlap_Nvalue_plots(density_arr, slope_arr, diam_bin_min, diam_bin_max, color):
+def make_no_overlap_Nvalue_plots(density_arr, slope_arr, diam_bin_min, diam_bin_max, color, plottype):
 
     # make figure
     fig = plt.figure()
@@ -245,28 +278,20 @@ def make_no_overlap_Nvalue_plots(density_arr, slope_arr, diam_bin_min, diam_bin_
     kernel = Gaussian2DKernel(stddev=1.4)
     counts = convolve(counts, kernel, boundary='extend')
 
-    print np.min(counts), np.max(counts)
+    print "Min and max point number density values in bins", str("{:.3}".format(np.min(counts))), str("{:.3}".format(np.max(counts)))
     diam_bin = str(diam_bin_min) + 'to' + str(diam_bin_max)
-    plottype = 'Nvalue'
     levels_to_plot, cb_lw, vmin = get_levels_to_plot(diam_bin, plottype=plottype)
     norm = mpl.colors.Normalize(vmin=vmin, vmax=max(levels_to_plot))
 
     c = ax.contour(counts.transpose(), levels=levels_to_plot, \
         extent=[xbins.min(), xbins.max(), ybins.min(), ybins.max()], \
         cmap=cm.viridis, linestyles='solid', linewidths=2, \
-        interpolation='None', zorder=10, norm=norm)
+        zorder=10, norm=norm)
 
     # plot colorbar inside figure
     cbaxes = inset_axes(ax, width='3%', height='52%', loc=7, bbox_to_anchor=[-0.05, -0.2, 1, 1], bbox_transform=ax.transAxes)
     cb = plt.colorbar(c, cax=cbaxes, ticks=[min(levels_to_plot), max(levels_to_plot)], orientation='vertical')
     cb.ax.get_children()[0].set_linewidths(cb_lw)
-
-    # add text on figure to indicate diameter bin
-    diambinbox = TextArea(str(diam_bin_min) + ' to ' + str(diam_bin_max) + ' km', textprops=dict(color='k', size=14))
-    anc_diambinbox = AnchoredOffsetbox(loc=2, child=diambinbox, pad=0.0, frameon=False,\
-                                         bbox_to_anchor=(0.6, 0.1),\
-                                         bbox_transform=ax.transAxes, borderpad=0.0)
-    ax.add_artist(anc_diambinbox)
 
     # add ticks and grid
     ax.minorticks_on()
@@ -276,8 +301,23 @@ def make_no_overlap_Nvalue_plots(density_arr, slope_arr, diam_bin_min, diam_bin_
 
     # save the figure
     if plottype == 'Nvalue':
-        fig.savefig(slope_extdir + 'slope_v_density_withcontour_Nvalue' + diam_bin + 'km.png', dpi=300, bbox_inches='tight')
+        # add text on figure to indicate diameter bin
+        diambinbox = TextArea(r"$\mathrm{N \geq\ }$" + str(diam_bin_min) + r'$\mathrm{\, km}$', textprops=dict(color='k', size=14))
+        anc_diambinbox = AnchoredOffsetbox(loc=2, child=diambinbox, pad=0.0, frameon=False,\
+                                             bbox_to_anchor=(0.6, 0.1),\
+                                             bbox_transform=ax.transAxes, borderpad=0.0)
+        ax.add_artist(anc_diambinbox)
+        fig.savefig(slope_extdir + 'slope_v_density_withcontour_Nvalue' + str(diam_bin_min) + 'km.png', dpi=300, bbox_inches='tight')
+
     elif plottype == 'nooverlap':
+        # add text on figure to indicate diameter bin
+        diambinbox = TextArea(str(diam_bin_min) + r'$\mathrm{\ to\ }$' + str(diam_bin_max) + r'$\mathrm{\,km}$', \
+            textprops=dict(color='k', size=14))
+        anc_diambinbox = AnchoredOffsetbox(loc=2, child=diambinbox, pad=0.0, frameon=False,\
+                                             bbox_to_anchor=(0.6, 0.1),\
+                                             bbox_transform=ax.transAxes, borderpad=0.0)
+        ax.add_artist(anc_diambinbox)
+
         fig.savefig(slope_extdir + 'slope_v_density_withcontour_nooverlap' + diam_bin + 'km.png', dpi=300, bbox_inches='tight')
 
     return None
@@ -317,20 +357,20 @@ def call_no_overlap_plots():
 
     # make plots with only contributions from craters that 
     # actually fall within the specified diameter bin
-    make_no_overlap_Nvalue_plots(density_diambin_1_2, slope_diambin_1_2, 1, 2, 'midnightblue')
-    make_no_overlap_Nvalue_plots(density_diambin_2_3, slope_diambin_2_3, 2, 3, 'blue')
-    make_no_overlap_Nvalue_plots(density_diambin_3_4, slope_diambin_3_4, 3, 4, 'royalblue')
-    make_no_overlap_Nvalue_plots(density_diambin_4_5, slope_diambin_4_5, 4, 5, 'dodgerblue')
-    make_no_overlap_Nvalue_plots(density_diambin_5_6, slope_diambin_5_6, 5, 6, 'deepskyblue')
-    make_no_overlap_Nvalue_plots(density_diambin_6_7, slope_diambin_6_7, 6, 7, 'steelblue')
-    make_no_overlap_Nvalue_plots(density_diambin_7_8, slope_diambin_7_8, 7, 8, 'slateblue')
-    make_no_overlap_Nvalue_plots(density_diambin_8_9, slope_diambin_8_9, 8, 9, 'rebeccapurple')
-    make_no_overlap_Nvalue_plots(density_diambin_9_10, slope_diambin_9_10, 9, 10, 'darkcyan')
-    make_no_overlap_Nvalue_plots(density_diambin_10_15, slope_diambin_10_15, 10, 15, 'green')
-    make_no_overlap_Nvalue_plots(density_diambin_15_20, slope_diambin_15_20, 15, 20, 'olive')
-    make_no_overlap_Nvalue_plots(density_diambin_20_25, slope_diambin_20_25, 20, 25, 'goldenrod')
-    make_no_overlap_Nvalue_plots(density_diambin_25_30, slope_diambin_25_30, 25, 30, 'darkorchid')
-    make_no_overlap_Nvalue_plots(density_diambin_30_35, slope_diambin_30_35, 30, 35, 'maroon')
+    make_no_overlap_Nvalue_plots(density_diambin_1_2, slope_diambin_1_2, 1, 2, 'midnightblue', 'nooverlap')
+    make_no_overlap_Nvalue_plots(density_diambin_2_3, slope_diambin_2_3, 2, 3, 'blue', 'nooverlap')
+    make_no_overlap_Nvalue_plots(density_diambin_3_4, slope_diambin_3_4, 3, 4, 'royalblue', 'nooverlap')
+    make_no_overlap_Nvalue_plots(density_diambin_4_5, slope_diambin_4_5, 4, 5, 'dodgerblue', 'nooverlap')
+    make_no_overlap_Nvalue_plots(density_diambin_5_6, slope_diambin_5_6, 5, 6, 'deepskyblue', 'nooverlap')
+    make_no_overlap_Nvalue_plots(density_diambin_6_7, slope_diambin_6_7, 6, 7, 'steelblue', 'nooverlap')
+    make_no_overlap_Nvalue_plots(density_diambin_7_8, slope_diambin_7_8, 7, 8, 'slateblue', 'nooverlap')
+    make_no_overlap_Nvalue_plots(density_diambin_8_9, slope_diambin_8_9, 8, 9, 'rebeccapurple', 'nooverlap')
+    make_no_overlap_Nvalue_plots(density_diambin_9_10, slope_diambin_9_10, 9, 10, 'darkcyan', 'nooverlap')
+    make_no_overlap_Nvalue_plots(density_diambin_10_15, slope_diambin_10_15, 10, 15, 'green', 'nooverlap')
+    make_no_overlap_Nvalue_plots(density_diambin_15_20, slope_diambin_15_20, 15, 20, 'olive', 'nooverlap')
+    make_no_overlap_Nvalue_plots(density_diambin_20_25, slope_diambin_20_25, 20, 25, 'goldenrod', 'nooverlap')
+    make_no_overlap_Nvalue_plots(density_diambin_25_30, slope_diambin_25_30, 25, 30, 'darkorchid', 'nooverlap')
+    make_no_overlap_Nvalue_plots(density_diambin_30_35, slope_diambin_30_35, 30, 35, 'maroon', 'nooverlap')
 
     return None
 
@@ -369,28 +409,27 @@ def call_Nvalue_plots():
 
     # make plots with only contributions from craters that 
     # actually fall within the specified diameter bin
-    #make_no_overlap_Nvalue_plots(density_diambin_1, slope_diambin_1, 1, 2, 'midnightblue')
-
-    #make_no_overlap_Nvalue_plots(density_diambin_2, slope_diambin_2, 2, 3, 'blue')
-
-    make_no_overlap_Nvalue_plots(density_diambin_3, slope_diambin_3, 3, 4, 'royalblue')
-    sys.exit(0)
-    make_no_overlap_Nvalue_plots(density_diambin_4, slope_diambin_4, 4, 5, 'dodgerblue')
-    make_no_overlap_Nvalue_plots(density_diambin_5, slope_diambin_5, 5, 6, 'deepskyblue')
-    make_no_overlap_Nvalue_plots(density_diambin_6, slope_diambin_6, 6, 7, 'steelblue')
-    make_no_overlap_Nvalue_plots(density_diambin_7, slope_diambin_7, 7, 8, 'slateblue')
-    make_no_overlap_Nvalue_plots(density_diambin_8, slope_diambin_8, 8, 9, 'rebeccapurple')
-    make_no_overlap_Nvalue_plots(density_diambin_9, slope_diambin_9, 9, 10, 'darkcyan')
-    make_no_overlap_Nvalue_plots(density_diambin_10, slope_diambin_10, 10, 15, 'green')
-    make_no_overlap_Nvalue_plots(density_diambin_15, slope_diambin_15, 15, 20, 'olive')
-    make_no_overlap_Nvalue_plots(density_diambin_20, slope_diambin_20, 20, 25, 'goldenrod')
-    make_no_overlap_Nvalue_plots(density_diambin_25, slope_diambin_25, 25, 30, 'darkorchid')
-    make_no_overlap_Nvalue_plots(density_diambin_30, slope_diambin_30, 30, 35, 'maroon')
+    make_no_overlap_Nvalue_plots(density_diambin_1, slope_diambin_1, 1, 2, 'midnightblue', 'Nvalue')
+    make_no_overlap_Nvalue_plots(density_diambin_2, slope_diambin_2, 2, 3, 'blue', 'Nvalue')
+    make_no_overlap_Nvalue_plots(density_diambin_3, slope_diambin_3, 3, 4, 'royalblue', 'Nvalue')
+    make_no_overlap_Nvalue_plots(density_diambin_4, slope_diambin_4, 4, 5, 'dodgerblue', 'Nvalue')
+    make_no_overlap_Nvalue_plots(density_diambin_5, slope_diambin_5, 5, 6, 'deepskyblue', 'Nvalue')
+    make_no_overlap_Nvalue_plots(density_diambin_6, slope_diambin_6, 6, 7, 'steelblue', 'Nvalue')
+    make_no_overlap_Nvalue_plots(density_diambin_7, slope_diambin_7, 7, 8, 'slateblue', 'Nvalue')
+    make_no_overlap_Nvalue_plots(density_diambin_8, slope_diambin_8, 8, 9, 'rebeccapurple', 'Nvalue')
+    make_no_overlap_Nvalue_plots(density_diambin_9, slope_diambin_9, 9, 10, 'darkcyan', 'Nvalue')
+    make_no_overlap_Nvalue_plots(density_diambin_10, slope_diambin_10, 10, 15, 'green', 'Nvalue')
+    make_no_overlap_Nvalue_plots(density_diambin_15, slope_diambin_15, 15, 20, 'olive', 'Nvalue')
+    make_no_overlap_Nvalue_plots(density_diambin_20, slope_diambin_20, 20, 25, 'goldenrod', 'Nvalue')
+    make_no_overlap_Nvalue_plots(density_diambin_25, slope_diambin_25, 25, 30, 'darkorchid', 'Nvalue')
+    make_no_overlap_Nvalue_plots(density_diambin_30, slope_diambin_30, 30, 35, 'maroon', 'Nvalue')
 
     return None
 
 if __name__ == '__main__':    
 
+    make_cumulative_plots()
+    call_no_overlap_plots()
     call_Nvalue_plots()
 
     sys.exit(0)
