@@ -11,7 +11,6 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 from matplotlib.offsetbox import AnchoredOffsetbox, TextArea, AnchoredText
-import matplotlib as mpl
 
 # modify rc Params
 mpl.rcParams["font.family"] = "serif"

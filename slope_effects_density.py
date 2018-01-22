@@ -1036,10 +1036,34 @@ if __name__ == '__main__':
         plt.close()
 
     # ----------------  measure and populate crater pixel fraction array  ---------------- # 
+    # Do NOT delete this block. This was used to create arrays for 
+    # easier access. Uncomment if not needed.
+    """
     # read crater vertices file
-    crater_vert = np.genfromtxt(slope_extdir + 'CRATER_FullHF_Vertices_coords.txt', \
+    crater_vert = np.genfromtxt(slope_extdir + 'vertices.txt', \
         dtype=None, names=True, delimiter=',')
-    crater_ids = np.unique(crater_vert['ORIG_FID'])
+
+    # read and save the numpy arrays and then just read these in later
+    crater_ids_arr = crater_vert['ORIG_FID']
+    crater_x_arr = crater_vert['x_coord_m_pts']
+    crater_y_arr = crater_vert['y_coord_m_pts']
+    crater_diam_m_arr = crater_vert['diam_m']
+
+    np.save(slope_extdir + 'crater_ids_arr.npy', crater_ids_arr)
+    np.save(slope_extdir + 'crater_x_arr.npy', crater_x_arr)
+    np.save(slope_extdir + 'crater_y_arr.npy', crater_y_arr)
+    np.save(slope_extdir + 'crater_diam_m_arr.npy', crater_diam_m_arr)
+    print "Arrays saved. Exiting."
+    sys.exit(0)
+    """
+
+    # read in all arrays
+    crater_ids_arr = np.load(slope_extdir + 'crater_ids_arr.npy')
+    crater_x_arr = np.load(slope_extdir + 'crater_x_arr.npy')
+    crater_y_arr = np.load(slope_extdir + 'crater_y_arr.npy')
+    crater_diam_m_arr = np.load(slope_extdir + 'crater_diam_m_arr.npy')
+
+    crater_unique_ids_arr = np.unique(crater_ids_arr)
 
     # loop over all craters
     # for each crater get its bounding box and 
@@ -1077,11 +1101,12 @@ if __name__ == '__main__':
     for w in range(len(pix_crater_id)):
         pix_crater_id[w] = []
 
-    for i in range(len(crater_ids)):
+    totalcraters = len(crater_unique_ids_arr)
+    for i in range(len(crater_unique_ids_arr)):
 
         if (i % 1000) == 0.0:
             print '\r',
-            print 'Analyzing crater', i+1, "of", len(crater_ids),
+            print 'Analyzing crater', i+1, "of", totalcraters,
             sys.stdout.flush()
 
         # this line was originally used to create a circular polygon for each crater
@@ -1089,9 +1114,9 @@ if __name__ == '__main__':
         #get_crater_circle_poly(craters_x[i], craters_y[i], craters_diam[i])
 
         # Now, using the explicit x and y crater vertices to create a polygon
-        current_crater_vert_idx = np.where(crater_vert['ORIG_FID'] == crater_ids[i])
-        current_x_vert = crater_vert['x_coord_m'][current_crater_vert_idx]
-        current_y_vert = crater_vert['y_coord_m'][current_crater_vert_idx]
+        current_crater_vert_idx = np.where(crater_ids_arr == crater_unique_ids_arr[i])
+        current_x_vert = crater_x_arr[current_crater_vert_idx]
+        current_y_vert = crater_y_arr[current_crater_vert_idx]
 
         crater_poly = pg.Polygon(zip(current_x_vert, current_y_vert))
 
@@ -1102,9 +1127,13 @@ if __name__ == '__main__':
         # uncommenting my calc of diam. I should be using Arc's 
         # calculation because it has taken the correct projection
         # into account.
-        current_diam = crater_vert['Diam_km'][current_crater_vert_idx][0]
+        current_diam = crater_diam_m_arr[current_crater_vert_idx][0]
+        current_diam = float(current_diam) / 1e3  # converting to km
         if current_diam < 1:
             continue
+
+        # Line useful for debugging. Do not delete. Just uncomment.
+        #print 'Analyzing crater', i+1, "of", totalcraters, "with ID and diameter (km)", crater_unique_ids_arr[i], current_diam
 
         # get all pixels within the crater's bounding box
         pix_bbox_x, pix_bbox_y, pixel_indices = \
@@ -1160,7 +1189,7 @@ if __name__ == '__main__':
             pix_index = pixel_indices[j]
             pix_crater_area[pix_index] += inter_area_crater_frac  #for each pixel, keep a running sum of the fractions of craters within it
             if inter_area_crater_frac != 0.0:
-                pix_crater_id[pix_index].append(crater_ids[i])
+                pix_crater_id[pix_index].append(crater_unique_ids_arr[i])
 
             # --------------  Code to keep individual crater contributions to density separate  -------------- #
             """
@@ -1235,13 +1264,13 @@ if __name__ == '__main__':
 
     # save as numpy binary array and csv
     np.save(slope_extdir + 'crater_area_frac_in_pix_fastcomp.npy', pix_crater_area)
-    save_csv(pix_crater_area, 'pix_crater_area', float, slope_extdir + 'crater_area_fraction_in_pixel_fastcomp.csv', 'crater_area_fraction_in_pixel')
+    #save_csv(pix_crater_area, 'pix_crater_area', float, slope_extdir + 'crater_area_fraction_in_pixel_fastcomp.csv', 'crater_area_fraction_in_pixel')
 
     # save the list of lists as csv
     write_LofL_pickle(pix_crater_id, slope_extdir + 'pix_crater_id_fastcomp')
 
     # save as ascii raster
-    su.numpy_to_asciiraster(slope_extdir + 'crater_area_frac_in_pix_fastcomp.npy', (rows, columns), pix_x_cen_arr, pix_y_cen_arr)
+    #su.numpy_to_asciiraster(slope_extdir + 'crater_area_frac_in_pix_fastcomp.npy', (rows, columns), pix_x_cen_arr, pix_y_cen_arr)
 
     print "\n","Crater fractional area in each pixel computation done and saved."
 

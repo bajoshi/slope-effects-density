@@ -90,17 +90,15 @@ def get_diam_mycalc(crater_vert_cat, crater_id):
 
     return diam
 
-def get_diam(crater_vert_cat, crater_id):
+def get_diam(crater_ids_arr, crater_diam_m_arr, crater_id):
     """
     This function returns the diameter computed by ArcGIS.
     Arc's diameter is favored over my calculation because 
     it has taken the correct projection into account.
     """
 
-    crater_vert = crater_vert_cat
-
-    current_crater_vert_idx = np.where(crater_vert['ORIG_FID'] == crater_id)
-    diam = crater_vert['Diam_km'][current_crater_vert_idx][0]
+    current_crater_idx = np.where(crater_ids_arr == crater_id)[0]
+    diam = crater_diam_m_arr[current_crater_idx[0]] / 1e3  # convert to km
     if diam < 1: print "Diameter less than 1km:", diam, "km. This should not be here."
 
     return diam
@@ -192,17 +190,17 @@ def plot_crater_diam_hist():
 
 def get_ids():
 
+    # read required arrays
+    crater_ids_arr = np.load(slope_extdir + 'crater_ids_arr.npy')
+    crater_diam_m_arr = np.load(slope_extdir + 'crater_diam_m_arr.npy')
+
+    crater_unique_ids_arr = np.unique(crater_ids_arr)
+
     # first read in crater ids associated with each pixel
     with open(slope_extdir + 'pix_crater_id_fastcomp.pkl', 'rb') as crater_id_file:
         crater_id_in_pix_arr = cPickle.load(crater_id_file)
 
-    # now read in crater diam from id and save them 
-    # read crater vertices file
-    crater_vert_cat = np.genfromtxt(slope_extdir + 'CRATER_FullHF_Vertices_coords.txt', \
-        dtype=None, names=True, delimiter=',')
-    crater_ids = np.unique(crater_vert_cat['ORIG_FID'])
-
-    return crater_ids, crater_id_in_pix_arr, crater_vert_cat
+    return crater_ids_arr, crater_diam_m_arr, crater_id_in_pix_arr
 
 def assign_color(current_diam):
 
@@ -583,8 +581,9 @@ def read_indiv_diambin_crater_frac():
     crater_frac_diambin_10_15, crater_frac_diambin_15_20, crater_frac_diambin_20_25, \
     crater_frac_diambin_25_30, crater_frac_diambin_30_35
 
-def get_specific_diambin_arrays(slope, pix_frac, crater_vert_cat, crater_id_in_pix_arr, start):
+def get_specific_diambin_and_Nvalue_arrays(slope, pix_frac, crater_ids_arr, crater_diam_m_arr, crater_id_in_pix_arr, start):
 
+    # ----------------------- No Overlap stuff ----------------------- #
     # Create empty lists for each specific diameter bin
     density_diambin_1_2   = []
     density_diambin_2_3   = []
@@ -616,12 +615,67 @@ def get_specific_diambin_arrays(slope, pix_frac, crater_vert_cat, crater_id_in_p
     slope_diambin_25_30 = []
     slope_diambin_30_35 = []
 
+    # ----------------------- N value stuff ----------------------- #
+    # create empty lists for slope and density for each Nvalue bin
+    density_diambin_1 = []
+    density_diambin_2 = []
+    density_diambin_3 = []
+    density_diambin_4 = []
+    density_diambin_5 = []
+    density_diambin_6 = []
+    density_diambin_7 = []
+    density_diambin_8 = []
+    density_diambin_9 = []
+    density_diambin_10 = []
+    density_diambin_15 = []
+    density_diambin_20 = []
+    density_diambin_25 = []
+    density_diambin_30 = []
+
+    slope_diambin_1 = []
+    slope_diambin_2 = []
+    slope_diambin_3 = []
+    slope_diambin_4 = []
+    slope_diambin_5 = []
+    slope_diambin_6 = []
+    slope_diambin_7 = []
+    slope_diambin_8 = []
+    slope_diambin_9 = []
+    slope_diambin_10 = []
+    slope_diambin_15 = []
+    slope_diambin_20 = []
+    slope_diambin_25 = []
+    slope_diambin_30 = []
+
     # read in arrays for crater contributions to specific bins
     crater_frac_diambin_1_2, crater_frac_diambin_2_3, crater_frac_diambin_3_4, \
     crater_frac_diambin_4_5, crater_frac_diambin_5_6, crater_frac_diambin_6_7, \
     crater_frac_diambin_7_8, crater_frac_diambin_8_9, crater_frac_diambin_9_10, \
     crater_frac_diambin_10_15, crater_frac_diambin_15_20, crater_frac_diambin_20_25, \
     crater_frac_diambin_25_30, crater_frac_diambin_30_35 = read_indiv_diambin_crater_frac()
+
+    # create a list as a container for all crater fraction arrays
+    allarr = [crater_frac_diambin_1_2, crater_frac_diambin_2_3, crater_frac_diambin_3_4, \
+    crater_frac_diambin_4_5, crater_frac_diambin_5_6, crater_frac_diambin_6_7, \
+    crater_frac_diambin_7_8, crater_frac_diambin_8_9, crater_frac_diambin_9_10, \
+    crater_frac_diambin_10_15, crater_frac_diambin_15_20, crater_frac_diambin_20_25, \
+    crater_frac_diambin_25_30, crater_frac_diambin_30_35]
+
+    # create staggered sum arrays (see notes for explanation)
+    crater_frac_diambin_1 = sum(allarr)
+    crater_frac_diambin_2 = sum(allarr[1:])
+    crater_frac_diambin_3 = sum(allarr[2:])
+    crater_frac_diambin_4 = sum(allarr[3:])
+    crater_frac_diambin_5 = sum(allarr[4:])
+    crater_frac_diambin_6 = sum(allarr[5:])
+    crater_frac_diambin_7 = sum(allarr[6:])
+    crater_frac_diambin_8 = sum(allarr[7:])
+    crater_frac_diambin_9 = sum(allarr[8:])
+    crater_frac_diambin_10 = sum(allarr[9:])
+    crater_frac_diambin_15 = sum(allarr[10:])
+    crater_frac_diambin_20 = sum(allarr[11:])
+    crater_frac_diambin_25 = sum(allarr[12:])
+    crater_frac_diambin_30 = sum(allarr[13:])
 
     # loop over all pixels
     for i in range(len(crater_id_in_pix_arr)):
@@ -638,13 +692,42 @@ def get_specific_diambin_arrays(slope, pix_frac, crater_vert_cat, crater_id_in_p
 
         elif len(current_crater_ids) == 1:
             current_id = current_crater_ids[0]
-            current_diam = get_diam(crater_vert_cat, current_id)
+            current_diam = get_diam(crater_ids_arr, crater_diam_m_arr, current_id)
 
             if (current_diam > 35):
                 continue
 
             else:
                 append_to_density_slope_diambin_lists(current_diam, i, pix_frac, slope, density_diambin_1_2, density_diambin_2_3, density_diambin_3_4,\
+                density_diambin_4_5, density_diambin_5_6, density_diambin_6_7, density_diambin_7_8, density_diambin_8_9,\
+                density_diambin_9_10, density_diambin_10_15, density_diambin_15_20, density_diambin_20_25, density_diambin_25_30,\
+                density_diambin_30_35, slope_diambin_1_2, slope_diambin_2_3, slope_diambin_3_4, slope_diambin_4_5, slope_diambin_5_6,\
+                slope_diambin_6_7, slope_diambin_7_8, slope_diambin_8_9, slope_diambin_9_10, slope_diambin_10_15, slope_diambin_15_20,\
+                slope_diambin_20_25, slope_diambin_25_30, slope_diambin_30_35, crater_frac_diambin_1_2, crater_frac_diambin_2_3,\
+                crater_frac_diambin_3_4, crater_frac_diambin_4_5, crater_frac_diambin_5_6, crater_frac_diambin_6_7,\
+                crater_frac_diambin_7_8, crater_frac_diambin_8_9, crater_frac_diambin_9_10, crater_frac_diambin_10_15,\
+                crater_frac_diambin_15_20, crater_frac_diambin_20_25, crater_frac_diambin_25_30, crater_frac_diambin_30_35)
+
+                append_to_density_slope_Nvalue_lists(current_diam, i, pix_frac, slope, density_diambin_1, density_diambin_2, density_diambin_3,\
+                density_diambin_4, density_diambin_5, density_diambin_6, density_diambin_7, density_diambin_8,\
+                density_diambin_9, density_diambin_10, density_diambin_15, density_diambin_20, density_diambin_25,\
+                density_diambin_30, slope_diambin_1, slope_diambin_2, slope_diambin_3, slope_diambin_4, slope_diambin_5,\
+                slope_diambin_6, slope_diambin_7, slope_diambin_8, slope_diambin_9, slope_diambin_10, slope_diambin_15,\
+                slope_diambin_20, slope_diambin_25, slope_diambin_30, crater_frac_diambin_1, crater_frac_diambin_2,\
+                crater_frac_diambin_3, crater_frac_diambin_4, crater_frac_diambin_5, crater_frac_diambin_6,\
+                crater_frac_diambin_7, crater_frac_diambin_8, crater_frac_diambin_9, crater_frac_diambin_10,\
+                crater_frac_diambin_15, crater_frac_diambin_20, crater_frac_diambin_25, crater_frac_diambin_30)
+
+        elif len(current_crater_ids) > 1:
+            for j in range(len(current_crater_ids)):
+                current_id = current_crater_ids[j]
+                current_diam = get_diam(crater_ids_arr, crater_diam_m_arr, current_id)
+
+                if (current_diam > 35):
+                    continue
+
+                else:
+                    append_to_density_slope_diambin_lists(current_diam, i, pix_frac, slope, density_diambin_1_2, density_diambin_2_3, density_diambin_3_4,\
                     density_diambin_4_5, density_diambin_5_6, density_diambin_6_7, density_diambin_7_8, density_diambin_8_9,\
                     density_diambin_9_10, density_diambin_10_15, density_diambin_15_20, density_diambin_20_25, density_diambin_25_30,\
                     density_diambin_30_35, slope_diambin_1_2, slope_diambin_2_3, slope_diambin_3_4, slope_diambin_4_5, slope_diambin_5_6,\
@@ -654,25 +737,17 @@ def get_specific_diambin_arrays(slope, pix_frac, crater_vert_cat, crater_id_in_p
                     crater_frac_diambin_7_8, crater_frac_diambin_8_9, crater_frac_diambin_9_10, crater_frac_diambin_10_15,\
                     crater_frac_diambin_15_20, crater_frac_diambin_20_25, crater_frac_diambin_25_30, crater_frac_diambin_30_35)
 
-        elif len(current_crater_ids) > 1:
-            for j in range(len(current_crater_ids)):
-                current_id = current_crater_ids[j]
-                current_diam = get_diam(crater_vert_cat, current_id)
+                    append_to_density_slope_Nvalue_lists(current_diam, i, pix_frac, slope, density_diambin_1, density_diambin_2, density_diambin_3,\
+                    density_diambin_4, density_diambin_5, density_diambin_6, density_diambin_7, density_diambin_8,\
+                    density_diambin_9, density_diambin_10, density_diambin_15, density_diambin_20, density_diambin_25,\
+                    density_diambin_30, slope_diambin_1, slope_diambin_2, slope_diambin_3, slope_diambin_4, slope_diambin_5,\
+                    slope_diambin_6, slope_diambin_7, slope_diambin_8, slope_diambin_9, slope_diambin_10, slope_diambin_15,\
+                    slope_diambin_20, slope_diambin_25, slope_diambin_30, crater_frac_diambin_1, crater_frac_diambin_2,\
+                    crater_frac_diambin_3, crater_frac_diambin_4, crater_frac_diambin_5, crater_frac_diambin_6,\
+                    crater_frac_diambin_7, crater_frac_diambin_8, crater_frac_diambin_9, crater_frac_diambin_10,\
+                    crater_frac_diambin_15, crater_frac_diambin_20, crater_frac_diambin_25, crater_frac_diambin_30)
 
-                if (current_diam > 35):
-                    continue
-
-                else:
-                    append_to_density_slope_diambin_lists(current_diam, i, pix_frac, slope, density_diambin_1_2, density_diambin_2_3, density_diambin_3_4,\
-                        density_diambin_4_5, density_diambin_5_6, density_diambin_6_7, density_diambin_7_8, density_diambin_8_9,\
-                        density_diambin_9_10, density_diambin_10_15, density_diambin_15_20, density_diambin_20_25, density_diambin_25_30,\
-                        density_diambin_30_35, slope_diambin_1_2, slope_diambin_2_3, slope_diambin_3_4, slope_diambin_4_5, slope_diambin_5_6,\
-                        slope_diambin_6_7, slope_diambin_7_8, slope_diambin_8_9, slope_diambin_9_10, slope_diambin_10_15, slope_diambin_15_20,\
-                        slope_diambin_20_25, slope_diambin_25_30, slope_diambin_30_35, crater_frac_diambin_1_2, crater_frac_diambin_2_3,\
-                        crater_frac_diambin_3_4, crater_frac_diambin_4_5, crater_frac_diambin_5_6, crater_frac_diambin_6_7,\
-                        crater_frac_diambin_7_8, crater_frac_diambin_8_9, crater_frac_diambin_9_10, crater_frac_diambin_10_15,\
-                        crater_frac_diambin_15_20, crater_frac_diambin_20_25, crater_frac_diambin_25_30, crater_frac_diambin_30_35)
-
+    # ----------------------- No Overlap stuff ----------------------- #
     # convert to numpy arrays so you can do array ops and save them
     density_diambin_1_2 = np.asarray(density_diambin_1_2)
     density_diambin_2_3 = np.asarray(density_diambin_2_3)
@@ -735,7 +810,70 @@ def get_specific_diambin_arrays(slope, pix_frac, crater_vert_cat, crater_id_in_p
     np.save(slope_extdir + 'slope_diambin_25_30.npy', slope_diambin_25_30)
     np.save(slope_extdir + 'slope_diambin_30_35.npy', slope_diambin_30_35)
 
-    print "Arrays saved."
+    # convert to numpy arrays so you can do array ops and save them
+    density_diambin_1 = np.asarray(density_diambin_1)
+    density_diambin_2 = np.asarray(density_diambin_2)
+    density_diambin_3 = np.asarray(density_diambin_3)
+    density_diambin_4 = np.asarray(density_diambin_4)
+    density_diambin_5 = np.asarray(density_diambin_5)
+    density_diambin_6 = np.asarray(density_diambin_6)
+    density_diambin_7 = np.asarray(density_diambin_7)
+    density_diambin_8 = np.asarray(density_diambin_8)
+    density_diambin_9 = np.asarray(density_diambin_9)
+    density_diambin_10 = np.asarray(density_diambin_10)
+    density_diambin_15 = np.asarray(density_diambin_15)
+    density_diambin_20 = np.asarray(density_diambin_20)
+    density_diambin_25 = np.asarray(density_diambin_25)
+    density_diambin_30 = np.asarray(density_diambin_30)
+
+    slope_diambin_1 = np.asarray(slope_diambin_1)
+    slope_diambin_2 = np.asarray(slope_diambin_2)
+    slope_diambin_3 = np.asarray(slope_diambin_3)
+    slope_diambin_4 = np.asarray(slope_diambin_4)
+    slope_diambin_5 = np.asarray(slope_diambin_5)
+    slope_diambin_6 = np.asarray(slope_diambin_6)
+    slope_diambin_7 = np.asarray(slope_diambin_7)
+    slope_diambin_8 = np.asarray(slope_diambin_8)
+    slope_diambin_9 = np.asarray(slope_diambin_9)
+    slope_diambin_10 = np.asarray(slope_diambin_10)
+    slope_diambin_15 = np.asarray(slope_diambin_15)
+    slope_diambin_20 = np.asarray(slope_diambin_20)
+    slope_diambin_25 = np.asarray(slope_diambin_25)
+    slope_diambin_30 = np.asarray(slope_diambin_30)
+
+    # ----------------------- N value stuff ----------------------- #
+    # save the arrays
+    np.save(slope_extdir + 'density_diambin_1.npy', density_diambin_1)
+    np.save(slope_extdir + 'density_diambin_2.npy', density_diambin_2)
+    np.save(slope_extdir + 'density_diambin_3.npy', density_diambin_3)
+    np.save(slope_extdir + 'density_diambin_4.npy', density_diambin_4)
+    np.save(slope_extdir + 'density_diambin_5.npy', density_diambin_5)
+    np.save(slope_extdir + 'density_diambin_6.npy', density_diambin_6)
+    np.save(slope_extdir + 'density_diambin_7.npy', density_diambin_7)
+    np.save(slope_extdir + 'density_diambin_8.npy', density_diambin_8)
+    np.save(slope_extdir + 'density_diambin_9.npy', density_diambin_9)
+    np.save(slope_extdir + 'density_diambin_10.npy', density_diambin_10)
+    np.save(slope_extdir + 'density_diambin_15.npy', density_diambin_15)
+    np.save(slope_extdir + 'density_diambin_20.npy', density_diambin_20)
+    np.save(slope_extdir + 'density_diambin_25.npy', density_diambin_25)
+    np.save(slope_extdir + 'density_diambin_30.npy', density_diambin_30)
+
+    np.save(slope_extdir + 'slope_diambin_1.npy', slope_diambin_1)
+    np.save(slope_extdir + 'slope_diambin_2.npy', slope_diambin_2)
+    np.save(slope_extdir + 'slope_diambin_3.npy', slope_diambin_3)
+    np.save(slope_extdir + 'slope_diambin_4.npy', slope_diambin_4)
+    np.save(slope_extdir + 'slope_diambin_5.npy', slope_diambin_5)
+    np.save(slope_extdir + 'slope_diambin_6.npy', slope_diambin_6)
+    np.save(slope_extdir + 'slope_diambin_7.npy', slope_diambin_7)
+    np.save(slope_extdir + 'slope_diambin_8.npy', slope_diambin_8)
+    np.save(slope_extdir + 'slope_diambin_9.npy', slope_diambin_9)
+    np.save(slope_extdir + 'slope_diambin_10.npy', slope_diambin_10)
+    np.save(slope_extdir + 'slope_diambin_15.npy', slope_diambin_15)
+    np.save(slope_extdir + 'slope_diambin_20.npy', slope_diambin_20)
+    np.save(slope_extdir + 'slope_diambin_25.npy', slope_diambin_25)
+    np.save(slope_extdir + 'slope_diambin_30.npy', slope_diambin_30)
+
+    print "Arrays for no overlap and N value crater fraction saved."
 
     return None
 
@@ -809,7 +947,7 @@ def append_to_density_slope_diambin_lists(current_diam, pix_idx, pix_frac, slope
 
 def plot_by_diam(density, slope_arr, pix_frac, start):
 
-    crater_ids, crater_id_in_pix_arr, crater_vert_cat = get_ids()
+    crater_ids_arr, crater_diam_m_arr, crater_id_in_pix_arr = get_ids()
 
     # ------------ for cumulative numbers ------------ # 
     # get arrays where the crater diam has been identified by color
@@ -817,8 +955,7 @@ def plot_by_diam(density, slope_arr, pix_frac, start):
     #get_diam_ref_arrays(density, slope_arr, crater_vert_cat, crater_id_in_pix_arr, start)
 
     # ------------ to get crater contributions included only from within diambin ------------ # 
-    #get_specific_diambin_arrays(slope_arr, pix_frac, crater_vert_cat, crater_id_in_pix_arr, start)
-    make_arrays_for_Nvalue_plots(slope_arr, pix_frac, crater_vert_cat, crater_id_in_pix_arr, start)
+    get_specific_diambin_and_Nvalue_arrays(slope_arr, pix_frac, crater_ids_arr, crater_diam_m_arr, crater_id_in_pix_arr, start)
     return None
 
     # do the actual plotting
@@ -964,183 +1101,6 @@ def plot_by_diam(density, slope_arr, pix_frac, start):
     plt.clf()
     plt.cla()
     plt.close()
-
-    return None
-
-def make_arrays_for_Nvalue_plots(slope, pix_frac, crater_vert_cat, crater_id_in_pix_arr, start):
-
-    # create empty lists for slope and density for each Nvalue bin
-    density_diambin_1 = []
-    density_diambin_2 = []
-    density_diambin_3 = []
-    density_diambin_4 = []
-    density_diambin_5 = []
-    density_diambin_6 = []
-    density_diambin_7 = []
-    density_diambin_8 = []
-    density_diambin_9 = []
-    density_diambin_10 = []
-    density_diambin_15 = []
-    density_diambin_20 = []
-    density_diambin_25 = []
-    density_diambin_30 = []
-
-    slope_diambin_1 = []
-    slope_diambin_2 = []
-    slope_diambin_3 = []
-    slope_diambin_4 = []
-    slope_diambin_5 = []
-    slope_diambin_6 = []
-    slope_diambin_7 = []
-    slope_diambin_8 = []
-    slope_diambin_9 = []
-    slope_diambin_10 = []
-    slope_diambin_15 = []
-    slope_diambin_20 = []
-    slope_diambin_25 = []
-    slope_diambin_30 = []
-
-    # read in arrays for crater contributions to specific bins
-    crater_frac_diambin_1_2, crater_frac_diambin_2_3, crater_frac_diambin_3_4, \
-    crater_frac_diambin_4_5, crater_frac_diambin_5_6, crater_frac_diambin_6_7, \
-    crater_frac_diambin_7_8, crater_frac_diambin_8_9, crater_frac_diambin_9_10, \
-    crater_frac_diambin_10_15, crater_frac_diambin_15_20, crater_frac_diambin_20_25, \
-    crater_frac_diambin_25_30, crater_frac_diambin_30_35 = read_indiv_diambin_crater_frac()
-
-    # create a list as a container for all crater fraction arrays
-    allarr = [crater_frac_diambin_1_2, crater_frac_diambin_2_3, crater_frac_diambin_3_4, \
-    crater_frac_diambin_4_5, crater_frac_diambin_5_6, crater_frac_diambin_6_7, \
-    crater_frac_diambin_7_8, crater_frac_diambin_8_9, crater_frac_diambin_9_10, \
-    crater_frac_diambin_10_15, crater_frac_diambin_15_20, crater_frac_diambin_20_25, \
-    crater_frac_diambin_25_30, crater_frac_diambin_30_35]
-
-    # create staggered sum arrays (see notes for explanation)
-    crater_frac_diambin_1 = sum(allarr)
-    crater_frac_diambin_2 = sum(allarr[1:])
-    crater_frac_diambin_3 = sum(allarr[2:])
-    crater_frac_diambin_4 = sum(allarr[3:])
-    crater_frac_diambin_5 = sum(allarr[4:])
-    crater_frac_diambin_6 = sum(allarr[5:])
-    crater_frac_diambin_7 = sum(allarr[6:])
-    crater_frac_diambin_8 = sum(allarr[7:])
-    crater_frac_diambin_9 = sum(allarr[8:])
-    crater_frac_diambin_10 = sum(allarr[9:])
-    crater_frac_diambin_15 = sum(allarr[10:])
-    crater_frac_diambin_20 = sum(allarr[11:])
-    crater_frac_diambin_25 = sum(allarr[12:])
-    crater_frac_diambin_30 = sum(allarr[13:])
-    
-    # loop over all pixels
-    for i in range(len(crater_id_in_pix_arr)):
-
-        if (i % 100000) == 0.0:
-            print '\r',
-            print "At pixel number:",'{0:.2e}'.format(i),\
-            "; time taken up to now:",'{0:.2f}'.format((time.time() - start)/60),"minutes.",
-            sys.stdout.flush()
-
-        current_crater_ids = crater_id_in_pix_arr[i]
-        if len(current_crater_ids) == 0:
-            continue    
-
-        elif len(current_crater_ids) == 1:
-            current_id = current_crater_ids[0]
-            current_diam = get_diam(crater_vert_cat, current_id)
-
-            if (current_diam > 35):
-                continue
-
-            else:
-                append_to_density_slope_Nvalue_lists(current_diam, i, pix_frac, slope, density_diambin_1, density_diambin_2, density_diambin_3,\
-                density_diambin_4, density_diambin_5, density_diambin_6, density_diambin_7, density_diambin_8,\
-                density_diambin_9, density_diambin_10, density_diambin_15, density_diambin_20, density_diambin_25,\
-                density_diambin_30, slope_diambin_1, slope_diambin_2, slope_diambin_3, slope_diambin_4, slope_diambin_5,\
-                slope_diambin_6, slope_diambin_7, slope_diambin_8, slope_diambin_9, slope_diambin_10, slope_diambin_15,\
-                slope_diambin_20, slope_diambin_25, slope_diambin_30, crater_frac_diambin_1, crater_frac_diambin_2,\
-                crater_frac_diambin_3, crater_frac_diambin_4, crater_frac_diambin_5, crater_frac_diambin_6,\
-                crater_frac_diambin_7, crater_frac_diambin_8, crater_frac_diambin_9, crater_frac_diambin_10,\
-                crater_frac_diambin_15, crater_frac_diambin_20, crater_frac_diambin_25, crater_frac_diambin_30)
-
-        elif len(current_crater_ids) > 1:
-            for j in range(len(current_crater_ids)):
-                current_id = current_crater_ids[j]
-                current_diam = get_diam(crater_vert_cat, current_id)
-
-                if (current_diam > 35):
-                    continue
-
-                else:
-                    append_to_density_slope_Nvalue_lists(current_diam, i, pix_frac, slope, density_diambin_1, density_diambin_2, density_diambin_3,\
-                    density_diambin_4, density_diambin_5, density_diambin_6, density_diambin_7, density_diambin_8,\
-                    density_diambin_9, density_diambin_10, density_diambin_15, density_diambin_20, density_diambin_25,\
-                    density_diambin_30, slope_diambin_1, slope_diambin_2, slope_diambin_3, slope_diambin_4, slope_diambin_5,\
-                    slope_diambin_6, slope_diambin_7, slope_diambin_8, slope_diambin_9, slope_diambin_10, slope_diambin_15,\
-                    slope_diambin_20, slope_diambin_25, slope_diambin_30, crater_frac_diambin_1, crater_frac_diambin_2,\
-                    crater_frac_diambin_3, crater_frac_diambin_4, crater_frac_diambin_5, crater_frac_diambin_6,\
-                    crater_frac_diambin_7, crater_frac_diambin_8, crater_frac_diambin_9, crater_frac_diambin_10,\
-                    crater_frac_diambin_15, crater_frac_diambin_20, crater_frac_diambin_25, crater_frac_diambin_30)
-
-    # convert to numpy arrays so you can do array ops and save them
-    density_diambin_1 = np.asarray(density_diambin_1)
-    density_diambin_2 = np.asarray(density_diambin_2)
-    density_diambin_3 = np.asarray(density_diambin_3)
-    density_diambin_4 = np.asarray(density_diambin_4)
-    density_diambin_5 = np.asarray(density_diambin_5)
-    density_diambin_6 = np.asarray(density_diambin_6)
-    density_diambin_7 = np.asarray(density_diambin_7)
-    density_diambin_8 = np.asarray(density_diambin_8)
-    density_diambin_9 = np.asarray(density_diambin_9)
-    density_diambin_10 = np.asarray(density_diambin_10)
-    density_diambin_15 = np.asarray(density_diambin_15)
-    density_diambin_20 = np.asarray(density_diambin_20)
-    density_diambin_25 = np.asarray(density_diambin_25)
-    density_diambin_30 = np.asarray(density_diambin_30)
-
-    slope_diambin_1 = np.asarray(slope_diambin_1)
-    slope_diambin_2 = np.asarray(slope_diambin_2)
-    slope_diambin_3 = np.asarray(slope_diambin_3)
-    slope_diambin_4 = np.asarray(slope_diambin_4)
-    slope_diambin_5 = np.asarray(slope_diambin_5)
-    slope_diambin_6 = np.asarray(slope_diambin_6)
-    slope_diambin_7 = np.asarray(slope_diambin_7)
-    slope_diambin_8 = np.asarray(slope_diambin_8)
-    slope_diambin_9 = np.asarray(slope_diambin_9)
-    slope_diambin_10 = np.asarray(slope_diambin_10)
-    slope_diambin_15 = np.asarray(slope_diambin_15)
-    slope_diambin_20 = np.asarray(slope_diambin_20)
-    slope_diambin_25 = np.asarray(slope_diambin_25)
-    slope_diambin_30 = np.asarray(slope_diambin_30)
-
-    # save the arrays
-    np.save(slope_extdir + 'density_diambin_1.npy', density_diambin_1)
-    np.save(slope_extdir + 'density_diambin_2.npy', density_diambin_2)
-    np.save(slope_extdir + 'density_diambin_3.npy', density_diambin_3)
-    np.save(slope_extdir + 'density_diambin_4.npy', density_diambin_4)
-    np.save(slope_extdir + 'density_diambin_5.npy', density_diambin_5)
-    np.save(slope_extdir + 'density_diambin_6.npy', density_diambin_6)
-    np.save(slope_extdir + 'density_diambin_7.npy', density_diambin_7)
-    np.save(slope_extdir + 'density_diambin_8.npy', density_diambin_8)
-    np.save(slope_extdir + 'density_diambin_9.npy', density_diambin_9)
-    np.save(slope_extdir + 'density_diambin_10.npy', density_diambin_10)
-    np.save(slope_extdir + 'density_diambin_15.npy', density_diambin_15)
-    np.save(slope_extdir + 'density_diambin_20.npy', density_diambin_20)
-    np.save(slope_extdir + 'density_diambin_25.npy', density_diambin_25)
-    np.save(slope_extdir + 'density_diambin_30.npy', density_diambin_30)
-
-    np.save(slope_extdir + 'slope_diambin_1.npy', slope_diambin_1)
-    np.save(slope_extdir + 'slope_diambin_2.npy', slope_diambin_2)
-    np.save(slope_extdir + 'slope_diambin_3.npy', slope_diambin_3)
-    np.save(slope_extdir + 'slope_diambin_4.npy', slope_diambin_4)
-    np.save(slope_extdir + 'slope_diambin_5.npy', slope_diambin_5)
-    np.save(slope_extdir + 'slope_diambin_6.npy', slope_diambin_6)
-    np.save(slope_extdir + 'slope_diambin_7.npy', slope_diambin_7)
-    np.save(slope_extdir + 'slope_diambin_8.npy', slope_diambin_8)
-    np.save(slope_extdir + 'slope_diambin_9.npy', slope_diambin_9)
-    np.save(slope_extdir + 'slope_diambin_10.npy', slope_diambin_10)
-    np.save(slope_extdir + 'slope_diambin_15.npy', slope_diambin_15)
-    np.save(slope_extdir + 'slope_diambin_20.npy', slope_diambin_20)
-    np.save(slope_extdir + 'slope_diambin_25.npy', slope_diambin_25)
-    np.save(slope_extdir + 'slope_diambin_30.npy', slope_diambin_30)
 
     return None
 
