@@ -17,9 +17,6 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from matplotlib.offsetbox import AnchoredOffsetbox, TextArea, AnchoredText
 
-mpl.rcParams['xtick.direction'] = 'in'
-mpl.rcParams['ytick.direction'] = 'in'
-
 # Checks if os is windows or unix
 if os.name == 'posix':
     home = os.getenv('HOME')  # does not have a trailing slash

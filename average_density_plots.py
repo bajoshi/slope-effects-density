@@ -1,20 +1,14 @@
 from __future__ import division
 
 import numpy as np
+from astropy.modeling import models, fitting
+from scipy.optimize import curve_fit
 
 import sys
 import os
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-
-# modify rc Params
-mpl.rcParams["font.family"] = "serif"
-mpl.rcParams["font.sans-serif"] = ["Computer Modern Sans"]
-#mpl.rcParams["text.usetex"] = True
-mpl.rcParams["text.latex.preamble"] = r"\usepackage{cmbright}"
-mpl.rcParams["xtick.direction"] = "in"
-mpl.rcParams["ytick.direction"] = "in"
 
 home = os.getenv('HOME')
 slopedir = home + '/Desktop/slope-effects-density/'
@@ -113,6 +107,9 @@ def get_avg_finite_elements(density_arr, slope_arr):
 
     return density_avg, slope_avg
 
+def exp_func(x, amp, alpha, x0):
+    return amp * np.power(x,-1*alpha) * np.exp(-1*x/x0)
+
 if __name__ == '__main__':
 
     # read in all arrays 
@@ -201,13 +198,60 @@ if __name__ == '__main__':
     ax.grid(True, alpha=0.5)
 
     ax.scatter(all_slope_averages_nooverlap, all_density_averages_nooverlap, s=10, color='k', edgecolors='none')
+    init = models.PowerLaw1D(amplitude=1, x_0=1, alpha=1)
+    fit = fitting.LevMarLSQFitter()
+    f = fit(init, all_slope_averages_nooverlap[:11], all_density_averages_nooverlap[:11])
+    print f
+    x_plot_arr = np.linspace(3,18,1000)
+    ax.plot(x_plot_arr, f(x_plot_arr), ls='-', color='skyblue', lw=2)
 
     ax.set_xlim(3,18)
+    ax.set_ylim(-0.01,0.2)
 
     fig.savefig(slope_extdir + 'nooverlap_averages_plot.png', dpi=150, bbox_inches='tight')
     plt.clf()
     plt.cla()
     plt.close()
+
+    # _----------------------------- Nvalue -------------------------- #
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+
+    ax.set_xlabel(r'$\mathrm{Slope}$')
+    ax.set_ylabel(r'$\mathrm{log(Density)}$')
+
+    # add minor ticks and grid
+    ax.minorticks_on()
+    ax.tick_params('both', width=1, length=3, which='minor')
+    ax.tick_params('both', width=1, length=4.7, which='major')
+    ax.grid(True, alpha=0.5)
+
+    ax.scatter(all_slope_averages_nvalue, all_density_averages_nvalue, s=10, color='k', edgecolors='none')
+    init = models.PowerLaw1D(amplitude=1, x_0=1, alpha=1)
+    fit = fitting.LevMarLSQFitter()
+    f = fit(init, all_slope_averages_nvalue[:9], all_density_averages_nvalue[:9])
+    print f
+    x_plot_arr = np.linspace(3,18,1000)
+    ax.plot(x_plot_arr, f(x_plot_arr), ls='-', color='skyblue', lw=2)
+
+    # Show residuals
+
+    ax.set_xlim(9,14)
+    ax.set_ylim(-0.01,0.1)
+
+    fig.savefig(slope_extdir + 'nvalue_averages_plot.png', dpi=150, bbox_inches='tight')
+    plt.clf()
+    plt.cla()
+    plt.close()    
+
+    # ----------------------------- Nvalue normalized -------------------------- #
+    all_diam_values = np.array([1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5, 9.5, 12.5, 17.5, 22.5, 27.5, 32.5])
+    norm_values = np.power(10, 4.9) * np.power(all_diam_values, -2)
+    print norm_values
+
+    all_density_averages_nvalue /= norm_values
+
+    print all_density_averages_nvalue
 
     fig = plt.figure()
     ax = fig.add_subplot(111)
@@ -222,12 +266,22 @@ if __name__ == '__main__':
     ax.grid(True, alpha=0.5)
 
     ax.scatter(all_slope_averages_nvalue, all_density_averages_nvalue, s=10, color='k', edgecolors='none')
+    init = models.PowerLaw1D(amplitude=1, x_0=1, alpha=1)
+    fit = fitting.LevMarLSQFitter()
+    f = fit(init, all_slope_averages_nvalue[:9], all_density_averages_nvalue[:9])
+    print f
+    x_plot_arr = np.linspace(3,18,1000)
+    ax.plot(x_plot_arr, f(x_plot_arr), ls='-', color='skyblue', lw=2)
 
-    ax.set_xlim(3,18)
+    # Show residuals
 
-    fig.savefig(slope_extdir + 'nvalue_averages_plot.png', dpi=150, bbox_inches='tight')
+    ax.set_xlim(9,14)
+    ax.set_ylim(0,2e-5)
+
+    fig.savefig(slope_extdir + 'nvalue_norm_averages_plot.png', dpi=150, bbox_inches='tight')
+    plt.show()
     plt.clf()
     plt.cla()
-    plt.close()    
+    plt.close()  
 
     sys.exit(0)

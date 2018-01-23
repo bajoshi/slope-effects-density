@@ -11,14 +11,7 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 from matplotlib.offsetbox import AnchoredOffsetbox, TextArea, AnchoredText
-
-# modify rc Params
-mpl.rcParams["font.family"] = "serif"
-mpl.rcParams["font.sans-serif"] = ["Computer Modern Sans"]
-mpl.rcParams["text.usetex"] = True
-mpl.rcParams["text.latex.preamble"] = r"\usepackage{cmbright}"
-mpl.rcParams["xtick.direction"] = "in"
-mpl.rcParams["ytick.direction"] = "in"
+import matplotlib.gridspec as gridspec
 
 home = os.getenv('HOME')
 slopedir = home + '/Desktop/slope-effects-density/'
@@ -96,6 +89,9 @@ def make_plot_diam_bin_with_contour(density_arr_color, slope_arr_color, color_ar
     #fig.savefig(slope_extdir + 'slope_v_density_withcontour_' + diam_bin + 'km.eps', dpi=300, bbox_inches='tight')
 
     #plt.show()
+    plt.cla()
+    plt.clf()
+    plt.close()
 
     return None
 
@@ -115,108 +111,108 @@ def get_levels_to_plot(diam_bin, plottype):
         nooverlap = False
 
     if diam_bin == '1to2':
-        levels_to_plot = [10, 100, 200, 335, 450]
+        levels_to_plot = [8, 80, 200, 450, 800]
         if nvalue:
-            levels_to_plot = [20, 150, 600, 900, 1200]
+            levels_to_plot = [20, 150, 600, 1200, 1600]
         cb_lw = 35.0
         vmin = -150
     elif diam_bin == '2to3':
-        levels_to_plot = [3, 20, 50, 80, 120]
+        levels_to_plot = [3, 20, 50, 150, 300]
         if nvalue:
-            levels_to_plot = [5, 100, 300, 600, 1100]
+            levels_to_plot = [5, 80, 300, 600, 1100]
         cb_lw = 35.0
         vmin = -40
     elif diam_bin == '3to4':
         if cumulative:
             levels_to_plot = [3, 15, 30, 50, 68]
         elif nooverlap:
-            levels_to_plot = [3, 15, 30, 50, 85]
+            levels_to_plot = [3, 15, 50, 85, 130]
         elif nvalue:
-            levels_to_plot = [5, 150, 350, 600, 1000]
+            levels_to_plot = [5, 90, 350, 600, 1000]
         cb_lw = 35.0
         vmin = -20
     elif diam_bin == '4to5':
         if cumulative:
             levels_to_plot = [3, 10, 15, 24, 34]
         elif nooverlap:
-            levels_to_plot = [3, 10, 15, 24, 36]
+            levels_to_plot = [3, 10, 40, 80, 125]
         elif nvalue:
-            levels_to_plot = [5, 150, 350, 600, 1000]
+            levels_to_plot = [5, 90, 350, 600, 950]
         cb_lw = 35.0
         vmin = -8
     elif diam_bin == '5to6':
         if cumulative:
             levels_to_plot = [2, 10, 18, 25, 37]
         elif nooverlap:
-            levels_to_plot = [2, 10, 18, 25, 45]
+            levels_to_plot = [2, 10, 22, 45, 62]
         elif nvalue:
-            levels_to_plot = [5, 150, 350, 600, 1000]
+            levels_to_plot = [5, 90, 350, 600, 950]
         cb_lw = 35.0
         vmin = -10
     elif diam_bin == '6to7':
-        levels_to_plot = [2, 10, 18, 25, 37]
+        levels_to_plot = [2, 10, 30, 60, 100]
         if nvalue:
-            levels_to_plot = [5, 150, 350, 600, 1000]
+            levels_to_plot = [5, 80, 350, 600, 900]
         cb_lw = 35.0
         vmin = -10
     elif diam_bin == '7to8':
         if cumulative:
             levels_to_plot = [2, 8, 13, 18, 24]
         elif nooverlap:
-            levels_to_plot = [2, 8, 13, 18, 35]
+            levels_to_plot = [2, 8, 13, 25, 30]
         elif nvalue:
-            levels_to_plot = [5, 150, 350, 600, 1000]
+            levels_to_plot = [5, 80, 350, 600, 900]
         cb_lw = 35.0
         vmin = -5
     elif diam_bin == '8to9':
         if cumulative:
             levels_to_plot = [2, 8, 13, 18, 23]
         elif nooverlap:
-            levels_to_plot = [2, 8, 13, 18, 38]
+            levels_to_plot = [2, 8, 13, 30, 42]
         elif nvalue:
-            levels_to_plot = [5, 150, 350, 600, 1000]
+            levels_to_plot = [5, 80, 350, 600, 875]
         cb_lw = 35.0
         vmin = -5
     elif diam_bin == '9to10':
-        levels_to_plot = [1, 4, 7, 9, 12]
+        levels_to_plot = [1, 6, 20, 40, 70]
         if nvalue:
-            levels_to_plot = [5, 150, 350, 700, 1000]
+            levels_to_plot = [5, 80, 350, 600, 850]
         cb_lw = 35.0
         vmin = -2
     elif diam_bin == '10to15':
-        levels_to_plot = [5, 20, 40, 65, 83, 95]
+        levels_to_plot = [4, 20, 40, 65, 90, 125]
         if nvalue:
-            levels_to_plot = [5, 70, 150, 400, 700, 900]
+            levels_to_plot = [5, 30, 150, 420, 700, 850]
         cb_lw = 28.0
         vmin = -20
     elif diam_bin == '15to20':
         levels_to_plot = [3, 12, 30, 50, 68, 80]
         if nvalue:
-            levels_to_plot = [5, 70, 150, 400, 700, 900]
+            levels_to_plot = [5, 30, 150, 420, 680, 760]
         cb_lw = 28.0
         vmin = -20
     elif diam_bin == '20to25':
         if cumulative:
             levels_to_plot = [5, 50, 140, 200, 250, 280]
         elif nooverlap:
-            levels_to_plot = [5, 50, 140, 200, 250, 275]
+            levels_to_plot = [3, 15, 50, 80, 120, 145]
         elif nvalue:
-            levels_to_plot = [5, 70, 150, 400, 700, 850]
+            levels_to_plot = [5, 30, 150, 400, 620, 680]
         cb_lw = 28.0
         vmin = -50
     elif diam_bin == '25to30':
         if cumulative:
             levels_to_plot = [5, 50, 140, 200, 250, 280]
         elif nooverlap:
-            levels_to_plot = [5, 50, 140, 200, 250, 300]
+            levels_to_plot = [3, 15, 90, 140, 200, 260]
         elif nvalue:
-            levels_to_plot = [5, 70, 150, 300, 450, 550]
+            levels_to_plot = [5, 30, 150, 300, 450, 550]
         cb_lw = 28.0
         vmin = -50
     elif diam_bin == '30to35':
         levels_to_plot = [5, 50, 140, 200, 250, 280]
         if nvalue:
-            levels_to_plot = [5, 30, 70, 140, 190, 260]
+            levels_to_plot = [3, 20, 70, 140, 220, 290]
         cb_lw = 28.0
         vmin = -60
 
@@ -318,6 +314,10 @@ def make_no_overlap_Nvalue_plots(density_arr, slope_arr, diam_bin_min, diam_bin_
         ax.add_artist(anc_diambinbox)
 
         fig.savefig(slope_extdir + 'slope_v_density_withcontour_nooverlap' + diam_bin + 'km.png', dpi=300, bbox_inches='tight')
+
+    plt.cla()
+    plt.clf()
+    plt.close()
 
     return None
 
@@ -425,10 +425,198 @@ def call_Nvalue_plots():
 
     return None
 
+def make_nooverlap_nvalue_grid_plots(slope_list, density_list, plottype):
+
+    gs = gridspec.GridSpec(4,4)
+    gs.update(left=0.1, right=0.9, bottom=0.1, top=0.9, wspace=0.02, hspace=0.02)
+
+    fig = plt.figure(figsize=(9,5.5))
+    ax_1to2   = fig.add_subplot(gs[0, 0])
+    ax_2to3   = fig.add_subplot(gs[0, 1])
+    ax_3to4   = fig.add_subplot(gs[0, 2])
+    ax_4to5   = fig.add_subplot(gs[0, 3])
+    ax_5to6   = fig.add_subplot(gs[1, 0])
+    ax_6to7   = fig.add_subplot(gs[1, 1])
+    ax_7to8   = fig.add_subplot(gs[1, 2])
+    ax_8to9   = fig.add_subplot(gs[1, 3])
+    ax_9to10  = fig.add_subplot(gs[2, 0])
+    ax_10to15 = fig.add_subplot(gs[2, 1])
+    ax_15to20 = fig.add_subplot(gs[2, 2])
+    ax_20to25 = fig.add_subplot(gs[2, 3])
+    ax_25to30 = fig.add_subplot(gs[3, 1])
+    ax_30to35 = fig.add_subplot(gs[3, 2])
+
+    all_axes = [ax_1to2, ax_2to3, ax_3to4, ax_4to5, ax_5to6, ax_6to7, ax_7to8, ax_8to9, ax_9to10, \
+    ax_10to15, ax_15to20, ax_20to25, ax_25to30, ax_30to35]
+    diam_bins = ['1to2', '2to3', '3to4', '4to5', '5to6', '6to7', '7to8', '8to9', '9to10', \
+    '10to15', '15to20', '20to25', '25to30', '30to35']
+    color_list = ['midnightblue', 'blue', 'royalblue', 'dodgerblue', 'deepskyblue', 'steelblue', \
+    'slateblue', 'rebeccapurple', 'darkcyan', 'green', 'olive', 'goldenrod', 'darkorchid', 'maroon']
+
+    ax_25to30.set_xlabel(r'$\mathrm{Slope}$', fontsize=14)
+    ax_25to30.xaxis.set_label_coords(1.05, -0.25)
+
+    ax_9to10.set_ylabel(r'$\mathrm{log(Density)}$', fontsize=14)
+    ax_9to10.yaxis.set_label_coords(-0.3, 1.05)
+
+    for i in range(len(all_axes)):
+
+        all_axes[i].scatter(slope_list[i], np.log10(density_list[i]), s=5, c=color_list[i], alpha=0.25, edgecolors='none')
+
+        all_axes[i].set_ylim(-8, 0.5)
+        all_axes[i].set_xlim(0, 35)
+
+        x = slope_list[i]
+        y = density_list[i]
+
+        # draw contours
+        # make sure the arrays dont have NaNs
+        slope_fin_idx = np.where(np.isfinite(x))[0]
+        density_fin_idx = np.where(np.isfinite(y))[0]
+        fin_idx = np.intersect1d(slope_fin_idx, density_fin_idx)
+
+        xp = x[fin_idx]
+        yp = y[fin_idx]
+
+        counts, xbins, ybins = np.histogram2d(xp, np.log10(yp), bins=25, normed=False)
+        # smooth counts to get smoother contours
+        kernel = Gaussian2DKernel(stddev=1.4)
+        counts = convolve(counts, kernel, boundary='extend')
+
+        print "Min and max point number density values in bins", str("{:.3}".format(np.min(counts))), str("{:.3}".format(np.max(counts)))
+        diam_bin = diam_bins[i]
+        diam_bin_min = diam_bin.split('to')[0]
+        diam_bin_max = diam_bin.split('to')[1]
+        levels_to_plot, cb_lw, vmin = get_levels_to_plot(diam_bin, plottype=plottype)
+        norm = mpl.colors.Normalize(vmin=vmin, vmax=max(levels_to_plot))
+
+        c = all_axes[i].contour(counts.transpose(), levels=levels_to_plot, \
+            extent=[xbins.min(), xbins.max(), ybins.min(), ybins.max()], \
+            cmap=cm.viridis, linestyles='solid', linewidths=1, \
+            zorder=10, norm=norm)
+
+        # add minor ticks and grid
+        all_axes[i].minorticks_on()
+        all_axes[i].tick_params('both', width=1, length=3, which='minor')
+        all_axes[i].tick_params('both', width=1, length=4.7, which='major')
+
+        if i <= 11:
+            all_axes[i].set_xticklabels([])
+
+        if i == 1 or i == 2 or i == 3 or i == 5 or i == 6 or i == 7 or i == 9 or i == 10 or i == 11 or i == 13:
+            all_axes[i].set_yticklabels([])
+
+        if plottype == 'Nvalue':
+            all_axes[i].text(0.6, 0.15, r"$\mathrm{N \geq\ }$" + str(diam_bin_min) + r'$\mathrm{\, km}$', \
+                verticalalignment='top', horizontalalignment='left', \
+                transform=all_axes[i].transAxes, color='k', size=5)
+
+        elif plottype == 'nooverlap':
+            all_axes[i].text(0.6, 0.15, str(diam_bin_min) + r'$\mathrm{\ to\ }$' + str(diam_bin_max) + r'$\mathrm{\,km}$', \
+                verticalalignment='top', horizontalalignment='left', \
+                transform=all_axes[i].transAxes, color='k', size=5)
+
+    ax_9to10.set_xticklabels(['0', '10', '20', '30'])
+    ax_20to25.set_xticklabels(['', '10', '20', '30'])
+    ax_25to30.set_xticklabels(['0', '10', '20', '30'])
+    ax_30to35.set_xticklabels(['0', '10', '20', '30'])
+
+    # save the figure
+    if plottype == 'Nvalue':
+        fig.savefig(slope_extdir + 'slope_v_density_withcontour_grid_Nvalue.png', dpi=300, bbox_inches='tight')
+    elif plottype == 'nooverlap':
+        fig.savefig(slope_extdir + 'slope_v_density_withcontour_grid_nooverlap.png', dpi=300, bbox_inches='tight')
+
+    return None
+
 if __name__ == '__main__':    
 
-    make_cumulative_plots()
-    call_no_overlap_plots()
-    call_Nvalue_plots()
+    #make_cumulative_plots()
+    #call_no_overlap_plots()
+    #call_Nvalue_plots()
+
+    # ---------------------------------- GRID PLOTS ---------------------------------- #
+    # ---------------------------------- No Overlap ---------------------------------- #
+    # read in all arrays
+    density_diambin_1_2 = np.load(slope_extdir + 'density_diambin_1_2.npy')
+    density_diambin_2_3 = np.load(slope_extdir + 'density_diambin_2_3.npy')
+    density_diambin_3_4 = np.load(slope_extdir + 'density_diambin_3_4.npy')
+    density_diambin_4_5 = np.load(slope_extdir + 'density_diambin_4_5.npy')
+    density_diambin_5_6 = np.load(slope_extdir + 'density_diambin_5_6.npy')
+    density_diambin_6_7 = np.load(slope_extdir + 'density_diambin_6_7.npy')
+    density_diambin_7_8 = np.load(slope_extdir + 'density_diambin_7_8.npy')
+    density_diambin_8_9 = np.load(slope_extdir + 'density_diambin_8_9.npy')
+    density_diambin_9_10 = np.load(slope_extdir + 'density_diambin_9_10.npy')
+    density_diambin_10_15 = np.load(slope_extdir + 'density_diambin_10_15.npy')
+    density_diambin_15_20 = np.load(slope_extdir + 'density_diambin_15_20.npy')
+    density_diambin_20_25 = np.load(slope_extdir + 'density_diambin_20_25.npy')
+    density_diambin_25_30 = np.load(slope_extdir + 'density_diambin_25_30.npy')
+    density_diambin_30_35 = np.load(slope_extdir + 'density_diambin_30_35.npy')
+
+    slope_diambin_1_2 = np.load(slope_extdir + 'slope_diambin_1_2.npy')
+    slope_diambin_2_3 = np.load(slope_extdir + 'slope_diambin_2_3.npy')
+    slope_diambin_3_4 = np.load(slope_extdir + 'slope_diambin_3_4.npy')
+    slope_diambin_4_5 = np.load(slope_extdir + 'slope_diambin_4_5.npy')
+    slope_diambin_5_6 = np.load(slope_extdir + 'slope_diambin_5_6.npy')
+    slope_diambin_6_7 = np.load(slope_extdir + 'slope_diambin_6_7.npy')
+    slope_diambin_7_8 = np.load(slope_extdir + 'slope_diambin_7_8.npy')
+    slope_diambin_8_9 = np.load(slope_extdir + 'slope_diambin_8_9.npy')
+    slope_diambin_9_10 = np.load(slope_extdir + 'slope_diambin_9_10.npy')
+    slope_diambin_10_15 = np.load(slope_extdir + 'slope_diambin_10_15.npy')
+    slope_diambin_15_20 = np.load(slope_extdir + 'slope_diambin_15_20.npy')
+    slope_diambin_20_25 = np.load(slope_extdir + 'slope_diambin_20_25.npy')
+    slope_diambin_25_30 = np.load(slope_extdir + 'slope_diambin_25_30.npy')
+    slope_diambin_30_35 = np.load(slope_extdir + 'slope_diambin_30_35.npy')
+
+    density_list_nooverlap = [density_diambin_1_2, density_diambin_2_3, density_diambin_3_4, density_diambin_4_5, \
+    density_diambin_5_6, density_diambin_6_7, density_diambin_7_8, density_diambin_8_9, density_diambin_9_10, \
+    density_diambin_10_15, density_diambin_15_20, density_diambin_20_25, density_diambin_25_30, density_diambin_30_35]
+
+    slope_list_nooverlap = [slope_diambin_1_2, slope_diambin_2_3, slope_diambin_3_4, slope_diambin_4_5, \
+    slope_diambin_5_6, slope_diambin_6_7, slope_diambin_7_8, slope_diambin_8_9, slope_diambin_9_10, \
+    slope_diambin_10_15, slope_diambin_15_20, slope_diambin_20_25, slope_diambin_25_30, slope_diambin_30_35]
+
+    # ---------------------------------- N value ---------------------------------- #
+    # read in all arrays
+    density_diambin_1 = np.load(slope_extdir + 'density_diambin_1.npy')
+    density_diambin_2 = np.load(slope_extdir + 'density_diambin_2.npy')
+    density_diambin_3 = np.load(slope_extdir + 'density_diambin_3.npy')
+    density_diambin_4 = np.load(slope_extdir + 'density_diambin_4.npy')
+    density_diambin_5 = np.load(slope_extdir + 'density_diambin_5.npy')
+    density_diambin_6 = np.load(slope_extdir + 'density_diambin_6.npy')
+    density_diambin_7 = np.load(slope_extdir + 'density_diambin_7.npy')
+    density_diambin_8 = np.load(slope_extdir + 'density_diambin_8.npy')
+    density_diambin_9 = np.load(slope_extdir + 'density_diambin_9.npy')
+    density_diambin_10 = np.load(slope_extdir + 'density_diambin_10.npy')
+    density_diambin_15 = np.load(slope_extdir + 'density_diambin_15.npy')
+    density_diambin_20 = np.load(slope_extdir + 'density_diambin_20.npy')
+    density_diambin_25 = np.load(slope_extdir + 'density_diambin_25.npy')
+    density_diambin_30 = np.load(slope_extdir + 'density_diambin_30.npy')
+
+    slope_diambin_1 = np.load(slope_extdir + 'slope_diambin_1.npy')
+    slope_diambin_2 = np.load(slope_extdir + 'slope_diambin_2.npy')
+    slope_diambin_3 = np.load(slope_extdir + 'slope_diambin_3.npy')
+    slope_diambin_4 = np.load(slope_extdir + 'slope_diambin_4.npy')
+    slope_diambin_5 = np.load(slope_extdir + 'slope_diambin_5.npy')
+    slope_diambin_6 = np.load(slope_extdir + 'slope_diambin_6.npy')
+    slope_diambin_7 = np.load(slope_extdir + 'slope_diambin_7.npy')
+    slope_diambin_8 = np.load(slope_extdir + 'slope_diambin_8.npy')
+    slope_diambin_9 = np.load(slope_extdir + 'slope_diambin_9.npy')
+    slope_diambin_10 = np.load(slope_extdir + 'slope_diambin_10.npy')
+    slope_diambin_15 = np.load(slope_extdir + 'slope_diambin_15.npy')
+    slope_diambin_20 = np.load(slope_extdir + 'slope_diambin_20.npy')
+    slope_diambin_25 = np.load(slope_extdir + 'slope_diambin_25.npy')
+    slope_diambin_30 = np.load(slope_extdir + 'slope_diambin_30.npy')
+
+    density_list_nvalue = [density_diambin_1, density_diambin_2, density_diambin_3, density_diambin_4, \
+    density_diambin_5, density_diambin_6, density_diambin_7, density_diambin_8, density_diambin_9, \
+    density_diambin_10, density_diambin_15, density_diambin_20, density_diambin_25, density_diambin_30]
+
+    slope_list_nvalue = [slope_diambin_1, slope_diambin_2, slope_diambin_3, slope_diambin_4, \
+    slope_diambin_5, slope_diambin_6, slope_diambin_7, slope_diambin_8, slope_diambin_9, \
+    slope_diambin_10, slope_diambin_15, slope_diambin_20, slope_diambin_25, slope_diambin_30]
+
+    make_nooverlap_nvalue_grid_plots(slope_list_nvalue, density_list_nvalue, 'Nvalue')
+    make_nooverlap_nvalue_grid_plots(slope_list_nooverlap, density_list_nooverlap, 'nooverlap')
 
     sys.exit(0)

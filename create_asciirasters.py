@@ -34,7 +34,6 @@ if __name__ == '__main__':
 
     # convert to fits so you can check with ds9
     pm.convert_npy_array_tofits(crater_frac_diambin_1, (2109,1949), slope_extdir, 'crater_frac_diambin_1')
-
     pm.convert_npy_array_tofits(crater_frac_diambin_1_2, (2109,1949), slope_extdir, 'crater_frac_diambin_1_2')
     pm.convert_npy_array_tofits(crater_frac_diambin_2_3, (2109,1949), slope_extdir, 'crater_frac_diambin_2_3')
     pm.convert_npy_array_tofits(crater_frac_diambin_3_4, (2109,1949), slope_extdir, 'crater_frac_diambin_3_4')
@@ -43,6 +42,11 @@ if __name__ == '__main__':
 
     # convert to ascii raster after check with ds9
     # get supplementary data first
+    # read in pix frac array
+    pix_frac = np.load(slope_extdir + 'pix_area_fraction_clipped.npy')
+    pix_frac = pix_frac.ravel()
+
+    # get pixel x and y arrays and rows and cols
     nrows = 2109
     ncols = 1949
     pix_x_cen_arr = np.arange(-3822217, -1874217 + 1000, 1000)
@@ -53,15 +57,29 @@ if __name__ == '__main__':
 
     rows, columns = se.get_rows_columns(pix_x_cen_arr, pix_y_cen_arr)
 
-    # save N(1) array 
+    # divide crater frac arrays by pixel frac to get densities
+    density_2darray_diambin_1 = crater_frac_diambin_1 / pix_frac
+    density_2darray_diambin_1_2 = crater_frac_diambin_1_2 / pix_frac
+    density_2darray_diambin_2_3 = crater_frac_diambin_2_3 / pix_frac
+    density_2darray_diambin_3_4 = crater_frac_diambin_3_4 / pix_frac
+    density_2darray_diambin_4_5 = crater_frac_diambin_4_5 / pix_frac
+    density_2darray_diambin_5_6 = crater_frac_diambin_5_6 / pix_frac
+    
+    # save N(1) crater fraction array and all density arrays
     np.save(slope_extdir + 'crater_frac_diambin_1.npy', crater_frac_diambin_1)
-    # now convert to ascii raster
-    su.numpy_to_asciiraster(slope_extdir + 'crater_frac_diambin_1.npy', (rows, columns), pix_x_cen_arr, pix_y_cen_arr)
+    np.save(slope_extdir + 'density_2darray_diambin_1.npy', density_2darray_diambin_1)
+    np.save(slope_extdir + 'density_2darray_diambin_1_2.npy', density_2darray_diambin_1_2)
+    np.save(slope_extdir + 'density_2darray_diambin_2_3.npy', density_2darray_diambin_2_3)
+    np.save(slope_extdir + 'density_2darray_diambin_3_4.npy', density_2darray_diambin_3_4)
+    np.save(slope_extdir + 'density_2darray_diambin_4_5.npy', density_2darray_diambin_4_5)
+    np.save(slope_extdir + 'density_2darray_diambin_5_6.npy', density_2darray_diambin_5_6)    
 
-    su.numpy_to_asciiraster(slope_extdir + 'crater_frac_diambin_1_2.npy', (rows, columns), pix_x_cen_arr, pix_y_cen_arr)
-    su.numpy_to_asciiraster(slope_extdir + 'crater_frac_diambin_2_3.npy', (rows, columns), pix_x_cen_arr, pix_y_cen_arr)
-    su.numpy_to_asciiraster(slope_extdir + 'crater_frac_diambin_3_4.npy', (rows, columns), pix_x_cen_arr, pix_y_cen_arr)
-    su.numpy_to_asciiraster(slope_extdir + 'crater_frac_diambin_4_5.npy', (rows, columns), pix_x_cen_arr, pix_y_cen_arr)
-    su.numpy_to_asciiraster(slope_extdir + 'crater_frac_diambin_5_6.npy', (rows, columns), pix_x_cen_arr, pix_y_cen_arr)
+    # now convert densities to ascii raster
+    su.numpy_to_asciiraster(slope_extdir + 'density_2darray_diambin_1.npy', (rows, columns), pix_x_cen_arr, pix_y_cen_arr)
+    su.numpy_to_asciiraster(slope_extdir + 'density_2darray_diambin_1_2.npy', (rows, columns), pix_x_cen_arr, pix_y_cen_arr)
+    su.numpy_to_asciiraster(slope_extdir + 'density_2darray_diambin_2_3.npy', (rows, columns), pix_x_cen_arr, pix_y_cen_arr)
+    su.numpy_to_asciiraster(slope_extdir + 'density_2darray_diambin_3_4.npy', (rows, columns), pix_x_cen_arr, pix_y_cen_arr)
+    su.numpy_to_asciiraster(slope_extdir + 'density_2darray_diambin_4_5.npy', (rows, columns), pix_x_cen_arr, pix_y_cen_arr)
+    su.numpy_to_asciiraster(slope_extdir + 'density_2darray_diambin_5_6.npy', (rows, columns), pix_x_cen_arr, pix_y_cen_arr)
 
     sys.exit(0)
