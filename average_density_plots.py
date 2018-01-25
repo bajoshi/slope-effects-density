@@ -197,7 +197,36 @@ if __name__ == '__main__':
     ax.tick_params('both', width=1, length=4.7, which='major')
     ax.grid(True, alpha=0.5)
 
-    ax.scatter(all_slope_averages_nooverlap, all_density_averages_nooverlap, s=10, color='k', edgecolors='none')
+    ax.scatter(all_slope_averages_nooverlap[0], all_density_averages_nooverlap[0], s=50, marker='x', color='rebeccapurple', label='1-2' + ' km', \
+        edgecolors='none', zorder=5)
+    ax.scatter(all_slope_averages_nooverlap[1], all_density_averages_nooverlap[1], s=50, marker='x', color='darkcyan', label='2-3' + ' km', \
+        edgecolors='none', zorder=5)
+    ax.scatter(all_slope_averages_nooverlap[2], all_density_averages_nooverlap[2], s=50, marker='x', color='green', label='3-4' + ' km', \
+        edgecolors='none', zorder=5)
+    ax.scatter(all_slope_averages_nooverlap[3], all_density_averages_nooverlap[3], s=50, marker='x', color='midnightblue', label='4-5' + ' km', \
+        edgecolors='none', zorder=5)
+    ax.scatter(all_slope_averages_nooverlap[4], all_density_averages_nooverlap[4], s=50, marker='x', color='goldenrod', label='5-6' + ' km', \
+        edgecolors='none', zorder=5)
+    ax.scatter(all_slope_averages_nooverlap[5], all_density_averages_nooverlap[5], s=50, marker='x', color='dodgerblue', label='6-7' + ' km', \
+        edgecolors='none', zorder=5)
+    ax.scatter(all_slope_averages_nooverlap[6], all_density_averages_nooverlap[6], s=50, marker='x', color='maroon', label='7-8' + ' km', \
+        edgecolors='none', zorder=5)
+    ax.scatter(all_slope_averages_nooverlap[7], all_density_averages_nooverlap[7], s=20, color='rebeccapurple', label='8-9' + ' km', \
+        edgecolors='none', zorder=4)
+    ax.scatter(all_slope_averages_nooverlap[8], all_density_averages_nooverlap[8], s=20, color='darkcyan', label='9-10' + ' km', \
+        edgecolors='none', zorder=4)
+    ax.scatter(all_slope_averages_nooverlap[9], all_density_averages_nooverlap[9], s=20, color='green', label='10-15' + ' km', \
+        edgecolors='none', zorder=4)
+    ax.scatter(all_slope_averages_nooverlap[10], all_density_averages_nooverlap[10], s=20, color='midnightblue', label='15-20' + ' km', \
+        edgecolors='none', zorder=4)
+    ax.scatter(all_slope_averages_nooverlap[11], all_density_averages_nooverlap[11], s=20, color='goldenrod', label='20-25' + ' km', \
+        edgecolors='none', zorder=4)
+    ax.scatter(all_slope_averages_nooverlap[12], all_density_averages_nooverlap[12], s=20, color='dodgerblue', label='25-30' + ' km', \
+        edgecolors='none', zorder=4)
+    ax.scatter(all_slope_averages_nooverlap[13], all_density_averages_nooverlap[13], s=20, color='maroon', label='30-35' + ' km', \
+        edgecolors='none', zorder=4)
+
+    # fitting
     init = models.PowerLaw1D(amplitude=1, x_0=1, alpha=1)
     fit = fitting.LevMarLSQFitter()
     f = fit(init, all_slope_averages_nooverlap[:11], all_density_averages_nooverlap[:11])
@@ -207,6 +236,8 @@ if __name__ == '__main__':
 
     ax.set_xlim(3,18)
     ax.set_ylim(-0.01,0.2)
+
+    ax.legend(loc=0)
 
     fig.savefig(slope_extdir + 'nooverlap_averages_plot.png', dpi=150, bbox_inches='tight')
     plt.clf()
@@ -226,7 +257,36 @@ if __name__ == '__main__':
     ax.tick_params('both', width=1, length=4.7, which='major')
     ax.grid(True, alpha=0.5)
 
-    ax.scatter(all_slope_averages_nvalue, all_density_averages_nvalue, s=10, color='k', edgecolors='none')
+    ax.scatter(all_slope_averages_nvalue[0], all_density_averages_nvalue[0], s=50, marker='x', color='rebeccapurple', label='1-2' + ' km', \
+        edgecolors='none', zorder=5)
+    ax.scatter(all_slope_averages_nvalue[1], all_density_averages_nvalue[1], s=50, marker='x', color='darkcyan', label='2-3' + ' km', \
+        edgecolors='none', zorder=5)
+    ax.scatter(all_slope_averages_nvalue[2], all_density_averages_nvalue[2], s=50, marker='x', color='green', label='3-4' + ' km', \
+        edgecolors='none', zorder=5)
+    ax.scatter(all_slope_averages_nvalue[3], all_density_averages_nvalue[3], s=50, marker='x', color='midnightblue', label='4-5' + ' km', \
+        edgecolors='none', zorder=5)
+    ax.scatter(all_slope_averages_nvalue[4], all_density_averages_nvalue[4], s=50, marker='x', color='goldenrod', label='5-6' + ' km', \
+        edgecolors='none', zorder=5)
+    ax.scatter(all_slope_averages_nvalue[5], all_density_averages_nvalue[5], s=50, marker='x', color='dodgerblue', label='6-7' + ' km', \
+        edgecolors='none', zorder=5)
+    ax.scatter(all_slope_averages_nvalue[6], all_density_averages_nvalue[6], s=50, marker='x', color='maroon', label='7-8' + ' km', \
+        edgecolors='none', zorder=5)
+    ax.scatter(all_slope_averages_nvalue[7], all_density_averages_nvalue[7], s=20, color='rebeccapurple', label='8-9' + ' km', \
+        edgecolors='none', zorder=4)
+    ax.scatter(all_slope_averages_nvalue[8], all_density_averages_nvalue[8], s=20, color='darkcyan', label='9-10' + ' km', \
+        edgecolors='none', zorder=4)
+    ax.scatter(all_slope_averages_nvalue[9], all_density_averages_nvalue[9], s=20, color='green', label='10-15' + ' km', \
+        edgecolors='none', zorder=4)
+    ax.scatter(all_slope_averages_nvalue[10], all_density_averages_nvalue[10], s=20, color='midnightblue', label='15-20' + ' km', \
+        edgecolors='none', zorder=4)
+    ax.scatter(all_slope_averages_nvalue[11], all_density_averages_nvalue[11], s=20, color='goldenrod', label='20-25' + ' km', \
+        edgecolors='none', zorder=4)
+    ax.scatter(all_slope_averages_nvalue[12], all_density_averages_nvalue[12], s=20, color='dodgerblue', label='25-30' + ' km', \
+        edgecolors='none', zorder=4)
+    ax.scatter(all_slope_averages_nvalue[13], all_density_averages_nvalue[13], s=20, color='maroon', label='30-35' + ' km', \
+        edgecolors='none', zorder=4)
+
+    # fitting
     init = models.PowerLaw1D(amplitude=1, x_0=1, alpha=1)
     fit = fitting.LevMarLSQFitter()
     f = fit(init, all_slope_averages_nvalue[:9], all_density_averages_nvalue[:9])
@@ -239,10 +299,14 @@ if __name__ == '__main__':
     ax.set_xlim(9,14)
     ax.set_ylim(-0.01,0.1)
 
+    ax.legend(loc=0)
+
     fig.savefig(slope_extdir + 'nvalue_averages_plot.png', dpi=150, bbox_inches='tight')
     plt.clf()
     plt.cla()
     plt.close()    
+
+    sys.exit(0)
 
     # ----------------------------- Nvalue normalized -------------------------- #
     all_diam_values = np.array([1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5, 9.5, 12.5, 17.5, 22.5, 27.5, 32.5])
