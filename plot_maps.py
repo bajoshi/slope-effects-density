@@ -423,7 +423,7 @@ def make_plot_diam_bin(density_arr_color, slope_arr_color, color_arr, diam_bin_m
     print pcov
 
     # plot the best fit curves
-    ax_plot_arr = np.linspace(0,30,1000)
+    x_plot_arr = np.linspace(0,30,1000)
     ax.plot(x_plot_arr, gb(x_plot_arr), ls='-', color='skyblue', lw=2)
     ax.plot(x_plot_arr, gr(x_plot_arr), ls='-', color='pink', lw=2)
     ax.plot(x_plot_arr, poisson(x_plot_arr, *popt), ls='-', color='forestgreen', lw=2)
