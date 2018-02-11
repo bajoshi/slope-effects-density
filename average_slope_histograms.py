@@ -25,7 +25,12 @@ def poisson(k, lamb):
 def gamma_dist(x, k, theta):
     return (x**(k-1) * np.exp(-x/theta)) / (theta**k * gamma(k))
 
-def hist_and_fit(fig, ax, slopearr, color):
+def hist_and_fit(fig, ax, slopearr, color, callcount):
+    """
+    Simply comment out the ax.hist() line at hte end
+    if you only want to plot the fits and not the 
+    histograms as well.
+    """
 
     counts, bins = np.histogram(slopearr, 35, range=[0,35], density=True)
     fitting_bins = [(bins[i] + bins[i+1])/2 for i in bins[:-1]]
@@ -37,33 +42,33 @@ def hist_and_fit(fig, ax, slopearr, color):
     popt, pcov = curve_fit(gamma_dist, fitting_bins, counts, p0=[3.0, 3.0])
 
     # get label
-    if color == 'midnightblue':
+    if callcount == 0:
         label = '1 to 2 km'
-    elif color == 'blue':
+    elif callcount == 1:
         label = '2 to 3 km'
-    elif color == 'royalblue':
+    elif callcount == 2:
         label = '3 to 4 km'
-    elif color == 'dodgerblue':
+    elif callcount == 3:
         label = '4 to 5 km'
-    elif color == 'deepskyblue':
+    elif callcount == 4:
         label = '5 to 6 km'
-    elif color == 'steelblue':
+    elif callcount == 5:
         label = '6 to 7 km'
-    elif color == 'slateblue':
+    elif callcount == 6:
         label = '7 to 8 km'
-    elif color == 'rebeccapurple':
+    elif callcount == 7:
         label = '8 to 9 km'
-    elif color == 'darkcyan':
+    elif callcount == 8:
         label = '9 to 10 km'
-    elif color == 'green':
+    elif callcount == 9:
         label = '10 to 15 km'
-    elif color == 'olive':
+    elif callcount == 10:
         label = '15 to 20 km'
-    elif color == 'goldenrod':
+    elif callcount == 11:
         label = '20 to 25 km'
-    elif color == 'darkorchid':
+    elif callcount == 12:
         label = '25 to 30 km'
-    elif color == 'maroon':
+    elif callcount == 13:
         label = '30 to 35 km'
 
     ax.hist(slopearr, 35, range=[0,35], normed=True, color=color, histtype='step')
@@ -71,7 +76,9 @@ def hist_and_fit(fig, ax, slopearr, color):
 
     ax.legend(loc=0, prop={'size':8})
 
-    return fig, ax
+    callcount += 1
+
+    return fig, ax, callcount
 
 if __name__ == '__main__':
     
@@ -99,30 +106,34 @@ if __name__ == '__main__':
     ax.set_xlabel('Slope', fontsize=12)
     ax.set_ylabel('Normalized bin counts', fontsize=12)
 
+    colors = ['#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#543005','#fdbf6f',\
+    '#ff7f00','#cab2d6','#bf812d','#6a3d9a','#b15928','#01665e']
+
     # checked the histogram plotting 
     # it seems like fitting a function and just plotting that might be more presentable.
     # Also check is histtype='step' might help better than the default histtype.
     # The histogram is normalized to make sure that hte area under the curve equals 1
-    fig, ax = hist_and_fit(fig, ax, slope_diambin_1_2, 'midnightblue')
-    fig, ax = hist_and_fit(fig, ax, slope_diambin_2_3, 'blue')
-    fig, ax = hist_and_fit(fig, ax, slope_diambin_3_4, 'royalblue')
-    fig, ax = hist_and_fit(fig, ax, slope_diambin_4_5, 'dodgerblue')
-    fig, ax = hist_and_fit(fig, ax, slope_diambin_5_6, 'deepskyblue')
-    fig, ax = hist_and_fit(fig, ax, slope_diambin_6_7, 'steelblue')
-    fig, ax = hist_and_fit(fig, ax, slope_diambin_7_8, 'slateblue')
-    fig, ax = hist_and_fit(fig, ax, slope_diambin_8_9, 'rebeccapurple')
-    fig, ax = hist_and_fit(fig, ax, slope_diambin_9_10, 'darkcyan')
-    fig, ax = hist_and_fit(fig, ax, slope_diambin_10_15, 'green')
-    fig, ax = hist_and_fit(fig, ax, slope_diambin_15_20, 'olive')
-    fig, ax = hist_and_fit(fig, ax, slope_diambin_20_25, 'goldenrod')
-    fig, ax = hist_and_fit(fig, ax, slope_diambin_25_30, 'darkorchid')
-    fig, ax = hist_and_fit(fig, ax, slope_diambin_30_35, 'maroon')
+    callcount = 0
+    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_1_2, colors[0], callcount)
+    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_2_3, colors[1], callcount)
+    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_3_4, colors[2], callcount)
+    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_4_5, colors[3], callcount)
+    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_5_6, colors[4], callcount)
+    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_6_7, colors[5], callcount)
+    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_7_8, colors[6], callcount)
+    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_8_9, colors[7], callcount)
+    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_9_10, colors[8], callcount)
+    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_10_15, colors[9], callcount)
+    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_15_20, colors[10], callcount)
+    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_20_25, colors[11], callcount)
+    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_25_30, colors[12], callcount)
+    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_30_35, colors[13], callcount)
 
     # minor ticks
     ax.minorticks_on()
     ax.tick_params('both', width=1, length=3, which='minor')
     ax.tick_params('both', width=1, length=4.7, which='major')
 
-    fig.savefig(slope_extdir + 'slope_histogram_fits_and_hist.png', dpi=150, bbox_inches='tight')
+    fig.savefig(slope_extdir + 'slope_histogram_fits_and_hist.png', dpi=300, bbox_inches='tight')
 
     sys.exit(0)

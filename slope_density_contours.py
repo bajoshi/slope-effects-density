@@ -450,8 +450,8 @@ def make_nooverlap_nvalue_grid_plots(slope_list, density_list, plottype):
     ax_10to15, ax_15to20, ax_20to25, ax_25to30, ax_30to35]
     diam_bins = ['1to2', '2to3', '3to4', '4to5', '5to6', '6to7', '7to8', '8to9', '9to10', \
     '10to15', '15to20', '20to25', '25to30', '30to35']
-    color_list = ['midnightblue', 'blue', 'royalblue', 'dodgerblue', 'deepskyblue', 'steelblue', \
-    'slateblue', 'rebeccapurple', 'darkcyan', 'green', 'olive', 'goldenrod', 'darkorchid', 'maroon']
+    color_list = ['#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#543005','#fdbf6f',\
+    '#ff7f00','#cab2d6','#bf812d','#6a3d9a','#b15928','#01665e']
 
     ax_25to30.set_xlabel(r'$\mathrm{Slope}$', fontsize=14)
     ax_25to30.xaxis.set_label_coords(1.05, -0.25)
@@ -507,7 +507,7 @@ def make_nooverlap_nvalue_grid_plots(slope_list, density_list, plottype):
             all_axes[i].set_yticklabels([])
 
         if plottype == 'Nvalue':
-            all_axes[i].text(0.6, 0.15, r"$\mathrm{N \geq\ }$" + str(diam_bin_min) + r'$\mathrm{\, km}$', \
+            all_axes[i].text(0.6, 0.15, r"$\mathrm{N(}$" + str(diam_bin_min) + r'$\mathrm{)}$', \
                 verticalalignment='top', horizontalalignment='left', \
                 transform=all_axes[i].transAxes, color='k', size=5)
 
@@ -531,6 +531,11 @@ def make_nooverlap_nvalue_grid_plots(slope_list, density_list, plottype):
 
 if __name__ == '__main__':    
 
+    # These three function calls below will make
+    # individual plots for each diam range/bin.
+    # If you want all the diam ranges/bins on a 
+    # single figure with a grid then use the code
+    # below, after these 3 lines.
     #make_cumulative_plots()
     #call_no_overlap_plots()
     #call_Nvalue_plots()
