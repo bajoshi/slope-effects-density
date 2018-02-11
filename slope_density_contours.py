@@ -507,14 +507,14 @@ def make_nooverlap_nvalue_grid_plots(slope_list, density_list, plottype):
             all_axes[i].set_yticklabels([])
 
         if plottype == 'Nvalue':
-            all_axes[i].text(0.6, 0.15, r"$\mathrm{N(}$" + str(diam_bin_min) + r'$\mathrm{)}$', \
+            all_axes[i].text(0.73, 0.2, r"$\mathrm{N(}$" + str(diam_bin_min) + r'$\mathrm{)}$', \
                 verticalalignment='top', horizontalalignment='left', \
-                transform=all_axes[i].transAxes, color='k', size=5)
+                transform=all_axes[i].transAxes, color='k', size=8)
 
         elif plottype == 'nooverlap':
-            all_axes[i].text(0.6, 0.15, str(diam_bin_min) + r'$\mathrm{\ to\ }$' + str(diam_bin_max) + r'$\mathrm{\,km}$', \
+            all_axes[i].text(0.67, 0.2, str(diam_bin_min) + r'$\mathrm{\, to\, }$' + str(diam_bin_max) + r'$\mathrm{\,km}$', \
                 verticalalignment='top', horizontalalignment='left', \
-                transform=all_axes[i].transAxes, color='k', size=5)
+                transform=all_axes[i].transAxes, color='k', size=8)
 
     ax_9to10.set_xticklabels(['0', '10', '20', '30'])
     ax_20to25.set_xticklabels(['', '10', '20', '30'])
