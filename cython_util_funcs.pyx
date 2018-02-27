@@ -1,3 +1,4 @@
+# cython: profile=True
 from __future__ import division
 
 import numpy as np
@@ -15,7 +16,7 @@ def get_crater_diams(np.ndarray[DTYPE_t1, ndim=1] crater_diam_m_arr, np.ndarray[
 
     cdef int i
     cdef int current_id
-    cdef int current_id_idx
+    cdef long current_id_idx
 
     for i in xrange(total_craters):
         current_id = crater_ids[i]
