@@ -18,6 +18,7 @@ def get_crater_diams(np.ndarray[DTYPE_t1, ndim=1] crater_diam_m_arr, np.ndarray[
     cdef int current_id
     cdef long current_id_idx
 
+    # Now run loop over all unique craters
     for i in xrange(total_craters):
         current_id = crater_ids[i]
         current_id_idx = np.where(crater_ids_arr == current_id)[0][0]

@@ -638,13 +638,14 @@ static PyObject *__pyx_pf_17cython_util_funcs_get_crater_diams(CYTHON_UNUSED PyO
 <pre class="cython line score-0">&#xA0;<span class="">18</span>:     <span class="k">cdef</span> <span class="kt">int</span> <span class="nf">current_id</span></pre>
 <pre class="cython line score-0">&#xA0;<span class="">19</span>:     <span class="k">cdef</span> <span class="kt">long</span> <span class="nf">current_id_idx</span></pre>
 <pre class="cython line score-0">&#xA0;<span class="">20</span>: </pre>
-<pre class="cython line score-0" onclick='toggleDiv(this)'>+<span class="">21</span>:     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">total_craters</span><span class="p">):</span></pre>
-<pre class='cython code score-0 '>  <span class='trace'>__Pyx_TraceLine</span>(21,0,<span class='error_goto'>__PYX_ERR(0, 21, __pyx_L1_error)</span>)
+<pre class="cython line score-0">&#xA0;<span class="">21</span>:     <span class="c"># Now run loop over all unique craters</span></pre>
+<pre class="cython line score-0" onclick='toggleDiv(this)'>+<span class="">22</span>:     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">total_craters</span><span class="p">):</span></pre>
+<pre class='cython code score-0 '>  <span class='trace'>__Pyx_TraceLine</span>(22,0,<span class='error_goto'>__PYX_ERR(0, 22, __pyx_L1_error)</span>)
   __pyx_t_6 = __pyx_v_total_craters;
   for (__pyx_t_7 = 0; __pyx_t_7 &lt; __pyx_t_6; __pyx_t_7+=1) {
     __pyx_v_i = __pyx_t_7;
-</pre><pre class="cython line score-2" onclick='toggleDiv(this)'>+<span class="">22</span>:         <span class="n">current_id</span> <span class="o">=</span> <span class="n">crater_ids</span><span class="p">[</span><span class="n">i</span><span class="p">]</span></pre>
-<pre class='cython code score-2 '>    <span class='trace'>__Pyx_TraceLine</span>(22,0,<span class='error_goto'>__PYX_ERR(0, 22, __pyx_L1_error)</span>)
+</pre><pre class="cython line score-2" onclick='toggleDiv(this)'>+<span class="">23</span>:         <span class="n">current_id</span> <span class="o">=</span> <span class="n">crater_ids</span><span class="p">[</span><span class="n">i</span><span class="p">]</span></pre>
+<pre class='cython code score-2 '>    <span class='trace'>__Pyx_TraceLine</span>(23,0,<span class='error_goto'>__PYX_ERR(0, 23, __pyx_L1_error)</span>)
     __pyx_t_8 = __pyx_v_i;
     __pyx_t_9 = -1;
     if (__pyx_t_8 &lt; 0) {
@@ -653,19 +654,19 @@ static PyObject *__pyx_pf_17cython_util_funcs_get_crater_diams(CYTHON_UNUSED PyO
     } else if (unlikely(__pyx_t_8 &gt;= __pyx_pybuffernd_crater_ids.diminfo[0].shape)) __pyx_t_9 = 0;
     if (unlikely(__pyx_t_9 != -1)) {
       <span class='pyx_c_api'>__Pyx_RaiseBufferIndexError</span>(__pyx_t_9);
-      <span class='error_goto'>__PYX_ERR(0, 22, __pyx_L1_error)</span>
+      <span class='error_goto'>__PYX_ERR(0, 23, __pyx_L1_error)</span>
     }
     __pyx_v_current_id = (*__Pyx_BufPtrStrided1d(__pyx_t_17cython_util_funcs_DTYPE_t2 *, __pyx_pybuffernd_crater_ids.rcbuffer-&gt;pybuffer.buf, __pyx_t_8, __pyx_pybuffernd_crater_ids.diminfo[0].strides));
-</pre><pre class="cython line score-66" onclick='toggleDiv(this)'>+<span class="">23</span>:         <span class="n">current_id_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">crater_ids_arr</span> <span class="o">==</span> <span class="n">current_id</span><span class="p">)[</span><span class="mf">0</span><span class="p">][</span><span class="mf">0</span><span class="p">]</span></pre>
-<pre class='cython code score-66 '>    <span class='trace'>__Pyx_TraceLine</span>(23,0,<span class='error_goto'>__PYX_ERR(0, 23, __pyx_L1_error)</span>)
-    __pyx_t_1 = <span class='pyx_c_api'>__Pyx_GetModuleGlobalName</span>(__pyx_n_s_np);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 23, __pyx_L1_error)</span>
+</pre><pre class="cython line score-66" onclick='toggleDiv(this)'>+<span class="">24</span>:         <span class="n">current_id_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">crater_ids_arr</span> <span class="o">==</span> <span class="n">current_id</span><span class="p">)[</span><span class="mf">0</span><span class="p">][</span><span class="mf">0</span><span class="p">]</span></pre>
+<pre class='cython code score-66 '>    <span class='trace'>__Pyx_TraceLine</span>(24,0,<span class='error_goto'>__PYX_ERR(0, 24, __pyx_L1_error)</span>)
+    __pyx_t_1 = <span class='pyx_c_api'>__Pyx_GetModuleGlobalName</span>(__pyx_n_s_np);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 24, __pyx_L1_error)</span>
     <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
-    __pyx_t_3 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(__pyx_t_1, __pyx_n_s_where);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 23, __pyx_L1_error)</span>
+    __pyx_t_3 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(__pyx_t_1, __pyx_n_s_where);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 24, __pyx_L1_error)</span>
     <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
     <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_1 = <span class='pyx_c_api'>__Pyx_PyInt_From_int</span>(__pyx_v_current_id);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 23, __pyx_L1_error)</span>
+    __pyx_t_1 = <span class='pyx_c_api'>__Pyx_PyInt_From_int</span>(__pyx_v_current_id);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 24, __pyx_L1_error)</span>
     <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
-    __pyx_t_2 = <span class='py_c_api'>PyObject_RichCompare</span>(((PyObject *)__pyx_v_crater_ids_arr), __pyx_t_1, Py_EQ); <span class='refnanny'>__Pyx_XGOTREF</span>(__pyx_t_2);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 23, __pyx_L1_error)</span>
+    __pyx_t_2 = <span class='py_c_api'>PyObject_RichCompare</span>(((PyObject *)__pyx_v_crater_ids_arr), __pyx_t_1, Py_EQ); <span class='refnanny'>__Pyx_XGOTREF</span>(__pyx_t_2);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 24, __pyx_L1_error)</span>
     <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_t_1 = NULL;
     if (CYTHON_UNPACK_METHODS &amp;&amp; unlikely(<span class='py_c_api'>PyMethod_Check</span>(__pyx_t_3))) {
@@ -678,14 +679,14 @@ static PyObject *__pyx_pf_17cython_util_funcs_get_crater_diams(CYTHON_UNUSED PyO
       }
     }
     if (!__pyx_t_1) {
-      __pyx_t_4 = <span class='pyx_c_api'>__Pyx_PyObject_CallOneArg</span>(__pyx_t_3, __pyx_t_2);<span class='error_goto'> if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 23, __pyx_L1_error)</span>
+      __pyx_t_4 = <span class='pyx_c_api'>__Pyx_PyObject_CallOneArg</span>(__pyx_t_3, __pyx_t_2);<span class='error_goto'> if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 24, __pyx_L1_error)</span>
       <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
       <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_4);
     } else {
       #if CYTHON_FAST_PYCALL
       if (<span class='py_c_api'>PyFunction_Check</span>(__pyx_t_3)) {
         PyObject *__pyx_temp[2] = {__pyx_t_1, __pyx_t_2};
-        __pyx_t_4 = <span class='pyx_c_api'>__Pyx_PyFunction_FastCall</span>(__pyx_t_3, __pyx_temp+1-1, 1+1);<span class='error_goto'> if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 23, __pyx_L1_error)</span>
+        __pyx_t_4 = <span class='pyx_c_api'>__Pyx_PyFunction_FastCall</span>(__pyx_t_3, __pyx_temp+1-1, 1+1);<span class='error_goto'> if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 24, __pyx_L1_error)</span>
         <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
         <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_4);
         <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
@@ -694,37 +695,37 @@ static PyObject *__pyx_pf_17cython_util_funcs_get_crater_diams(CYTHON_UNUSED PyO
       #if CYTHON_FAST_PYCCALL
       if (<span class='pyx_c_api'>__Pyx_PyFastCFunction_Check</span>(__pyx_t_3)) {
         PyObject *__pyx_temp[2] = {__pyx_t_1, __pyx_t_2};
-        __pyx_t_4 = <span class='pyx_c_api'>__Pyx_PyCFunction_FastCall</span>(__pyx_t_3, __pyx_temp+1-1, 1+1);<span class='error_goto'> if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 23, __pyx_L1_error)</span>
+        __pyx_t_4 = <span class='pyx_c_api'>__Pyx_PyCFunction_FastCall</span>(__pyx_t_3, __pyx_temp+1-1, 1+1);<span class='error_goto'> if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 24, __pyx_L1_error)</span>
         <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
         <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_4);
         <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
       } else
       #endif
       {
-        __pyx_t_10 = <span class='py_c_api'>PyTuple_New</span>(1+1);<span class='error_goto'> if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 23, __pyx_L1_error)</span>
+        __pyx_t_10 = <span class='py_c_api'>PyTuple_New</span>(1+1);<span class='error_goto'> if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 24, __pyx_L1_error)</span>
         <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_10);
         <span class='refnanny'>__Pyx_GIVEREF</span>(__pyx_t_1); <span class='py_macro_api'>PyTuple_SET_ITEM</span>(__pyx_t_10, 0, __pyx_t_1); __pyx_t_1 = NULL;
         <span class='refnanny'>__Pyx_GIVEREF</span>(__pyx_t_2);
         <span class='py_macro_api'>PyTuple_SET_ITEM</span>(__pyx_t_10, 0+1, __pyx_t_2);
         __pyx_t_2 = 0;
-        __pyx_t_4 = <span class='pyx_c_api'>__Pyx_PyObject_Call</span>(__pyx_t_3, __pyx_t_10, NULL);<span class='error_goto'> if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 23, __pyx_L1_error)</span>
+        __pyx_t_4 = <span class='pyx_c_api'>__Pyx_PyObject_Call</span>(__pyx_t_3, __pyx_t_10, NULL);<span class='error_goto'> if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 24, __pyx_L1_error)</span>
         <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_4);
         <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_10); __pyx_t_10 = 0;
       }
     }
     <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = <span class='pyx_c_api'>__Pyx_GetItemInt</span>(__pyx_t_4, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 23, __pyx_L1_error)</span>
+    __pyx_t_3 = <span class='pyx_c_api'>__Pyx_GetItemInt</span>(__pyx_t_4, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1);<span class='error_goto'> if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 24, __pyx_L1_error)</span>
     <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_3);
     <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = <span class='pyx_c_api'>__Pyx_GetItemInt</span>(__pyx_t_3, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1);<span class='error_goto'> if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 23, __pyx_L1_error)</span>
+    __pyx_t_4 = <span class='pyx_c_api'>__Pyx_GetItemInt</span>(__pyx_t_3, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1);<span class='error_goto'> if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 24, __pyx_L1_error)</span>
     <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_4);
     <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_11 = <span class='pyx_c_api'>__Pyx_PyInt_As_long</span>(__pyx_t_4); if (unlikely((__pyx_t_11 == (long)-1) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(0, 23, __pyx_L1_error)</span>
+    __pyx_t_11 = <span class='pyx_c_api'>__Pyx_PyInt_As_long</span>(__pyx_t_4); if (unlikely((__pyx_t_11 == (long)-1) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(0, 24, __pyx_L1_error)</span>
     <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_v_current_id_idx = __pyx_t_11;
-</pre><pre class="cython line score-0">&#xA0;<span class="">24</span>: </pre>
-<pre class="cython line score-4" onclick='toggleDiv(this)'>+<span class="">25</span>:         <span class="n">crater_diams</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">crater_diam_m_arr</span><span class="p">[</span><span class="n">current_id_idx</span><span class="p">]</span></pre>
-<pre class='cython code score-4 '>    <span class='trace'>__Pyx_TraceLine</span>(25,0,<span class='error_goto'>__PYX_ERR(0, 25, __pyx_L1_error)</span>)
+</pre><pre class="cython line score-0">&#xA0;<span class="">25</span>: </pre>
+<pre class="cython line score-4" onclick='toggleDiv(this)'>+<span class="">26</span>:         <span class="n">crater_diams</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">crater_diam_m_arr</span><span class="p">[</span><span class="n">current_id_idx</span><span class="p">]</span></pre>
+<pre class='cython code score-4 '>    <span class='trace'>__Pyx_TraceLine</span>(26,0,<span class='error_goto'>__PYX_ERR(0, 26, __pyx_L1_error)</span>)
     __pyx_t_12 = __pyx_v_current_id_idx;
     __pyx_t_9 = -1;
     if (__pyx_t_12 &lt; 0) {
@@ -733,7 +734,7 @@ static PyObject *__pyx_pf_17cython_util_funcs_get_crater_diams(CYTHON_UNUSED PyO
     } else if (unlikely(__pyx_t_12 &gt;= __pyx_pybuffernd_crater_diam_m_arr.diminfo[0].shape)) __pyx_t_9 = 0;
     if (unlikely(__pyx_t_9 != -1)) {
       <span class='pyx_c_api'>__Pyx_RaiseBufferIndexError</span>(__pyx_t_9);
-      <span class='error_goto'>__PYX_ERR(0, 25, __pyx_L1_error)</span>
+      <span class='error_goto'>__PYX_ERR(0, 26, __pyx_L1_error)</span>
     }
     __pyx_t_13 = __pyx_v_i;
     __pyx_t_9 = -1;
@@ -743,13 +744,13 @@ static PyObject *__pyx_pf_17cython_util_funcs_get_crater_diams(CYTHON_UNUSED PyO
     } else if (unlikely(__pyx_t_13 &gt;= __pyx_pybuffernd_crater_diams.diminfo[0].shape)) __pyx_t_9 = 0;
     if (unlikely(__pyx_t_9 != -1)) {
       <span class='pyx_c_api'>__Pyx_RaiseBufferIndexError</span>(__pyx_t_9);
-      <span class='error_goto'>__PYX_ERR(0, 25, __pyx_L1_error)</span>
+      <span class='error_goto'>__PYX_ERR(0, 26, __pyx_L1_error)</span>
     }
     *__Pyx_BufPtrStrided1d(__pyx_t_17cython_util_funcs_DTYPE_t1 *, __pyx_pybuffernd_crater_diams.rcbuffer-&gt;pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_crater_diams.diminfo[0].strides) = (*__Pyx_BufPtrStrided1d(__pyx_t_17cython_util_funcs_DTYPE_t1 *, __pyx_pybuffernd_crater_diam_m_arr.rcbuffer-&gt;pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_crater_diam_m_arr.diminfo[0].strides));
   }
-</pre><pre class="cython line score-0">&#xA0;<span class="">26</span>: </pre>
-<pre class="cython line score-2" onclick='toggleDiv(this)'>+<span class="">27</span>:     <span class="k">return</span> <span class="n">crater_diams</span></pre>
-<pre class='cython code score-2 '>  <span class='trace'>__Pyx_TraceLine</span>(27,0,<span class='error_goto'>__PYX_ERR(0, 27, __pyx_L1_error)</span>)
+</pre><pre class="cython line score-0">&#xA0;<span class="">27</span>: </pre>
+<pre class="cython line score-2" onclick='toggleDiv(this)'>+<span class="">28</span>:     <span class="k">return</span> <span class="n">crater_diams</span></pre>
+<pre class='cython code score-2 '>  <span class='trace'>__Pyx_TraceLine</span>(28,0,<span class='error_goto'>__PYX_ERR(0, 28, __pyx_L1_error)</span>)
   <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_r);
   <span class='pyx_macro_api'>__Pyx_INCREF</span>(((PyObject *)__pyx_v_crater_diams));
   __pyx_r = ((PyObject *)__pyx_v_crater_diams);
