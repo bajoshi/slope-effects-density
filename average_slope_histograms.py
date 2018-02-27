@@ -5,9 +5,12 @@ from astropy.modeling import models, fitting
 from scipy.optimize import curve_fit
 from scipy.misc import factorial
 from scipy.special import gamma
+import cPickle
 
 import sys
 import os
+import time
+import datetime
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -15,9 +18,14 @@ import matplotlib.pyplot as plt
 home = os.getenv('HOME')
 slopedir = home + '/Desktop/slope-effects-density/'
 slope_extdir = home + '/Documents/plots_codes_for_heather/slope_effects_files/'
+massive_galaxies_dir = home + "/Desktop/FIGS/massive-galaxies/"
 
 sys.path.append(slopedir)
+sys.path.append(massive_galaxies_dir + 'codes/')
 import average_density_plots as avg
+#import cython_util_funcs
+import mag_hist as mh
+import slope_utils as su
 
 def poisson(k, lamb):
     return (lamb**k/factorial(k)) * np.exp(-lamb)
@@ -80,8 +88,8 @@ def hist_and_fit(fig, ax, slopearr, color, callcount):
 
     return fig, ax, callcount
 
-if __name__ == '__main__':
-    
+def call_hist_and_fits():
+
     # read in all arrays 
     density_diambin_1_2, density_diambin_2_3, density_diambin_3_4, density_diambin_4_5, \
     density_diambin_5_6, density_diambin_6_7, density_diambin_7_8, density_diambin_8_9, \
@@ -136,4 +144,137 @@ if __name__ == '__main__':
 
     fig.savefig(slope_extdir + 'slope_histogram_fits_and_hist.png', dpi=300, bbox_inches='tight')
 
+    return None
+
+def get_crater_diams(crater_diam_m_arr, crater_ids, crater_ids_arr, total_craters):
+
+    crater_diams = np.zeros(total_craters)
+
+    for i in range(total_craters):
+        current_id = crater_ids[i]
+        current_id_idx = np.where(crater_ids_arr == current_id)[0][0]
+
+        crater_diams[i] = crater_diam_m_arr[current_id_idx]
+
+    return crater_diams
+
+if __name__ == '__main__':
+
+    # Start time
+    start = time.time()
+    dt = datetime.datetime
+    print "Starting at --", dt.now()
+
+    #call_hist_and_fits()
+
+    ### Make diameter histograms for all slopes < 5 and all slopes >= 5 ###
+    # Read in arrays 
+    crater_ids_arr = np.load(slope_extdir + 'crater_ids_arr.npy')
+    crater_x_arr = np.load(slope_extdir + 'crater_x_arr.npy')
+    crater_y_arr = np.load(slope_extdir + 'crater_y_arr.npy')
+    crater_diam_m_arr = np.load(slope_extdir + 'crater_diam_m_arr.npy')
+
+    # get unique ids
+    crater_ids = np.unique(crater_ids_arr)
+    total_craters = len(crater_ids)
+
+    # create and initialize crater diams corresponding to unique craters
+    #crater_diams = cython_util_funcs.get_crater_diams(crater_diam_m_arr, crater_ids, crater_ids_arr, total_craters)
+    crater_diams = get_crater_diams(crater_diam_m_arr, crater_ids, crater_ids_arr, total_craters)
+
+    # Read in slopes
+    slopemap_path = slope_extdir + 'hf_full_slopemap_clipped.txt'
+    su.raster_to_numpy(slopemap_path)
+    slope_arr = np.load(slopemap_path.replace('.txt', '.npy'))
+    slope_arr = slope_arr.ravel()
+
+    # read in crater ids associated with each pixel
+    with open(slope_extdir + 'pix_crater_id_fastcomp.pkl', 'rb') as crater_id_file:
+        crater_id_in_pix_arr = cPickle.load(crater_id_file)
+
+    # now loop over all pixels and 
+    # save the diams to two separate arrays 
+    # depending on the slope of the pixel
+
+    # first create the diam arrays
+    total_pixels = len(crater_id_in_pix_arr)
+    diam_lowslopes = []
+    diam_highslopes = []
+
+    slope_thresh = 10.0  # define the slope threshold dividing the low and high slopes
+
+    for i in range(total_pixels):
+
+        if (i % 100000) == 0.0:
+            print '\r',
+            print "At pixel number:",'{0:.2e}'.format(i),\
+            "; time taken up to now:",'{0:.2f}'.format((time.time() - start)/60),"minutes.",
+            sys.stdout.flush()
+
+        current_crater_ids = crater_id_in_pix_arr[i]
+        current_slope = slope_arr[i]
+
+        total_current_craters = len(current_crater_ids)
+
+        if total_current_craters == 0:
+            continue
+
+        elif total_current_craters == 1:
+
+            current_diam_idx = np.where(crater_ids == current_crater_ids[0])[0]
+            current_diam = float(crater_diams[current_diam_idx] / 1e3)  # converting to km
+
+            if current_slope < slope_thresh:
+                diam_lowslopes.append(current_diam)
+            elif current_slope >= slope_thresh:
+                diam_highslopes.append(current_diam)
+
+        elif total_current_craters > 1:
+
+            for j in range(total_current_craters):
+
+                current_diam_idx = np.where(crater_ids == current_crater_ids[0])[0]
+                current_diam = float(crater_diams[current_diam_idx] / 1e3)  # converting to km
+
+                if current_slope < slope_thresh:
+                    diam_lowslopes.append(current_diam)
+                elif current_slope >= slope_thresh:
+                    diam_highslopes.append(current_diam)
+
+    # convert diameter lists in low and high slope to numpy arrays
+    diam_lowslopes = np.asarray(diam_lowslopes).ravel()
+    diam_highslopes = np.asarray(diam_highslopes).ravel()
+
+    ### ----------------------------------------- Plotting ----------------------------------------- ###
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+
+    ax.set_xlabel('Crater Diameter [km]', fontsize=14)
+
+    # define nicer colors
+    myblue = mh.rgb_to_hex(0, 100, 180)
+    myred = mh.rgb_to_hex(214, 39, 40)  # tableau 20 red
+
+    ax.hist(diam_highslopes, 70, range=[0,35], color=myred, alpha=0.7, zorder=10)
+    ax.hist(diam_lowslopes, 70, range=[0,35], color=myblue, alpha=0.7, zorder=11)
+
+    ax.set_xticklabels(ax.get_xticks().tolist(), size=12)
+    ax.set_yticklabels(ax.get_yticks().tolist(), size=12)
+
+    ax.minorticks_on()
+    ax.tick_params('both', width=1, length=3, which='minor')
+    ax.tick_params('both', width=1, length=4.7, which='major')
+    ax.grid(True, alpha=0.4)
+
+    ax.text(0.55, 0.86, r'$\mathrm{Diameters\ at\ Slope<}$' + str(int(slope_thresh)) + r'$^\circ$',\
+    verticalalignment='top', horizontalalignment='left', \
+    transform=ax.transAxes, color=myblue, size=14)
+    ax.text(0.55, 0.8, r'$\mathrm{Diameters\ at\ Slope\geq}$' + str(int(slope_thresh)) + r'$^\circ$',\
+    verticalalignment='top', horizontalalignment='left', \
+    transform=ax.transAxes, color=myred, size=14)
+
+    fig.savefig(slope_extdir + 'diams_low_high_' + str(int(slope_thresh)) + '_slopes_hist.png', dpi=300, bbox_inches='tight')
+
+    # total run time
+    print "Total time taken --", (time.time() - start)/60, "minutes."
     sys.exit(0)

@@ -133,7 +133,7 @@ def poisson(k, lamb):
 
 def plot_crater_diam_hist():
 
-    # now read in crater diam from id and save them 
+    # read in crater diam from id and save them 
     # read crater vertices file
     crater_vert_cat = np.genfromtxt(slope_extdir + 'CRATER_FullHF_Vertices_coords.txt', \
         dtype=None, names=True, delimiter=',')
