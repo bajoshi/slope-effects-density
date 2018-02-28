@@ -813,7 +813,7 @@ def get_specific_diambin_and_Nvalue_arrays(slope, pix_frac, crater_ids_arr, crat
                 continue
 
             else:
-                append_to_density_slope_diambin_lists(current_diam, pix_idx, pix_frac, slope, \
+                append_to_density_slope_diambin_lists(current_diam, i, pix_frac, slope, \
                 density_diambin_1_1p25, density_diambin_1p25_1p5, density_diambin_1p5_1p75, density_diambin_1p75_2, \
                 density_diambin_2_2p25, density_diambin_2p25_2p5, density_diambin_2p5_2p75, density_diambin_2p75_3, \
                 density_diambin_3_3p25, density_diambin_3p25_3p5, density_diambin_3p5_3p75, density_diambin_3p75_4, \
@@ -836,7 +836,7 @@ def get_specific_diambin_and_Nvalue_arrays(slope, pix_frac, crater_ids_arr, crat
                 crater_frac_diambin_7_8, crater_frac_diambin_8_9, crater_frac_diambin_9_10, crater_frac_diambin_10_15,\
                 crater_frac_diambin_15_20, crater_frac_diambin_20_25, crater_frac_diambin_25_30, crater_frac_diambin_30_35)
 
-                append_to_density_slope_Nvalue_lists(current_diam, pix_idx, pix_frac, slope, \
+                append_to_density_slope_Nvalue_lists(current_diam, i, pix_frac, slope, \
                 density_diambin_1, density_diambin_1p25, density_diambin_1p5, density_diambin_1p75, \
                 density_diambin_2, density_diambin_2p25, density_diambin_2p5, density_diambin_2p75, \
                 density_diambin_3, density_diambin_3p25, density_diambin_3p5, density_diambin_3p75, \
@@ -867,7 +867,7 @@ def get_specific_diambin_and_Nvalue_arrays(slope, pix_frac, crater_ids_arr, crat
                     continue
 
                 else:
-                    append_to_density_slope_diambin_lists(current_diam, pix_idx, pix_frac, slope, \
+                    append_to_density_slope_diambin_lists(current_diam, i, pix_frac, slope, \
                     density_diambin_1_1p25, density_diambin_1p25_1p5, density_diambin_1p5_1p75, density_diambin_1p75_2, \
                     density_diambin_2_2p25, density_diambin_2p25_2p5, density_diambin_2p5_2p75, density_diambin_2p75_3, \
                     density_diambin_3_3p25, density_diambin_3p25_3p5, density_diambin_3p5_3p75, density_diambin_3p75_4, \
@@ -890,7 +890,7 @@ def get_specific_diambin_and_Nvalue_arrays(slope, pix_frac, crater_ids_arr, crat
                     crater_frac_diambin_7_8, crater_frac_diambin_8_9, crater_frac_diambin_9_10, crater_frac_diambin_10_15,\
                     crater_frac_diambin_15_20, crater_frac_diambin_20_25, crater_frac_diambin_25_30, crater_frac_diambin_30_35)
 
-                    append_to_density_slope_Nvalue_lists(current_diam, pix_idx, pix_frac, slope, \
+                    append_to_density_slope_Nvalue_lists(current_diam, i, pix_frac, slope, \
                     density_diambin_1, density_diambin_1p25, density_diambin_1p5, density_diambin_1p75, \
                     density_diambin_2, density_diambin_2p25, density_diambin_2p5, density_diambin_2p75, \
                     density_diambin_3, density_diambin_3p25, density_diambin_3p5, density_diambin_3p75, \
@@ -1609,8 +1609,8 @@ if __name__ == '__main__':
         # txt files) to numpy arrays. then load them in.
         pix_frac_path = slope_extdir + 'pix_area_fraction_clipped.txt'
         crater_frac_path = slope_extdir + 'crater_area_frac_in_pix_clipped.txt'
-        su.raster_to_numpy(pix_frac_path)
-        su.raster_to_numpy(crater_frac_path)
+        #su.raster_to_numpy(pix_frac_path)
+        #su.raster_to_numpy(crater_frac_path)
 
         # load all arrays
         # read in products
@@ -1624,7 +1624,7 @@ if __name__ == '__main__':
 
     # read in pixel coordinates
     slopemap_path = slope_extdir + 'hf_full_slopemap_clipped.txt'
-    su.raster_to_numpy(slopemap_path)
+    #su.raster_to_numpy(slopemap_path)
     slope_arr = np.load(slopemap_path.replace('.txt', '.npy'))
     slope_arr = slope_arr.ravel()
 
