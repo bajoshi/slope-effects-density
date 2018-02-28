@@ -2,7 +2,6 @@
 # encoding: utf-8
 # filename: profile.py
 
-#import pstats, cProfile
 import line_profiler
 
 import numpy as np
@@ -26,11 +25,6 @@ if __name__ == '__main__':
     total_craters = len(crater_ids)
 
     # Run profiling
-    #cProfile.runctx("cython_util_funcs.get_crater_diams(crater_diam_m_arr, crater_ids, crater_ids_arr, total_craters)", \
-    #    globals(), locals(), "Profile.prof")
-    #s = pstats.Stats("Profile.prof")
-    #s.strip_dirs().sort_stats("time").print_stats()
-
     profile = line_profiler.LineProfiler(cython_util_funcs.get_crater_diams)
     profile.runcall(cython_util_funcs.get_crater_diams, crater_diam_m_arr, crater_ids, crater_ids_arr, total_craters)
     profile.print_stats()
