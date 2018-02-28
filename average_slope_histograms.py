@@ -33,7 +33,7 @@ def poisson(k, lamb):
 def gamma_dist(x, k, theta):
     return (x**(k-1) * np.exp(-x/theta)) / (theta**k * gamma(k))
 
-def hist_and_fit(fig, ax, slopearr, color, callcount):
+def hist_and_fit(fig, ax, slopearr, color, callcount, plottype=None):
     """
     Simply comment out the ax.hist() line at hte end
     if you only want to plot the fits and not the 
@@ -49,40 +49,47 @@ def hist_and_fit(fig, ax, slopearr, color, callcount):
     # fitting a gamma distribution
     popt, pcov = curve_fit(gamma_dist, fitting_bins, counts, p0=[3.0, 3.0])
 
-    # get label
-    if callcount == 0:
-        label = '1 to 2 km'
-    elif callcount == 1:
-        label = '2 to 3 km'
-    elif callcount == 2:
-        label = '3 to 4 km'
-    elif callcount == 3:
-        label = '4 to 5 km'
-    elif callcount == 4:
-        label = '5 to 6 km'
-    elif callcount == 5:
-        label = '6 to 7 km'
-    elif callcount == 6:
-        label = '7 to 8 km'
-    elif callcount == 7:
-        label = '8 to 9 km'
-    elif callcount == 8:
-        label = '9 to 10 km'
-    elif callcount == 9:
-        label = '10 to 15 km'
-    elif callcount == 10:
-        label = '15 to 20 km'
-    elif callcount == 11:
-        label = '20 to 25 km'
-    elif callcount == 12:
-        label = '25 to 30 km'
-    elif callcount == 13:
-        label = '30 to 35 km'
+    label_list = ['1-1.25 km', '1.25-1.5 km', '1.5-1.75 km', '1.75-2 km',\
+                  '2-2.25 km', '2.25-2.5 km', '2.5-2.75 km', '2.75-3 km',\
+                  '3-3.25 km', '3.25-3.5 km', '3.5-3.75 km', '3.75-4 km',\
+                  '4-4.25 km', '4.25-4.5 km', '4.5-4.75 km', '4.75-5 km']
 
     #ax.hist(slopearr, 35, range=[0,35], normed=True, color=color, histtype='step')
-    ax.plot(x_plot_arr, gamma_dist(x_plot_arr, *popt), ls='-', color=color, lw=2.0, label=label)
+    if plottype == 'finegrid':
+        ax.plot(x_plot_arr, gamma_dist(x_plot_arr, *popt), ls='-', color=color, lw=2.0, label=label_list[callcount])
+    elif plottype == None:
+        # get label
+        if callcount == 0:
+            label = '1 to 2 km'
+        elif callcount == 1:
+            label = '2 to 3 km'
+        elif callcount == 2:
+            label = '3 to 4 km'
+        elif callcount == 3:
+            label = '4 to 5 km'
+        elif callcount == 4:
+            label = '5 to 6 km'
+        elif callcount == 5:
+            label = '6 to 7 km'
+        elif callcount == 6:
+            label = '7 to 8 km'
+        elif callcount == 7:
+            label = '8 to 9 km'
+        elif callcount == 8:
+            label = '9 to 10 km'
+        elif callcount == 9:
+            label = '10 to 15 km'
+        elif callcount == 10:
+            label = '15 to 20 km'
+        elif callcount == 11:
+            label = '20 to 25 km'
+        elif callcount == 12:
+            label = '25 to 30 km'
+        elif callcount == 13:
+            label = '30 to 35 km'
+        ax.plot(x_plot_arr, gamma_dist(x_plot_arr, *popt), ls='-', color=color, lw=2.0, label=label)
 
-    ax.legend(loc=0, prop={'size':14})
+    ax.legend(loc=0, prop={'size':8})
 
     callcount += 1
 
@@ -149,11 +156,18 @@ def call_hist_and_fits():
 def call_hist_and_fits_smallgrid():
 
     # read in all arrays 
-    density_diambin_1_2, density_diambin_2_3, density_diambin_3_4, density_diambin_4_5, \
+    density_diambin_1_1p25, density_diambin_1p25_1p5, density_diambin_1p5_1p75, density_diambin_1p75_2, \
+    density_diambin_2_2p25, density_diambin_2p25_2p5, density_diambin_2p5_2p75, density_diambin_2p75_3, \
+    density_diambin_3_3p25, density_diambin_3p25_3p5, density_diambin_3p5_3p75, density_diambin_3p75_4, \
+    density_diambin_4_4p25, density_diambin_4p25_4p5, density_diambin_4p5_4p75, density_diambin_4p75_5, \
     density_diambin_5_6, density_diambin_6_7, density_diambin_7_8, density_diambin_8_9, \
     density_diambin_9_10, density_diambin_10_15, density_diambin_15_20, density_diambin_20_25, \
-    density_diambin_25_30, density_diambin_30_35, slope_diambin_1_2, slope_diambin_2_3, \
-    slope_diambin_3_4, slope_diambin_4_5, slope_diambin_5_6, slope_diambin_6_7, slope_diambin_7_8, \
+    density_diambin_25_30, density_diambin_30_35, \
+    slope_diambin_1_1p25, slope_diambin_1p25_1p5, slope_diambin_1p5_1p75, slope_diambin_1p75_2, \
+    slope_diambin_2_2p25, slope_diambin_2p25_2p5, slope_diambin_2p5_2p75, slope_diambin_2p75_3, \
+    slope_diambin_3_3p25, slope_diambin_3p25_3p5, slope_diambin_3p5_3p75, slope_diambin_3p75_4, \
+    slope_diambin_4_4p25, slope_diambin_4p25_4p5, slope_diambin_4p5_4p75, slope_diambin_4p75_5, \
+    slope_diambin_5_6, slope_diambin_6_7, slope_diambin_7_8, \
     slope_diambin_8_9, slope_diambin_9_10, slope_diambin_10_15, slope_diambin_15_20, \
     slope_diambin_20_25, slope_diambin_25_30, slope_diambin_30_35 = avg.read_no_overlap_arrays()
 
@@ -172,24 +186,40 @@ def call_hist_and_fits_smallgrid():
     ax.set_xlabel('Slope', fontsize=12)
     ax.set_ylabel('Normalized bin counts', fontsize=12)
 
-    colors = ['#67001f', '#377eb8', '#1b9e77', '#984ea3']
+    colors = ['#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00',\
+    '#cab2d6','#6a3d9a','#ffff99','#b15928','#878787','#c51b7d','#35978f','#b2182b']
 
     # checked the histogram plotting
     # it seems like fitting a function and just plotting that might be more presentable.
     # Also check is histtype='step' might help better than the default histtype.
     # The histogram is normalized to make sure that hte area under the curve equals 1
     callcount = 0
-    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_1_2, colors[0], callcount)
-    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_2_3, colors[1], callcount)
-    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_3_4, colors[2], callcount)
-    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_4_5, colors[3], callcount)
+    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_1_1p25, colors[0], callcount, 'finegrid')
+    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_1p25_1p5, colors[1], callcount, 'finegrid')
+    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_1p5_1p75, colors[2], callcount, 'finegrid')
+    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_1p75_2, colors[3], callcount, 'finegrid')
+
+    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_2_2p25, colors[4], callcount, 'finegrid')
+    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_2p25_2p5, colors[5], callcount, 'finegrid')
+    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_2p5_2p75, colors[6], callcount, 'finegrid')
+    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_2p75_3, colors[7], callcount, 'finegrid')
+
+    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_3_3p25, colors[8], callcount, 'finegrid')
+    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_3p25_3p5, colors[9], callcount, 'finegrid')
+    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_3p5_3p75, colors[10], callcount, 'finegrid')
+    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_3p75_4, colors[11], callcount, 'finegrid')
+
+    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_4_4p25, colors[12], callcount, 'finegrid')
+    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_4p25_4p5, colors[13], callcount, 'finegrid')
+    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_4p5_4p75, colors[14], callcount, 'finegrid')
+    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_4p75_5, colors[15], callcount, 'finegrid')
 
     # minor ticks
     ax.minorticks_on()
     ax.tick_params('both', width=1, length=3, which='minor')
     ax.tick_params('both', width=1, length=4.7, which='major')
 
-    fig.savefig(slope_extdir + 'slope_histogram_fits_and_hist_smallrange.png', dpi=300, bbox_inches='tight')
+    fig.savefig(slope_extdir + 'slope_histogram_fits_smallrange_finegrid.png', dpi=300, bbox_inches='tight')
 
     return None
 
