@@ -828,67 +828,68 @@ if __name__ == '__main__':
     dt = datetime.datetime
     print "Starting at --", dt.now()
 
-    # read in catalogs
-    vertices_cat = np.genfromtxt(slope_extdir + 'HF_vertices_m.csv', dtype=None, names=True, delimiter=',')
-
-    # Old code using crater centers
-    #craters_cat = np.genfromtxt(slope_extdir + 'CRATER_FullHF_m.csv', dtype=None, names=True, delimiter=',')
-    #craters_x = craters_cat['x_coord_m']
-    #craters_y = craters_cat['y_coord_m']
-    #craters_diam = craters_cat['Diameter_m']
-
-    # create arrays for more convenient access
-    vertices_x = vertices_cat['x_coord_m']
-    vertices_y = vertices_cat['y_coord_m']
-
-    # delete offending points -- those that cause the polygon to cross itself
-    #argmin takes an array of difference and it gives us the argument that 
-    #gave the minimum difference (so finding the closest point in an array).
-    #Here, we store the x and y positions of the closest points and then delete them.
-    off_x_idx1 = np.argmin(abs(vertices_x - -2.41165e6))
-    off_y_idx1 = np.argmin(abs(vertices_y - 176717))
-
-    off_x_idx2 = np.argmin(abs(vertices_x - -3.61074e6))
-    off_y_idx2 = np.argmin(abs(vertices_y - 41808.2))
-
-    off_x_idx3 = np.argmin(abs(vertices_x - -3.61526e6))
-    off_y_idx3 = np.argmin(abs(vertices_y - 41295.4))
-
-    off_x_idx = np.array([off_x_idx1, off_x_idx2, off_x_idx3])
-    off_y_idx = np.array([off_y_idx1, off_y_idx2, off_y_idx3])
-    vertices_x = np.delete(vertices_x, off_x_idx, axis=None)
-    vertices_y = np.delete(vertices_y, off_y_idx, axis=None)
-
-    # define radius and centers for vertices
-    # eyeballed for now
-    vertices_x_center = -2.94e6
-    vertices_y_center = -5.87e5
-    rad_vertices = np.sqrt((vertices_x - vertices_x_center)**2 + (vertices_y - vertices_y_center)**2)
-    eff_rad = np.min(rad_vertices) + 25e4  # number put in by trial and error
-    
-    # define valid indices for vertices inside and outside dividing effective radius 
-    #i.e. if the position is farther from the center of the study area than the exent 
-    #of the radius of the outer circle, then it's outside and vice versa for the radius 
-    #of the inner circle. np.where gives the array indices that satisfy a given condition.
-    valid_out = np.where(rad_vertices > eff_rad)[0]
-    valid_in = np.where(rad_vertices < eff_rad)[0]
-
-    #plot_region(vertices_x, vertices_y, vertices_x_center, vertices_y_center, eff_rad, valid_in, valid_out,\
-    #region_name='orientale', save=True, with_craters=False, show_rect=False)
-
-    # define inner and outer polygons
-    poly_outer = zip(vertices_x[valid_out], vertices_y[valid_out])
-    poly_inner = zip(vertices_x[valid_in], vertices_y[valid_in])
-
-    poly_outer = pg.Polygon(poly_outer)
-    poly_inner = pg.Polygon(poly_inner)
-
     # ----------------  measure and populate pixel area fraction array  ---------------- # 
     # read in pixel slope info
     # this file also gives the x and y centers of pixels
     do_pix_frac = False
     if do_pix_frac:
         print "Will compute pixel fractions now."
+
+        # read in catalogs
+        vertices_cat = np.genfromtxt(slope_extdir + 'HF_vertices_m.csv', dtype=None, names=True, delimiter=',')
+
+        # Old code using crater centers
+        #craters_cat = np.genfromtxt(slope_extdir + 'CRATER_FullHF_m.csv', dtype=None, names=True, delimiter=',')
+        #craters_x = craters_cat['x_coord_m']
+        #craters_y = craters_cat['y_coord_m']
+        #craters_diam = craters_cat['Diameter_m']
+
+        # create arrays for more convenient access
+        vertices_x = vertices_cat['x_coord_m']
+        vertices_y = vertices_cat['y_coord_m']
+
+        # delete offending points -- those that cause the polygon to cross itself
+        #argmin takes an array of difference and it gives us the argument that 
+        #gave the minimum difference (so finding the closest point in an array).
+        #Here, we store the x and y positions of the closest points and then delete them.
+        off_x_idx1 = np.argmin(abs(vertices_x - -2.41165e6))
+        off_y_idx1 = np.argmin(abs(vertices_y - 176717))
+
+        off_x_idx2 = np.argmin(abs(vertices_x - -3.61074e6))
+        off_y_idx2 = np.argmin(abs(vertices_y - 41808.2))
+
+        off_x_idx3 = np.argmin(abs(vertices_x - -3.61526e6))
+        off_y_idx3 = np.argmin(abs(vertices_y - 41295.4))
+
+        off_x_idx = np.array([off_x_idx1, off_x_idx2, off_x_idx3])
+        off_y_idx = np.array([off_y_idx1, off_y_idx2, off_y_idx3])
+        vertices_x = np.delete(vertices_x, off_x_idx, axis=None)
+        vertices_y = np.delete(vertices_y, off_y_idx, axis=None)
+
+        # define radius and centers for vertices
+        # eyeballed for now
+        vertices_x_center = -2.94e6
+        vertices_y_center = -5.87e5
+        rad_vertices = np.sqrt((vertices_x - vertices_x_center)**2 + (vertices_y - vertices_y_center)**2)
+        eff_rad = np.min(rad_vertices) + 25e4  # number put in by trial and error
+    
+        # define valid indices for vertices inside and outside dividing effective radius 
+        #i.e. if the position is farther from the center of the study area than the exent 
+        #of the radius of the outer circle, then it's outside and vice versa for the radius 
+        #of the inner circle. np.where gives the array indices that satisfy a given condition.
+        valid_out = np.where(rad_vertices > eff_rad)[0]
+        valid_in = np.where(rad_vertices < eff_rad)[0]
+
+        #plot_region(vertices_x, vertices_y, vertices_x_center, vertices_y_center, eff_rad, valid_in, valid_out,\
+        #region_name='orientale', save=True, with_craters=False, show_rect=False)
+
+        # define inner and outer polygons
+        poly_outer = zip(vertices_x[valid_out], vertices_y[valid_out])
+        poly_inner = zip(vertices_x[valid_in], vertices_y[valid_in])
+
+        poly_outer = pg.Polygon(poly_outer)
+        poly_inner = pg.Polygon(poly_inner)
+
     else:
         print "Will skip computing pixel fractions. Moving to crater fractions now."
 
@@ -1077,10 +1078,28 @@ if __name__ == '__main__':
     # the start and end of the diamter bin
     # the endpoint is NOT included. E.g. 1-2 includes 1<= D < 2
     # I've set the dtype to float32 to save space
-    crater_frac_diambin_1_2   = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
-    crater_frac_diambin_2_3   = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
-    crater_frac_diambin_3_4   = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
-    crater_frac_diambin_4_5   = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
+    crater_frac_diambin_1_1p25   = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
+    crater_frac_diambin_1p25_1p5   = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
+    crater_frac_diambin_1p5_1p75   = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
+    crater_frac_diambin_1p75_2   = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
+
+    crater_frac_diambin_2_2p25   = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
+    crater_frac_diambin_2p25_2p5   = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
+    crater_frac_diambin_2p5_2p75   = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
+    crater_frac_diambin_2p75_3   = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
+
+    crater_frac_diambin_3_3p25   = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
+    crater_frac_diambin_3p25_3p5   = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
+    crater_frac_diambin_3p5_3p75   = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
+    crater_frac_diambin_3p75_4   = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
+
+    crater_frac_diambin_4_4p25   = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
+    crater_frac_diambin_4p25_4p5   = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
+    crater_frac_diambin_4p5_4p75   = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
+    crater_frac_diambin_4p75_5   = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
+
+    # ---
+
     crater_frac_diambin_5_6   = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
     crater_frac_diambin_6_7   = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
     crater_frac_diambin_7_8   = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
@@ -1202,14 +1221,44 @@ if __name__ == '__main__':
             """
 
             # This should still be a cumulative sum within each diamter bin
-            if current_diam >= 1 and current_diam < 2:
-                crater_frac_diambin_1_2[pix_index] += inter_area_crater_frac
-            elif current_diam >= 2 and current_diam < 3:
-                crater_frac_diambin_2_3[pix_index] += inter_area_crater_frac
-            elif current_diam >= 3 and current_diam < 4:
-                crater_frac_diambin_3_4[pix_index] += inter_area_crater_frac
-            elif current_diam >= 4 and current_diam < 5:
-                crater_frac_diambin_4_5[pix_index] += inter_area_crater_frac
+            if current_diam >= 1 and current_diam < 1.25:
+                crater_frac_diambin_1_1p25[pix_index] += inter_area_crater_frac
+            elif current_diam >= 1.25 and current_diam < 1.5:
+                crater_frac_diambin_1p25_1p5[pix_index] += inter_area_crater_frac
+            elif current_diam >= 1.5 and current_diam < 1.75:
+                crater_frac_diambin_1p5_1p75[pix_index] += inter_area_crater_frac
+            elif current_diam >= 1.75 and current_diam < 2:
+                crater_frac_diambin_1p75_2[pix_index] += inter_area_crater_frac
+
+            elif current_diam >= 2 and current_diam < 2.25:
+                crater_frac_diambin_2_2p25[pix_index] += inter_area_crater_frac
+            elif current_diam >= 2.25 and current_diam < 2.5:
+                crater_frac_diambin_2p25_2p5[pix_index] += inter_area_crater_frac
+            elif current_diam >= 2.5 and current_diam < 2.75:
+                crater_frac_diambin_2p5_2p75[pix_index] += inter_area_crater_frac
+            elif current_diam >= 2.75 and current_diam < 3:
+                crater_frac_diambin_2p75_3[pix_index] += inter_area_crater_frac
+
+            elif current_diam >= 3 and current_diam < 3.25:
+                crater_frac_diambin_3_3p25[pix_index] += inter_area_crater_frac
+            elif current_diam >= 3.25 and current_diam < 3.5:
+                crater_frac_diambin_3p25_3p5[pix_index] += inter_area_crater_frac
+            elif current_diam >= 3.5 and current_diam < 3.75:
+                crater_frac_diambin_3p5_3p75[pix_index] += inter_area_crater_frac
+            elif current_diam >= 3.75 and current_diam < 4:
+                crater_frac_diambin_3p75_4[pix_index] += inter_area_crater_frac
+
+            elif current_diam >= 4 and current_diam < 4.25:
+                crater_frac_diambin_4_4p25[pix_index] += inter_area_crater_frac
+            elif current_diam >= 4.25 and current_diam < 4.5:
+                crater_frac_diambin_4p25_4p5[pix_index] += inter_area_crater_frac
+            elif current_diam >= 4.5 and current_diam < 4.75:
+                crater_frac_diambin_4p5_4p75[pix_index] += inter_area_crater_frac
+            elif current_diam >= 4.75 and current_diam < 5:
+                crater_frac_diambin_4p75_5[pix_index] += inter_area_crater_frac
+
+            # ---
+
             elif current_diam >= 5 and current_diam < 6:
                 crater_frac_diambin_5_6[pix_index] += inter_area_crater_frac
             elif current_diam >= 6 and current_diam < 7:
@@ -1247,10 +1296,28 @@ if __name__ == '__main__':
     #pix_crater_area[invalid_idx] = -9999.0
 
     # save individual crater contributions as numpy arrays
-    np.save(slope_extdir + 'crater_frac_diambin_1_2.npy', crater_frac_diambin_1_2)
-    np.save(slope_extdir + 'crater_frac_diambin_2_3.npy', crater_frac_diambin_2_3)
-    np.save(slope_extdir + 'crater_frac_diambin_3_4.npy', crater_frac_diambin_3_4)
-    np.save(slope_extdir + 'crater_frac_diambin_4_5.npy', crater_frac_diambin_4_5)
+    np.save(slope_extdir + 'crater_frac_diambin_1_1p25.npy', crater_frac_diambin_1_1p25)
+    np.save(slope_extdir + 'crater_frac_diambin_1p25_1p5.npy', crater_frac_diambin_1p25_1p5)
+    np.save(slope_extdir + 'crater_frac_diambin_1p5_1p75.npy', crater_frac_diambin_1p5_1p75)
+    np.save(slope_extdir + 'crater_frac_diambin_1p75_2.npy', crater_frac_diambin_1p75_2)
+
+    np.save(slope_extdir + 'crater_frac_diambin_2_2p25.npy', crater_frac_diambin_2_2p25)
+    np.save(slope_extdir + 'crater_frac_diambin_2p25_2p5.npy', crater_frac_diambin_2p25_2p5)
+    np.save(slope_extdir + 'crater_frac_diambin_2p5_2p75.npy', crater_frac_diambin_2p5_2p75)
+    np.save(slope_extdir + 'crater_frac_diambin_2p75_3.npy', crater_frac_diambin_2p75_3)
+
+    np.save(slope_extdir + 'crater_frac_diambin_3_3p25.npy', crater_frac_diambin_3_3p25)
+    np.save(slope_extdir + 'crater_frac_diambin_3p25_3p5.npy', crater_frac_diambin_3p25_3p5)
+    np.save(slope_extdir + 'crater_frac_diambin_3p5_3p75.npy', crater_frac_diambin_3p5_3p75)
+    np.save(slope_extdir + 'crater_frac_diambin_3p75_4.npy', crater_frac_diambin_3p75_4)
+
+    np.save(slope_extdir + 'crater_frac_diambin_4_4p25.npy', crater_frac_diambin_4_4p25)
+    np.save(slope_extdir + 'crater_frac_diambin_4p25_4p5.npy', crater_frac_diambin_4p25_4p5)
+    np.save(slope_extdir + 'crater_frac_diambin_4p5_4p75.npy', crater_frac_diambin_4p5_4p75)
+    np.save(slope_extdir + 'crater_frac_diambin_4p75_5.npy', crater_frac_diambin_4p75_5)
+
+    # ---
+
     np.save(slope_extdir + 'crater_frac_diambin_5_6.npy', crater_frac_diambin_5_6)
     np.save(slope_extdir + 'crater_frac_diambin_6_7.npy', crater_frac_diambin_6_7)
     np.save(slope_extdir + 'crater_frac_diambin_7_8.npy', crater_frac_diambin_7_8)
