@@ -17,10 +17,28 @@ slope_extdir = home + '/Documents/plots_codes_for_heather/slope_effects_files/'
 def read_no_overlap_arrays():
 
     # read in all arrays
-    density_diambin_1_2 = np.load(slope_extdir + 'density_diambin_1_2.npy')
-    density_diambin_2_3 = np.load(slope_extdir + 'density_diambin_2_3.npy')
-    density_diambin_3_4 = np.load(slope_extdir + 'density_diambin_3_4.npy')
-    density_diambin_4_5 = np.load(slope_extdir + 'density_diambin_4_5.npy')
+    density_diambin_1_1p25 = np.load(slope_extdir + 'density_diambin_1_1p25.npy')
+    density_diambin_1p25_1p5 = np.load(slope_extdir + 'density_diambin_1p25_1p5.npy')
+    density_diambin_1p5_1p75 = np.load(slope_extdir + 'density_diambin_1p5_1p75.npy')
+    density_diambin_1p75_2 = np.load(slope_extdir + 'density_diambin_1p75_2.npy')
+
+    density_diambin_2_2p25 = np.load(slope_extdir + 'density_diambin_2_2p25.npy')
+    density_diambin_2p25_2p5 = np.load(slope_extdir + 'density_diambin_2p25_2p5.npy')
+    density_diambin_2p5_2p75 = np.load(slope_extdir + 'density_diambin_2p5_2p75.npy')
+    density_diambin_2p75_3 = np.load(slope_extdir + 'density_diambin_2p75_3.npy')
+
+    density_diambin_3_3p25 = np.load(slope_extdir + 'density_diambin_3_3p25.npy')
+    density_diambin_3p25_3p5 = np.load(slope_extdir + 'density_diambin_3p25_3p5.npy')
+    density_diambin_3p5_3p75 = np.load(slope_extdir + 'density_diambin_3p5_3p75.npy')
+    density_diambin_3p75_4 = np.load(slope_extdir + 'density_diambin_3p75_4.npy')
+
+    density_diambin_4_4p25 = np.load(slope_extdir + 'density_diambin_4_4p25.npy')
+    density_diambin_4p25_4p5 = np.load(slope_extdir + 'density_diambin_4p25_4p5.npy')
+    density_diambin_4p5_4p75 = np.load(slope_extdir + 'density_diambin_4p5_4p75.npy')
+    density_diambin_4p75_5 = np.load(slope_extdir + 'density_diambin_4p75_5.npy')
+
+    # ---
+
     density_diambin_5_6 = np.load(slope_extdir + 'density_diambin_5_6.npy')
     density_diambin_6_7 = np.load(slope_extdir + 'density_diambin_6_7.npy')
     density_diambin_7_8 = np.load(slope_extdir + 'density_diambin_7_8.npy')
@@ -32,10 +50,30 @@ def read_no_overlap_arrays():
     density_diambin_25_30 = np.load(slope_extdir + 'density_diambin_25_30.npy')
     density_diambin_30_35 = np.load(slope_extdir + 'density_diambin_30_35.npy')
 
-    slope_diambin_1_2 = np.load(slope_extdir + 'slope_diambin_1_2.npy')
-    slope_diambin_2_3 = np.load(slope_extdir + 'slope_diambin_2_3.npy')
-    slope_diambin_3_4 = np.load(slope_extdir + 'slope_diambin_3_4.npy')
-    slope_diambin_4_5 = np.load(slope_extdir + 'slope_diambin_4_5.npy')
+
+    # --------------------------------------
+    slope_diambin_1_1p25 = np.load(slope_extdir + 'slope_diambin_1_1p25.npy')
+    slope_diambin_1p25_1p5 = np.load(slope_extdir + 'slope_diambin_1p25_1p5.npy')
+    slope_diambin_1p5_1p75 = np.load(slope_extdir + 'slope_diambin_1p5_1p75.npy')
+    slope_diambin_1p75_2 = np.load(slope_extdir + 'slope_diambin_1p75_2.npy')
+
+    slope_diambin_2_2p25 = np.load(slope_extdir + 'slope_diambin_2_2p25.npy')
+    slope_diambin_2p25_2p5 = np.load(slope_extdir + 'slope_diambin_2p25_2p5.npy')
+    slope_diambin_2p5_2p75 = np.load(slope_extdir + 'slope_diambin_2p5_2p75.npy')
+    slope_diambin_2p75_3 = np.load(slope_extdir + 'slope_diambin_2p75_3.npy')
+
+    slope_diambin_3_3p25 = np.load(slope_extdir + 'slope_diambin_3_3p25.npy')
+    slope_diambin_3p25_3p5 = np.load(slope_extdir + 'slope_diambin_3p25_3p5.npy')
+    slope_diambin_3p5_3p75 = np.load(slope_extdir + 'slope_diambin_3p5_3p75.npy')
+    slope_diambin_3p75_4 = np.load(slope_extdir + 'slope_diambin_3p75_4.npy')
+
+    slope_diambin_4_4p25 = np.load(slope_extdir + 'slope_diambin_4_4p25.npy')
+    slope_diambin_4p25_4p5 = np.load(slope_extdir + 'slope_diambin_4p25_4p5.npy')
+    slope_diambin_4p5_4p75 = np.load(slope_extdir + 'slope_diambin_4p5_4p75.npy')
+    slope_diambin_4p75_5 = np.load(slope_extdir + 'slope_diambin_4p75_5.npy')
+
+    # ---
+
     slope_diambin_5_6 = np.load(slope_extdir + 'slope_diambin_5_6.npy')
     slope_diambin_6_7 = np.load(slope_extdir + 'slope_diambin_6_7.npy')
     slope_diambin_7_8 = np.load(slope_extdir + 'slope_diambin_7_8.npy')
@@ -47,11 +85,18 @@ def read_no_overlap_arrays():
     slope_diambin_25_30 = np.load(slope_extdir + 'slope_diambin_25_30.npy')
     slope_diambin_30_35 = np.load(slope_extdir + 'slope_diambin_30_35.npy')
 
-    return density_diambin_1_2, density_diambin_2_3, density_diambin_3_4, density_diambin_4_5, \
+    return density_diambin_1_1p25, density_diambin_1p25_1p5, density_diambin_1p5_1p75, density_diambin_1p75_2, \
+    density_diambin_2_2p25, density_diambin_2p25_2p5, density_diambin_2p5_2p75, density_diambin_2p75_3, \
+    density_diambin_3_3p25, density_diambin_3p25_3p5, density_diambin_3p5_3p75, density_diambin_3p75_4, \
+    density_diambin_4_4p25, density_diambin_4p25_4p5, density_diambin_4p5_4p75, density_diambin_4p75_5, \
     density_diambin_5_6, density_diambin_6_7, density_diambin_7_8, density_diambin_8_9, \
     density_diambin_9_10, density_diambin_10_15, density_diambin_15_20, density_diambin_20_25, \
-    density_diambin_25_30, density_diambin_30_35, slope_diambin_1_2, slope_diambin_2_3, \
-    slope_diambin_3_4, slope_diambin_4_5, slope_diambin_5_6, slope_diambin_6_7, slope_diambin_7_8, \
+    density_diambin_25_30, density_diambin_30_35, \
+    slope_diambin_1_1p25, slope_diambin_1p25_1p5, slope_diambin_1p5_1p75, slope_diambin_1p75_2, \
+    slope_diambin_2_2p25, slope_diambin_2p25_2p5, slope_diambin_2p5_2p75, slope_diambin_2p75_3, \
+    slope_diambin_3_3p25, slope_diambin_3p25_3p5, slope_diambin_3p5_3p75, slope_diambin_3p75_4, \
+    slope_diambin_4_4p25, slope_diambin_4p25_4p5, slope_diambin_4p5_4p75, slope_diambin_4p75_5, \
+    slope_diambin_5_6, slope_diambin_6_7, slope_diambin_7_8, \
     slope_diambin_8_9, slope_diambin_9_10, slope_diambin_10_15, slope_diambin_15_20, \
     slope_diambin_20_25, slope_diambin_25_30, slope_diambin_30_35
 
@@ -485,13 +530,23 @@ def call_avg_plot_fullrange():
     return None
 
 def call_avg_plot_smallrange():
+    """
+    Have not changed the code for the N value stuff using the finer grid
+    """
 
     # read in all arrays 
-    density_diambin_1_2, density_diambin_2_3, density_diambin_3_4, density_diambin_4_5, \
+    density_diambin_1_1p25, density_diambin_1p25_1p5, density_diambin_1p5_1p75, density_diambin_1p75_2, \
+    density_diambin_2_2p25, density_diambin_2p25_2p5, density_diambin_2p5_2p75, density_diambin_2p75_3, \
+    density_diambin_3_3p25, density_diambin_3p25_3p5, density_diambin_3p5_3p75, density_diambin_3p75_4, \
+    density_diambin_4_4p25, density_diambin_4p25_4p5, density_diambin_4p5_4p75, density_diambin_4p75_5, \
     density_diambin_5_6, density_diambin_6_7, density_diambin_7_8, density_diambin_8_9, \
     density_diambin_9_10, density_diambin_10_15, density_diambin_15_20, density_diambin_20_25, \
-    density_diambin_25_30, density_diambin_30_35, slope_diambin_1_2, slope_diambin_2_3, \
-    slope_diambin_3_4, slope_diambin_4_5, slope_diambin_5_6, slope_diambin_6_7, slope_diambin_7_8, \
+    density_diambin_25_30, density_diambin_30_35, \
+    slope_diambin_1_1p25, slope_diambin_1p25_1p5, slope_diambin_1p5_1p75, slope_diambin_1p75_2, \
+    slope_diambin_2_2p25, slope_diambin_2p25_2p5, slope_diambin_2p5_2p75, slope_diambin_2p75_3, \
+    slope_diambin_3_3p25, slope_diambin_3p25_3p5, slope_diambin_3p5_3p75, slope_diambin_3p75_4, \
+    slope_diambin_4_4p25, slope_diambin_4p25_4p5, slope_diambin_4p5_4p75, slope_diambin_4p75_5, \
+    slope_diambin_5_6, slope_diambin_6_7, slope_diambin_7_8, \
     slope_diambin_8_9, slope_diambin_9_10, slope_diambin_10_15, slope_diambin_15_20, \
     slope_diambin_20_25, slope_diambin_25_30, slope_diambin_30_35 = read_no_overlap_arrays()
 
@@ -504,15 +559,43 @@ def call_avg_plot_smallrange():
     slope_diambin_25, slope_diambin_30 = read_Nvalue_arrays()
 
     # get averages for these arrays
-    density_diambin_1_2_avg, slope_diambin_1_2_avg, density_diambin_1_2_avgerror, slope_diambin_1_2_avgerror \
-    = get_avg_finite_elements(density_diambin_1_2, slope_diambin_1_2)
-    density_diambin_2_3_avg, slope_diambin_2_3_avg, density_diambin_2_3_avgerror, slope_diambin_2_3_avgerror \
-    = get_avg_finite_elements(density_diambin_2_3, slope_diambin_2_3)
-    density_diambin_3_4_avg, slope_diambin_3_4_avg, density_diambin_3_4_avgerror, slope_diambin_3_4_avgerror \
-    = get_avg_finite_elements(density_diambin_3_4, slope_diambin_3_4)
-    density_diambin_4_5_avg, slope_diambin_4_5_avg, density_diambin_4_5_avgerror, slope_diambin_4_5_avgerror \
-    = get_avg_finite_elements(density_diambin_4_5, slope_diambin_4_5)
+    density_diambin_1_1p25_avg, slope_diambin_1_1p25_avg, density_diambin_1_1p25_avgerror, slope_diambin_1_1p25_avgerror \
+    = get_avg_finite_elements(density_diambin_1_1p25, slope_diambin_1_1p25)
+    density_diambin_1p25_1p5_avg, slope_diambin_1p25_1p5_avg, density_diambin_1p25_1p5_avgerror, slope_diambin_1p25_1p5_avgerror \
+    = get_avg_finite_elements(density_diambin_1p25_1p5, slope_diambin_1p25_1p5)
+    density_diambin_1p5_1p75_avg, slope_diambin_1p5_1p75_avg, density_diambin_1p5_1p75_avgerror, slope_diambin_1p5_1p75_avgerror \
+    = get_avg_finite_elements(density_diambin_1p5_1p75, slope_diambin_1p5_1p75)
+    density_diambin_1p75_2_avg, slope_diambin_1p75_2_avg, density_diambin_1p75_2_avgerror, slope_diambin_1p75_2_avgerror \
+    = get_avg_finite_elements(density_diambin_1p75_2, slope_diambin_1p75_2)
 
+    density_diambin_2_2p25_avg, slope_diambin_2_2p25_avg, density_diambin_2_2p25_avgerror, slope_diambin_2_2p25_avgerror \
+    = get_avg_finite_elements(density_diambin_2_2p25, slope_diambin_2_2p25)
+    density_diambin_2p25_2p5_avg, slope_diambin_2p25_2p5_avg, density_diambin_2p25_2p5_avgerror, slope_diambin_2p25_2p5_avgerror \
+    = get_avg_finite_elements(density_diambin_2p25_2p5, slope_diambin_2p25_2p5)
+    density_diambin_2p5_2p75_avg, slope_diambin_2p5_2p75_avg, density_diambin_2p5_2p75_avgerror, slope_diambin_2p5_2p75_avgerror \
+    = get_avg_finite_elements(density_diambin_2p5_2p75, slope_diambin_2p5_2p75)
+    density_diambin_2p75_3_avg, slope_diambin_2p75_3_avg, density_diambin_2p75_3_avgerror, slope_diambin_2p75_3_avgerror \
+    = get_avg_finite_elements(density_diambin_2p75_3, slope_diambin_2p75_3)
+
+    density_diambin_3_3p25_avg, slope_diambin_3_3p25_avg, density_diambin_3_3p25_avgerror, slope_diambin_3_3p25_avgerror \
+    = get_avg_finite_elements(density_diambin_3_3p25, slope_diambin_3_3p25)
+    density_diambin_3p25_3p5_avg, slope_diambin_3p25_3p5_avg, density_diambin_3p25_3p5_avgerror, slope_diambin_3p25_3p5_avgerror \
+    = get_avg_finite_elements(density_diambin_3p25_3p5, slope_diambin_3p25_3p5)
+    density_diambin_3p5_3p75_avg, slope_diambin_3p5_3p75_avg, density_diambin_3p5_3p75_avgerror, slope_diambin_3p5_3p75_avgerror \
+    = get_avg_finite_elements(density_diambin_3p5_3p75, slope_diambin_3p5_3p75)
+    density_diambin_3p75_4_avg, slope_diambin_3p75_4_avg, density_diambin_3p75_4_avgerror, slope_diambin_3p75_4_avgerror \
+    = get_avg_finite_elements(density_diambin_3p75_4, slope_diambin_3p75_4)
+
+    density_diambin_4_4p25_avg, slope_diambin_4_4p25_avg, density_diambin_4_4p25_avgerror, slope_diambin_4_4p25_avgerror \
+    = get_avg_finite_elements(density_diambin_4_4p25, slope_diambin_4_4p25)
+    density_diambin_4p25_4p5_avg, slope_diambin_4p25_4p5_avg, density_diambin_4p25_4p5_avgerror, slope_diambin_4p25_4p5_avgerror \
+    = get_avg_finite_elements(density_diambin_4p25_4p5, slope_diambin_4p25_4p5)
+    density_diambin_4p5_4p75_avg, slope_diambin_4p5_4p75_avg, density_diambin_4p5_4p75_avgerror, slope_diambin_4p5_4p75_avgerror \
+    = get_avg_finite_elements(density_diambin_4p5_4p75, slope_diambin_4p5_4p75)
+    density_diambin_4p75_5_avg, slope_diambin_4p75_5_avg, density_diambin_4p75_5_avgerror, slope_diambin_4p75_5_avgerror \
+    = get_avg_finite_elements(density_diambin_4p75_5, slope_diambin_4p75_5)
+
+    # -------------- Unupdated N value stuff --------------- #
     density_diambin_1_avg, slope_diambin_1_avg, density_diambin_1_avgerror, slope_diambin_1_avgerror \
     = get_avg_finite_elements(density_diambin_1, slope_diambin_1)
     density_diambin_2_avg, slope_diambin_2_avg, density_diambin_2_avgerror, slope_diambin_2_avgerror \
@@ -522,11 +605,18 @@ def call_avg_plot_smallrange():
     density_diambin_4_avg, slope_diambin_4_avg, density_diambin_4_avgerror, slope_diambin_4_avgerror \
     = get_avg_finite_elements(density_diambin_4, slope_diambin_4)
 
-    all_density_averages_nooverlap = np.array([density_diambin_1_2_avg, density_diambin_2_3_avg, density_diambin_3_4_avg, \
-    density_diambin_4_5_avg])
+    # Put the averages and the errors in arrays
+    all_density_averages_nooverlap = \
+    np.array([density_diambin_1_1p25_avg, density_diambin_1p25_1p5_avg, density_diambin_1p5_1p75_avg, density_diambin_1p75_2_avg, \
+              density_diambin_2_2p25_avg, density_diambin_2p25_2p5_avg, density_diambin_2p5_2p75_avg, density_diambin_2p75_3_avg, \
+              density_diambin_3_3p25_avg, density_diambin_3p25_3p5_avg, density_diambin_3p5_3p75_avg, density_diambin_3p75_4_avg, \
+              density_diambin_4_4p25_avg, density_diambin_4p25_4p5_avg, density_diambin_4p5_4p75_avg, density_diambin_4p75_5_avg])
 
-    all_slope_averages_nooverlap = np.array([slope_diambin_1_2_avg, slope_diambin_2_3_avg, slope_diambin_3_4_avg, \
-    slope_diambin_4_5_avg])
+    all_slope_averages_nooverlap = \
+    np.array([slope_diambin_1_1p25_avg, slope_diambin_1p25_1p5_avg, slope_diambin_1p5_1p75_avg, slope_diambin_1p75_2_avg, \
+              slope_diambin_2_2p25_avg, slope_diambin_2p25_2p5_avg, slope_diambin_2p5_2p75_avg, slope_diambin_2p75_3_avg, \
+              slope_diambin_3_3p25_avg, slope_diambin_3p25_3p5_avg, slope_diambin_3p5_3p75_avg, slope_diambin_3p75_4_avg, \
+              slope_diambin_4_4p25_avg, slope_diambin_4p25_4p5_avg, slope_diambin_4p5_4p75_avg, slope_diambin_4p75_5_avg])
 
     all_density_averages_nvalue = np.array([density_diambin_1_avg, density_diambin_2_avg, density_diambin_3_avg, \
     density_diambin_4_avg])
@@ -534,11 +624,17 @@ def call_avg_plot_smallrange():
     all_slope_averages_nvalue = np.array([slope_diambin_1_avg, slope_diambin_2_avg, slope_diambin_3_avg, \
     slope_diambin_4_avg])
 
-    all_density_avgerrors_nooverlap = np.array([density_diambin_1_2_avgerror, density_diambin_2_3_avgerror, density_diambin_3_4_avgerror, \
-        density_diambin_4_5_avgerror])
+    all_density_avgerrors_nooverlap = \
+    np.array([density_diambin_1_1p25_avgerror, density_diambin_1p25_1p5_avgerror, density_diambin_1p5_1p75_avgerror, density_diambin_1p75_2_avgerror, \
+              density_diambin_2_2p25_avgerror, density_diambin_2p25_2p5_avgerror, density_diambin_2p5_2p75_avgerror, density_diambin_2p75_3_avgerror, \
+              density_diambin_3_3p25_avgerror, density_diambin_3p25_3p5_avgerror, density_diambin_3p5_3p75_avgerror, density_diambin_3p75_4_avgerror, \
+              density_diambin_4_4p25_avgerror, density_diambin_4p25_4p5_avgerror, density_diambin_4p5_4p75_avgerror, density_diambin_4p75_5_avgerror])
 
-    all_density_avgerrors_nvalue = np.array([density_diambin_1_avgerror, density_diambin_2_avgerror, density_diambin_3_avgerror, \
-        density_diambin_4_avgerror])
+    all_slope_avgerrors_nooverlap = \
+    np.array([slope_diambin_1_1p25_avgerror, slope_diambin_1p25_1p5_avgerror, slope_diambin_1p5_1p75_avgerror, slope_diambin_1p75_2_avgerror, \
+              slope_diambin_2_2p25_avgerror, slope_diambin_2p25_2p5_avgerror, slope_diambin_2p5_2p75_avgerror, slope_diambin_2p75_3_avgerror, \
+              slope_diambin_3_3p25_avgerror, slope_diambin_3p25_3p5_avgerror, slope_diambin_3p5_3p75_avgerror, slope_diambin_3p75_4_avgerror, \
+              slope_diambin_4_4p25_avgerror, slope_diambin_4p25_4p5_avgerror, slope_diambin_4p5_4p75_avgerror, slope_diambin_4p75_5_avgerror])
 
     # plot
     # ------------------------------------------- No overlap ------------------------------------------- #
@@ -554,31 +650,28 @@ def call_avg_plot_smallrange():
     ax.tick_params('both', width=1, length=4.7, which='major')
     ax.grid(True, alpha=0.5)
 
-    colors = ['#67001f', '#377eb8', '#1b9e77', '#984ea3']
+    colors = ['#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00',\
+    '#cab2d6','#6a3d9a','#ffff99','#b15928','#878787','#c51b7d','#35978f','#b2182b']
+    label_list = ['1-1.25 km', '1.25-1.5 km', '1.5-1.75 km', '1.75-2 km',\
+                  '2-2.25 km', '2.25-2.5 km', '2.5-2.75 km', '2.75-3 km',\
+                  '3-3.25 km', '3.25-3.5 km', '3.5-3.75 km', '3.75-4 km',\
+                  '4-4.25 km', '4.25-4.5 km', '4.5-4.75 km', '4.75-5 km']
 
-    ax.scatter(all_slope_averages_nooverlap[0], all_density_averages_nooverlap[0], \
-        s=50, marker='o', color=colors[0], label='1-2' + ' km', \
-        edgecolors='none', zorder=5)
-    ax.scatter(all_slope_averages_nooverlap[1], all_density_averages_nooverlap[1], \
-        s=50, marker='o', color=colors[1], label='2-3' + ' km', \
-        edgecolors='none', zorder=5)
-    ax.scatter(all_slope_averages_nooverlap[2], all_density_averages_nooverlap[2], \
-        s=50, marker='o', color=colors[2], label='3-4' + ' km', \
-        edgecolors='none', zorder=5)
-    ax.scatter(all_slope_averages_nooverlap[3], all_density_averages_nooverlap[3], \
-        s=50, marker='o', color=colors[3], label='4-5' + ' km', \
-        edgecolors='none', zorder=5)
+    for i in range(len(all_density_averages_nooverlap)):
+        ax.scatter(all_slope_averages_nooverlap[i], all_density_averages_nooverlap[i], \
+            s=50, marker='o', color=colors[i], label=label_list[i], \
+            edgecolors='none', zorder=5)
 
     # fitting
     init = models.PowerLaw1D(amplitude=1, x_0=1, alpha=1)
     fit = fitting.LevMarLSQFitter()
-    f = fit(init, all_slope_averages_nooverlap[:4], all_density_averages_nooverlap[:4])
+    f = fit(init, all_slope_averages_nooverlap, all_density_averages_nooverlap)
     print f
     x_plot_arr = np.linspace(3,18,1000)
     ax.plot(x_plot_arr, f(x_plot_arr), ls='-', color='skyblue', lw=2)
 
     # Find chi2 and put the value on the plot
-    chi2 = np.sum(((all_density_averages_nooverlap[:4] - f(all_slope_averages_nooverlap[:4])) / all_density_avgerrors_nooverlap[:4])**2)
+    chi2 = np.sum(((all_density_averages_nooverlap - f(all_slope_averages_nooverlap)) / all_density_avgerrors_nooverlap)**2)
     
     # text on plot
     # equation 
@@ -605,10 +698,12 @@ def call_avg_plot_smallrange():
 
     ax.legend(loc=0)
 
-    fig.savefig(slope_extdir + 'nooverlap_averages_plot_smallrange.png', dpi=300, bbox_inches='tight')
+    fig.savefig(slope_extdir + 'nooverlap_averages_plot_smallrange_finegrid.png', dpi=300, bbox_inches='tight')
     plt.clf()
     plt.cla()
     plt.close()
+
+    sys.exit(0)
 
     # ------------------------------------------- N value ------------------------------------------- #
     fig = plt.figure()
