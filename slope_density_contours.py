@@ -425,7 +425,7 @@ def call_Nvalue_plots():
 
     return None
 
-def make_nooverlap_nvalue_grid_plots(slope_list, density_list, plottype):
+def make_nooverlap_nvalue_grid_plots_fullgrid(slope_list, density_list, plottype):
 
     gs = gridspec.GridSpec(4,4)
     gs.update(left=0.1, right=0.9, bottom=0.1, top=0.9, wspace=0.02, hspace=0.02)
@@ -529,6 +529,95 @@ def make_nooverlap_nvalue_grid_plots(slope_list, density_list, plottype):
 
     return None
 
+def make_nooverlap_nvalue_grid_plots_smallgrid(slope_list, density_list, plottype):
+
+    gs = gridspec.GridSpec(2,2)
+    gs.update(left=0.1, right=0.9, bottom=0.1, top=0.9, wspace=0.02, hspace=0.02)
+
+    fig = plt.figure(figsize=(9,5.5))
+    ax_1to2   = fig.add_subplot(gs[0, 0])
+    ax_2to3   = fig.add_subplot(gs[0, 1])
+    ax_3to4   = fig.add_subplot(gs[1, 0])
+    ax_4to5   = fig.add_subplot(gs[1, 1])
+
+    all_axes = [ax_1to2, ax_2to3, ax_3to4, ax_4to5]
+    diam_bins = ['1to2', '2to3', '3to4', '4to5']
+    color_list = ['#67001f', '#377eb8', '#1b9e77', '#984ea3']
+
+    ax_3to4.set_xlabel(r'$\mathrm{Slope}$', fontsize=14)
+    ax_3to4.xaxis.set_label_coords(1.02, -0.08)
+
+    ax_3to4.set_ylabel(r'$\mathrm{log(Density)}$', fontsize=14)
+    ax_3to4.yaxis.set_label_coords(-0.08, 1.02)
+
+    for i in range(len(all_axes)):
+
+        all_axes[i].scatter(slope_list[i], np.log10(density_list[i]), s=5, c=color_list[i], alpha=0.5, edgecolors='none')
+
+        all_axes[i].set_ylim(-8, 0.5)
+        all_axes[i].set_xlim(0, 35)
+
+        x = slope_list[i]
+        y = density_list[i]
+
+        # draw contours
+        # make sure the arrays dont have NaNs
+        slope_fin_idx = np.where(np.isfinite(x))[0]
+        density_fin_idx = np.where(np.isfinite(y))[0]
+        fin_idx = np.intersect1d(slope_fin_idx, density_fin_idx)
+
+        xp = x[fin_idx]
+        yp = y[fin_idx]
+
+        counts, xbins, ybins = np.histogram2d(xp, np.log10(yp), bins=25, normed=False)
+        # smooth counts to get smoother contours
+        kernel = Gaussian2DKernel(stddev=1.4)
+        counts = convolve(counts, kernel, boundary='extend')
+
+        print "Min and max point number density values in bins", str("{:.3}".format(np.min(counts))), str("{:.3}".format(np.max(counts)))
+        diam_bin = diam_bins[i]
+        diam_bin_min = diam_bin.split('to')[0]
+        diam_bin_max = diam_bin.split('to')[1]
+        levels_to_plot, cb_lw, vmin = get_levels_to_plot(diam_bin, plottype=plottype)
+        norm = mpl.colors.Normalize(vmin=vmin, vmax=max(levels_to_plot))
+
+        c = all_axes[i].contour(counts.transpose(), levels=levels_to_plot, \
+            extent=[xbins.min(), xbins.max(), ybins.min(), ybins.max()], \
+            cmap=cm.viridis, linestyles='solid', linewidths=1, \
+            zorder=10, norm=norm)
+
+        # add minor ticks and grid
+        all_axes[i].minorticks_on()
+        all_axes[i].tick_params('both', width=1, length=3, which='minor')
+        all_axes[i].tick_params('both', width=1, length=4.7, which='major')
+
+        if i < 2:
+            all_axes[i].set_xticklabels([])
+
+        if i == 1 or i == 3:
+            all_axes[i].set_yticklabels([])
+
+        if plottype == 'Nvalue':
+            all_axes[i].text(0.73, 0.2, r"$\mathrm{N(}$" + str(diam_bin_min) + r'$\mathrm{)}$', \
+                verticalalignment='top', horizontalalignment='left', \
+                transform=all_axes[i].transAxes, color='k', size=14)
+
+        elif plottype == 'nooverlap':
+            all_axes[i].text(0.67, 0.2, str(diam_bin_min) + r'$\mathrm{\, to\, }$' + str(diam_bin_max) + r'$\mathrm{\,km}$', \
+                verticalalignment='top', horizontalalignment='left', \
+                transform=all_axes[i].transAxes, color='k', size=14)
+
+    ax_3to4.set_xticklabels(['0', '5', '10', '15', '20', '25', '30', '35'])
+    ax_4to5.set_xticklabels(['', '5', '10', '15', '20', '25', '30', '35'])
+
+    # save the figure
+    if plottype == 'Nvalue':
+        fig.savefig(slope_extdir + 'slope_v_density_withcontour_smallgrid_Nvalue.png', dpi=300, bbox_inches='tight')
+    elif plottype == 'nooverlap':
+        fig.savefig(slope_extdir + 'slope_v_density_withcontour_smallgrid_nooverlap.png', dpi=300, bbox_inches='tight')
+
+    return None
+
 if __name__ == '__main__':    
 
     # These three function calls below will make
@@ -621,7 +710,17 @@ if __name__ == '__main__':
     slope_diambin_5, slope_diambin_6, slope_diambin_7, slope_diambin_8, slope_diambin_9, \
     slope_diambin_10, slope_diambin_15, slope_diambin_20, slope_diambin_25, slope_diambin_30]
 
-    make_nooverlap_nvalue_grid_plots(slope_list_nvalue, density_list_nvalue, 'Nvalue')
-    make_nooverlap_nvalue_grid_plots(slope_list_nooverlap, density_list_nooverlap, 'nooverlap')
+    #make_nooverlap_nvalue_grid_plots(slope_list_nvalue, density_list_nvalue, 'Nvalue')
+    #make_nooverlap_nvalue_grid_plots(slope_list_nooverlap, density_list_nooverlap, 'nooverlap')
+
+    ########### ---------------------------- Small grid plots ---------------------------- ###########
+    density_list_nooverlap_smallgrid = [density_diambin_1_2, density_diambin_2_3, density_diambin_3_4, density_diambin_4_5]
+    slope_list_nooverlap_smallgrid = [slope_diambin_1_2, slope_diambin_2_3, slope_diambin_3_4, slope_diambin_4_5]
+
+    density_list_nvalue_smallgrid = [density_diambin_1, density_diambin_2, density_diambin_3, density_diambin_4]
+    slope_list_nvalue_smallgrid = [slope_diambin_1, slope_diambin_2, slope_diambin_3, slope_diambin_4]
+
+    make_nooverlap_nvalue_grid_plots_smallgrid(slope_list_nvalue_smallgrid, density_list_nvalue_smallgrid, 'Nvalue')
+    make_nooverlap_nvalue_grid_plots_smallgrid(slope_list_nooverlap_smallgrid, density_list_nooverlap_smallgrid, 'nooverlap')
 
     sys.exit(0)
