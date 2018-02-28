@@ -79,10 +79,10 @@ def hist_and_fit(fig, ax, slopearr, color, callcount):
     elif callcount == 13:
         label = '30 to 35 km'
 
-    ax.hist(slopearr, 35, range=[0,35], normed=True, color=color, histtype='step')
+    #ax.hist(slopearr, 35, range=[0,35], normed=True, color=color, histtype='step')
     ax.plot(x_plot_arr, gamma_dist(x_plot_arr, *popt), ls='-', color=color, lw=2.0, label=label)
 
-    ax.legend(loc=0, prop={'size':8})
+    ax.legend(loc=0, prop={'size':14})
 
     callcount += 1
 
@@ -146,6 +146,53 @@ def call_hist_and_fits():
 
     return None
 
+def call_hist_and_fits_smallgrid():
+
+    # read in all arrays 
+    density_diambin_1_2, density_diambin_2_3, density_diambin_3_4, density_diambin_4_5, \
+    density_diambin_5_6, density_diambin_6_7, density_diambin_7_8, density_diambin_8_9, \
+    density_diambin_9_10, density_diambin_10_15, density_diambin_15_20, density_diambin_20_25, \
+    density_diambin_25_30, density_diambin_30_35, slope_diambin_1_2, slope_diambin_2_3, \
+    slope_diambin_3_4, slope_diambin_4_5, slope_diambin_5_6, slope_diambin_6_7, slope_diambin_7_8, \
+    slope_diambin_8_9, slope_diambin_9_10, slope_diambin_10_15, slope_diambin_15_20, \
+    slope_diambin_20_25, slope_diambin_25_30, slope_diambin_30_35 = avg.read_no_overlap_arrays()
+
+    density_diambin_1, density_diambin_2, density_diambin_3, density_diambin_4, \
+    density_diambin_5, density_diambin_6, density_diambin_7, density_diambin_8, \
+    density_diambin_9, density_diambin_10, density_diambin_15, density_diambin_20, \
+    density_diambin_25, density_diambin_30, slope_diambin_1, slope_diambin_2, \
+    slope_diambin_3, slope_diambin_4, slope_diambin_5, slope_diambin_6, slope_diambin_7, \
+    slope_diambin_8, slope_diambin_9, slope_diambin_10, slope_diambin_15, slope_diambin_20, \
+    slope_diambin_25, slope_diambin_30 = avg.read_Nvalue_arrays()
+
+    # plotting
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+
+    ax.set_xlabel('Slope', fontsize=12)
+    ax.set_ylabel('Normalized bin counts', fontsize=12)
+
+    colors = ['#67001f', '#377eb8', '#1b9e77', '#984ea3']
+
+    # checked the histogram plotting
+    # it seems like fitting a function and just plotting that might be more presentable.
+    # Also check is histtype='step' might help better than the default histtype.
+    # The histogram is normalized to make sure that hte area under the curve equals 1
+    callcount = 0
+    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_1_2, colors[0], callcount)
+    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_2_3, colors[1], callcount)
+    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_3_4, colors[2], callcount)
+    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_4_5, colors[3], callcount)
+
+    # minor ticks
+    ax.minorticks_on()
+    ax.tick_params('both', width=1, length=3, which='minor')
+    ax.tick_params('both', width=1, length=4.7, which='major')
+
+    fig.savefig(slope_extdir + 'slope_histogram_fits_and_hist_smallrange.png', dpi=300, bbox_inches='tight')
+
+    return None
+
 def get_crater_diams(crater_diam_m_arr, crater_ids, crater_ids_arr, total_craters):
 
     crater_diams = np.zeros(total_craters)
@@ -166,6 +213,8 @@ if __name__ == '__main__':
     print "Starting at --", dt.now()
 
     #call_hist_and_fits()
+    call_hist_and_fits_smallgrid()
+    sys.exit(0)
 
     ### Make diameter histograms for all slopes < 5 and all slopes >= 5 ###
     # Read in arrays 

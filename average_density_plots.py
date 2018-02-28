@@ -117,7 +117,7 @@ def get_avg_finite_elements(density_arr, slope_arr):
 def exp_func(x, amp, alpha, x0):
     return amp * np.power(x,-1*alpha) * np.exp(-1*x/x0)
 
-if __name__ == '__main__':
+def call_avg_plot_fullrange():
 
     # read in all arrays 
     density_diambin_1_2, density_diambin_2_3, density_diambin_3_4, density_diambin_4_5, \
@@ -481,5 +481,208 @@ if __name__ == '__main__':
     plt.clf()
     plt.cla()
     plt.close()  
+
+    return None
+
+def call_avg_plot_smallrange():
+
+    # read in all arrays 
+    density_diambin_1_2, density_diambin_2_3, density_diambin_3_4, density_diambin_4_5, \
+    density_diambin_5_6, density_diambin_6_7, density_diambin_7_8, density_diambin_8_9, \
+    density_diambin_9_10, density_diambin_10_15, density_diambin_15_20, density_diambin_20_25, \
+    density_diambin_25_30, density_diambin_30_35, slope_diambin_1_2, slope_diambin_2_3, \
+    slope_diambin_3_4, slope_diambin_4_5, slope_diambin_5_6, slope_diambin_6_7, slope_diambin_7_8, \
+    slope_diambin_8_9, slope_diambin_9_10, slope_diambin_10_15, slope_diambin_15_20, \
+    slope_diambin_20_25, slope_diambin_25_30, slope_diambin_30_35 = read_no_overlap_arrays()
+
+    density_diambin_1, density_diambin_2, density_diambin_3, density_diambin_4, \
+    density_diambin_5, density_diambin_6, density_diambin_7, density_diambin_8, \
+    density_diambin_9, density_diambin_10, density_diambin_15, density_diambin_20, \
+    density_diambin_25, density_diambin_30, slope_diambin_1, slope_diambin_2, \
+    slope_diambin_3, slope_diambin_4, slope_diambin_5, slope_diambin_6, slope_diambin_7, \
+    slope_diambin_8, slope_diambin_9, slope_diambin_10, slope_diambin_15, slope_diambin_20, \
+    slope_diambin_25, slope_diambin_30 = read_Nvalue_arrays()
+
+    # get averages for these arrays
+    density_diambin_1_2_avg, slope_diambin_1_2_avg, density_diambin_1_2_avgerror, slope_diambin_1_2_avgerror \
+    = get_avg_finite_elements(density_diambin_1_2, slope_diambin_1_2)
+    density_diambin_2_3_avg, slope_diambin_2_3_avg, density_diambin_2_3_avgerror, slope_diambin_2_3_avgerror \
+    = get_avg_finite_elements(density_diambin_2_3, slope_diambin_2_3)
+    density_diambin_3_4_avg, slope_diambin_3_4_avg, density_diambin_3_4_avgerror, slope_diambin_3_4_avgerror \
+    = get_avg_finite_elements(density_diambin_3_4, slope_diambin_3_4)
+    density_diambin_4_5_avg, slope_diambin_4_5_avg, density_diambin_4_5_avgerror, slope_diambin_4_5_avgerror \
+    = get_avg_finite_elements(density_diambin_4_5, slope_diambin_4_5)
+
+    density_diambin_1_avg, slope_diambin_1_avg, density_diambin_1_avgerror, slope_diambin_1_avgerror \
+    = get_avg_finite_elements(density_diambin_1, slope_diambin_1)
+    density_diambin_2_avg, slope_diambin_2_avg, density_diambin_2_avgerror, slope_diambin_2_avgerror \
+    = get_avg_finite_elements(density_diambin_2, slope_diambin_2)
+    density_diambin_3_avg, slope_diambin_3_avg, density_diambin_3_avgerror, slope_diambin_3_avgerror \
+    = get_avg_finite_elements(density_diambin_3, slope_diambin_3)
+    density_diambin_4_avg, slope_diambin_4_avg, density_diambin_4_avgerror, slope_diambin_4_avgerror \
+    = get_avg_finite_elements(density_diambin_4, slope_diambin_4)
+
+    all_density_averages_nooverlap = np.array([density_diambin_1_2_avg, density_diambin_2_3_avg, density_diambin_3_4_avg, \
+    density_diambin_4_5_avg])
+
+    all_slope_averages_nooverlap = np.array([slope_diambin_1_2_avg, slope_diambin_2_3_avg, slope_diambin_3_4_avg, \
+    slope_diambin_4_5_avg])
+
+    all_density_averages_nvalue = np.array([density_diambin_1_avg, density_diambin_2_avg, density_diambin_3_avg, \
+    density_diambin_4_avg])
+
+    all_slope_averages_nvalue = np.array([slope_diambin_1_avg, slope_diambin_2_avg, slope_diambin_3_avg, \
+    slope_diambin_4_avg])
+
+    all_density_avgerrors_nooverlap = np.array([density_diambin_1_2_avgerror, density_diambin_2_3_avgerror, density_diambin_3_4_avgerror, \
+        density_diambin_4_5_avgerror])
+
+    all_density_avgerrors_nvalue = np.array([density_diambin_1_avgerror, density_diambin_2_avgerror, density_diambin_3_avgerror, \
+        density_diambin_4_avgerror])
+
+    # plot
+    # ------------------------------------------- No overlap ------------------------------------------- #
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+
+    ax.set_xlabel(r'$\mathrm{Slope}$')
+    ax.set_ylabel(r'$\mathrm{log(Density)}$')
+
+    # add minor ticks and grid
+    ax.minorticks_on()
+    ax.tick_params('both', width=1, length=3, which='minor')
+    ax.tick_params('both', width=1, length=4.7, which='major')
+    ax.grid(True, alpha=0.5)
+
+    colors = ['#67001f', '#377eb8', '#1b9e77', '#984ea3']
+
+    ax.scatter(all_slope_averages_nooverlap[0], all_density_averages_nooverlap[0], \
+        s=50, marker='o', color=colors[0], label='1-2' + ' km', \
+        edgecolors='none', zorder=5)
+    ax.scatter(all_slope_averages_nooverlap[1], all_density_averages_nooverlap[1], \
+        s=50, marker='o', color=colors[1], label='2-3' + ' km', \
+        edgecolors='none', zorder=5)
+    ax.scatter(all_slope_averages_nooverlap[2], all_density_averages_nooverlap[2], \
+        s=50, marker='o', color=colors[2], label='3-4' + ' km', \
+        edgecolors='none', zorder=5)
+    ax.scatter(all_slope_averages_nooverlap[3], all_density_averages_nooverlap[3], \
+        s=50, marker='o', color=colors[3], label='4-5' + ' km', \
+        edgecolors='none', zorder=5)
+
+    # fitting
+    init = models.PowerLaw1D(amplitude=1, x_0=1, alpha=1)
+    fit = fitting.LevMarLSQFitter()
+    f = fit(init, all_slope_averages_nooverlap[:4], all_density_averages_nooverlap[:4])
+    print f
+    x_plot_arr = np.linspace(3,18,1000)
+    ax.plot(x_plot_arr, f(x_plot_arr), ls='-', color='skyblue', lw=2)
+
+    # Find chi2 and put the value on the plot
+    chi2 = np.sum(((all_density_averages_nooverlap[:4] - f(all_slope_averages_nooverlap[:4])) / all_density_avgerrors_nooverlap[:4])**2)
+    
+    # text on plot
+    # equation 
+    ax.text(0.4, 0.86, r'$\mathrm{f(x) = A\left(\frac{x}{x_0}\right)^{-\alpha}}$', \
+        verticalalignment='top', horizontalalignment='left', \
+        transform=ax.transAxes, color='k', size=10)
+    # best fit parameters
+    ax.text(0.315, 0.78, r'$\mathrm{Amplitude =\ }$' + str("{:.3}".format(f.parameters[0])), \
+        verticalalignment='top', horizontalalignment='left', \
+        transform=ax.transAxes, color='k', size=10)
+    ax.text(0.417, 0.72, r'$\mathrm{x_0 =\ }$' +  str("{:.3}".format(f.parameters[1])), \
+        verticalalignment='top', horizontalalignment='left', \
+        transform=ax.transAxes, color='k', size=10)
+    ax.text(0.428, 0.66, r'$\mathrm{\alpha =\ }$' +  str("{:.3}".format(f.parameters[2])), \
+        verticalalignment='top', horizontalalignment='left', \
+        transform=ax.transAxes, color='k', size=10)
+
+    # chi2
+    ax.text(0.416, 0.6, r'$\mathrm{\chi^2 =\ }$' + str("{:.3}".format(chi2)), verticalalignment='top', horizontalalignment='left', \
+        transform=ax.transAxes, color='k', size=10)
+
+    ax.set_xlim(3,18)
+    ax.set_ylim(-0.01,0.2)
+
+    ax.legend(loc=0)
+
+    fig.savefig(slope_extdir + 'nooverlap_averages_plot_smallrange.png', dpi=300, bbox_inches='tight')
+    plt.clf()
+    plt.cla()
+    plt.close()
+
+    # ------------------------------------------- N value ------------------------------------------- #
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+
+    ax.set_xlabel(r'$\mathrm{Slope}$')
+    ax.set_ylabel(r'$\mathrm{log(Density)}$')
+
+    # add minor ticks and grid
+    ax.minorticks_on()
+    ax.tick_params('both', width=1, length=3, which='minor')
+    ax.tick_params('both', width=1, length=4.7, which='major')
+    ax.grid(True, alpha=0.5)
+
+    ax.scatter(all_slope_averages_nvalue[0], all_density_averages_nvalue[0], \
+        s=50, marker='o', color=colors[0], label='N(1)', \
+        edgecolors='none', zorder=5)
+    ax.scatter(all_slope_averages_nvalue[1], all_density_averages_nvalue[1], \
+        s=50, marker='o', color=colors[1], label='N(2)', \
+        edgecolors='none', zorder=5)
+    ax.scatter(all_slope_averages_nvalue[2], all_density_averages_nvalue[2], \
+        s=50, marker='o', color=colors[2], label='N(3)', \
+        edgecolors='none', zorder=5)
+    ax.scatter(all_slope_averages_nvalue[3], all_density_averages_nvalue[3], \
+        s=50, marker='o', color=colors[3], label='N(4)', \
+        edgecolors='none', zorder=5)
+
+    # fitting
+    init = models.PowerLaw1D(amplitude=1, x_0=1, alpha=1)
+    fit = fitting.LevMarLSQFitter()
+    f = fit(init, all_slope_averages_nvalue[:4], all_density_averages_nvalue[:4])
+    print f
+    x_plot_arr = np.linspace(3,18,1000)
+    ax.plot(x_plot_arr, f(x_plot_arr), ls='-', color='skyblue', lw=2)
+
+    # Find chi2 and put the value on the plot
+    chi2 = np.sum(((all_density_averages_nvalue[:4] - f(all_slope_averages_nvalue[:4])) / all_density_avgerrors_nvalue[:4])**2)
+    
+    # text on plot
+    # equation 
+    ax.text(0.4, 0.86, r'$\mathrm{f(x) = A\left(\frac{x}{x_0}\right)^{-\alpha}}$', \
+        verticalalignment='top', horizontalalignment='left', \
+        transform=ax.transAxes, color='k', size=10)
+    # best fit parameters
+    ax.text(0.315, 0.78, r'$\mathrm{Amplitude =\ }$' + str("{:.3}".format(f.parameters[0])), \
+        verticalalignment='top', horizontalalignment='left', \
+        transform=ax.transAxes, color='k', size=10)
+    ax.text(0.417, 0.72, r'$\mathrm{x_0 =\ }$' +  str("{:.3}".format(f.parameters[1])), \
+        verticalalignment='top', horizontalalignment='left', \
+        transform=ax.transAxes, color='k', size=10)
+    ax.text(0.428, 0.66, r'$\mathrm{\alpha =\ }$' +  str("{:.3}".format(f.parameters[2])), \
+        verticalalignment='top', horizontalalignment='left', \
+        transform=ax.transAxes, color='k', size=10)
+
+    # chi2
+    ax.text(0.416, 0.6, r'$\mathrm{\chi^2 =\ }$' + str("{:.3}".format(chi2)), verticalalignment='top', horizontalalignment='left', \
+        transform=ax.transAxes, color='k', size=10)
+
+    # Show residuals
+
+    ax.set_xlim(9,14)
+    ax.set_ylim(-0.01,0.1)
+
+    ax.legend(loc=0)
+
+    fig.savefig(slope_extdir + 'nvalue_averages_plot_smallrange.png', dpi=300, bbox_inches='tight')
+    plt.clf()
+    plt.cla()
+    plt.close()  
+
+    return None
+
+if __name__ == '__main__':
+
+    call_avg_plot_smallrange()
 
     sys.exit(0)
