@@ -186,40 +186,50 @@ def call_hist_and_fits_smallgrid():
     ax.set_xlabel('Slope', fontsize=12)
     ax.set_ylabel('Normalized bin counts', fontsize=12)
 
-    colors = ['#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00',\
-    '#cab2d6','#6a3d9a','#ffff99','#b15928','#878787','#c51b7d','#35978f','#b2182b']
+    fg = False  # Finer grid 
+    if fg is True:
+        colors = ['#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00',\
+        '#cab2d6','#6a3d9a','#ffff99','#b15928','#878787','#c51b7d','#35978f','#b2182b']
 
-    # checked the histogram plotting
-    # it seems like fitting a function and just plotting that might be more presentable.
-    # Also check is histtype='step' might help better than the default histtype.
-    # The histogram is normalized to make sure that hte area under the curve equals 1
-    callcount = 0
-    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_1_1p25, colors[0], callcount, 'finegrid')
-    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_1p25_1p5, colors[1], callcount, 'finegrid')
-    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_1p5_1p75, colors[2], callcount, 'finegrid')
-    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_1p75_2, colors[3], callcount, 'finegrid')
+        # checked the histogram plotting
+        # it seems like fitting a function and just plotting that might be more presentable.
+        # Also check is histtype='step' might help better than the default histtype.
+        # The histogram is normalized to make sure that hte area under the curve equals 1
+        callcount = 0
+        fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_1_1p25, colors[0], callcount, 'finegrid')
+        fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_1p25_1p5, colors[1], callcount, 'finegrid')
+        fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_1p5_1p75, colors[2], callcount, 'finegrid')
+        fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_1p75_2, colors[3], callcount, 'finegrid')
 
-    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_2_2p25, colors[4], callcount, 'finegrid')
-    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_2p25_2p5, colors[5], callcount, 'finegrid')
-    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_2p5_2p75, colors[6], callcount, 'finegrid')
-    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_2p75_3, colors[7], callcount, 'finegrid')
+        fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_2_2p25, colors[4], callcount, 'finegrid')
+        fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_2p25_2p5, colors[5], callcount, 'finegrid')
+        fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_2p5_2p75, colors[6], callcount, 'finegrid')
+        fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_2p75_3, colors[7], callcount, 'finegrid')
 
-    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_3_3p25, colors[8], callcount, 'finegrid')
-    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_3p25_3p5, colors[9], callcount, 'finegrid')
-    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_3p5_3p75, colors[10], callcount, 'finegrid')
-    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_3p75_4, colors[11], callcount, 'finegrid')
+        fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_3_3p25, colors[8], callcount, 'finegrid')
+        fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_3p25_3p5, colors[9], callcount, 'finegrid')
+        fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_3p5_3p75, colors[10], callcount, 'finegrid')
+        fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_3p75_4, colors[11], callcount, 'finegrid')
 
-    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_4_4p25, colors[12], callcount, 'finegrid')
-    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_4p25_4p5, colors[13], callcount, 'finegrid')
-    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_4p5_4p75, colors[14], callcount, 'finegrid')
-    fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_4p75_5, colors[15], callcount, 'finegrid')
+        fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_4_4p25, colors[12], callcount, 'finegrid')
+        fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_4p25_4p5, colors[13], callcount, 'finegrid')
+        fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_4p5_4p75, colors[14], callcount, 'finegrid')
+        fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_4p75_5, colors[15], callcount, 'finegrid')
+
+    else:
+        colors = ['#67001f', '#377eb8', '#1b9e77', '#984ea3']
+        callcount = 0
+        fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_1_2, colors[0], callcount, None)
+        fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_2_3, colors[1], callcount, None)
+        fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_3_4, colors[2], callcount, None)
+        fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_4_5, colors[3], callcount, None)
 
     # minor ticks
     ax.minorticks_on()
     ax.tick_params('both', width=1, length=3, which='minor')
     ax.tick_params('both', width=1, length=4.7, which='major')
 
-    fig.savefig(slope_extdir + 'slope_histogram_fits_smallrange_finegrid.png', dpi=300, bbox_inches='tight')
+    fig.savefig(slope_extdir + 'slope_histogram_fits_smallrange.png', dpi=300, bbox_inches='tight')
 
     return None
 
@@ -227,13 +237,19 @@ def get_crater_diams(crater_diam_m_arr, crater_ids, crater_ids_arr, total_crater
 
     crater_diams = np.zeros(total_craters)
 
+    small_crater_count = 0
+
     for i in range(total_craters):
         current_id = crater_ids[i]
         current_id_idx = np.where(crater_ids_arr == current_id)[0][0]
 
-        crater_diams[i] = crater_diam_m_arr[current_id_idx]
+        current_diam = crater_diam_m_arr[current_id_idx]
+        crater_diams[i] = current_diam
 
-    return crater_diams
+        if (current_diam/1e3 > 1.0) and (current_diam/1e3 <= 5.0):
+            small_crater_count += 1
+
+    return crater_diams, small_crater_count
 
 if __name__ == '__main__':
 
@@ -259,7 +275,10 @@ if __name__ == '__main__':
 
     # create and initialize crater diams corresponding to unique craters
     #crater_diams = cython_util_funcs.get_crater_diams(crater_diam_m_arr, crater_ids, crater_ids_arr, total_craters)
-    crater_diams = get_crater_diams(crater_diam_m_arr, crater_ids, crater_ids_arr, total_craters)
+    crater_diams, small_crater_count = get_crater_diams(crater_diam_m_arr, crater_ids, crater_ids_arr, total_craters)
+
+    print "There are", small_crater_count, "craters with 1.0 < D [km] <= 5.0"
+    sys.exit(0)
 
     # Read in slopes
     slopemap_path = slope_extdir + 'hf_full_slopemap_clipped.txt'
