@@ -10,8 +10,8 @@ defaults['binding'] = True
 
 extensions = [
 Extension("cython_util_funcs", ["cython_util_funcs.pyx"],
-	define_macros=[('CYTHON_TRACE', '1')]
-	)
+    define_macros=[('CYTHON_TRACE', '1')]
+    )
 ]
 
 setup(
