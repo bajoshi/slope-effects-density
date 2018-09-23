@@ -1076,7 +1076,7 @@ if __name__ == '__main__':
     # Define crater diamter bins
     # the numbers at the end here indicate 
     # the start and end of the diamter bin
-    # the endpoint is NOT included. E.g. 1-2 includes 1<= D < 2
+    # the endpoint is NOT included. E.g. 1-2 includes 1 <= D < 2
     # I've set the dtype to float32 to save space
     crater_frac_diambin_1_1p25   = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
     crater_frac_diambin_1p25_1p5   = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
@@ -1295,39 +1295,29 @@ if __name__ == '__main__':
     # craters and the invalid_idx definition would be commented out otherwise
     #pix_crater_area[invalid_idx] = -9999.0
 
-    # save individual crater contributions as numpy arrays
-    np.save(slope_extdir + 'crater_frac_diambin_1_1p25.npy', crater_frac_diambin_1_1p25)
-    np.save(slope_extdir + 'crater_frac_diambin_1p25_1p5.npy', crater_frac_diambin_1p25_1p5)
-    np.save(slope_extdir + 'crater_frac_diambin_1p5_1p75.npy', crater_frac_diambin_1p5_1p75)
-    np.save(slope_extdir + 'crater_frac_diambin_1p75_2.npy', crater_frac_diambin_1p75_2)
+    print "Crater fraction computation done. Saving now."
 
-    np.save(slope_extdir + 'crater_frac_diambin_2_2p25.npy', crater_frac_diambin_2_2p25)
-    np.save(slope_extdir + 'crater_frac_diambin_2p25_2p5.npy', crater_frac_diambin_2p25_2p5)
-    np.save(slope_extdir + 'crater_frac_diambin_2p5_2p75.npy', crater_frac_diambin_2p5_2p75)
-    np.save(slope_extdir + 'crater_frac_diambin_2p75_3.npy', crater_frac_diambin_2p75_3)
+    # ----- save individual crater contributions as numpy arrays ----- #
+    all_crater_fractions = [crater_frac_diambin_1_1p25, crater_frac_diambin_1p25_1p5, crater_frac_diambin_1p5_1p75, \
+    crater_frac_diambin_1p75_2, \
+    crater_frac_diambin_2_2p25, crater_frac_diambin_2p25_2p5, crater_frac_diambin_2p5_2p75, crater_frac_diambin_2p75_3, \
+    crater_frac_diambin_3_3p25, crater_frac_diambin_3p25_3p5, crater_frac_diambin_3p5_3p75, crater_frac_diambin_3p75_4, \
+    crater_frac_diambin_4_4p25, crater_frac_diambin_4p25_4p5, crater_frac_diambin_4p5_4p75, crater_frac_diambin_4p75_5, \
+    crater_frac_diambin_5_6, crater_frac_diambin_6_7, crater_frac_diambin_7_8, crater_frac_diambin_8_9, \
+    crater_frac_diambin_9_10, crater_frac_diambin_10_15, crater_frac_diambin_15_20, crater_frac_diambin_20_25, \
+    crater_frac_diambin_25_30, crater_frac_diambin_30_35]
 
-    np.save(slope_extdir + 'crater_frac_diambin_3_3p25.npy', crater_frac_diambin_3_3p25)
-    np.save(slope_extdir + 'crater_frac_diambin_3p25_3p5.npy', crater_frac_diambin_3p25_3p5)
-    np.save(slope_extdir + 'crater_frac_diambin_3p5_3p75.npy', crater_frac_diambin_3p5_3p75)
-    np.save(slope_extdir + 'crater_frac_diambin_3p75_4.npy', crater_frac_diambin_3p75_4)
+    all_crater_fractions_names = ['crater_frac_diambin_1_1p25', 'crater_frac_diambin_1p25_1p5', 'crater_frac_diambin_1p5_1p75', \
+    'crater_frac_diambin_1p75_2', \
+    'crater_frac_diambin_2_2p25', 'crater_frac_diambin_2p25_2p5', 'crater_frac_diambin_2p5_2p75', 'crater_frac_diambin_2p75_3', \
+    'crater_frac_diambin_3_3p25', 'crater_frac_diambin_3p25_3p5', 'crater_frac_diambin_3p5_3p75', 'crater_frac_diambin_3p75_4', \
+    'crater_frac_diambin_4_4p25', 'crater_frac_diambin_4p25_4p5', 'crater_frac_diambin_4p5_4p75', 'crater_frac_diambin_4p75_5', \
+    'crater_frac_diambin_5_6', 'crater_frac_diambin_6_7', 'crater_frac_diambin_7_8', 'crater_frac_diambin_8_9', \
+    'crater_frac_diambin_9_10', 'crater_frac_diambin_10_15', 'crater_frac_diambin_15_20', 'crater_frac_diambin_20_25', \
+    'crater_frac_diambin_25_30', 'crater_frac_diambin_30_35']
 
-    np.save(slope_extdir + 'crater_frac_diambin_4_4p25.npy', crater_frac_diambin_4_4p25)
-    np.save(slope_extdir + 'crater_frac_diambin_4p25_4p5.npy', crater_frac_diambin_4p25_4p5)
-    np.save(slope_extdir + 'crater_frac_diambin_4p5_4p75.npy', crater_frac_diambin_4p5_4p75)
-    np.save(slope_extdir + 'crater_frac_diambin_4p75_5.npy', crater_frac_diambin_4p75_5)
-
-    # ---
-
-    np.save(slope_extdir + 'crater_frac_diambin_5_6.npy', crater_frac_diambin_5_6)
-    np.save(slope_extdir + 'crater_frac_diambin_6_7.npy', crater_frac_diambin_6_7)
-    np.save(slope_extdir + 'crater_frac_diambin_7_8.npy', crater_frac_diambin_7_8)
-    np.save(slope_extdir + 'crater_frac_diambin_8_9.npy', crater_frac_diambin_8_9)
-    np.save(slope_extdir + 'crater_frac_diambin_9_10.npy', crater_frac_diambin_9_10)
-    np.save(slope_extdir + 'crater_frac_diambin_10_15.npy', crater_frac_diambin_10_15)
-    np.save(slope_extdir + 'crater_frac_diambin_15_20.npy', crater_frac_diambin_15_20)
-    np.save(slope_extdir + 'crater_frac_diambin_20_25.npy', crater_frac_diambin_20_25)
-    np.save(slope_extdir + 'crater_frac_diambin_25_30.npy', crater_frac_diambin_25_30)
-    np.save(slope_extdir + 'crater_frac_diambin_30_35.npy', crater_frac_diambin_30_35)
+    for v in range(len(all_crater_fractions)):
+        np.save(slope_extdir + all_crater_fractions_names[v] + '.npy', all_crater_fractions[v])
 
     # save as numpy binary array and csv
     np.save(slope_extdir + 'crater_area_frac_in_pix_fastcomp.npy', pix_crater_area)
@@ -1338,6 +1328,36 @@ if __name__ == '__main__':
 
     # save as ascii raster
     #su.numpy_to_asciiraster(slope_extdir + 'crater_area_frac_in_pix_fastcomp.npy', (rows, columns), pix_x_cen_arr, pix_y_cen_arr)
+
+    # -------------------------------------- New Boolean method -------------------------------------- #
+    """
+    The new boolean method simply weights the larger craters the same as the smaller craters.
+    We realized that computing fractional areas of craters within pixels would (incorrectly)
+    up-weight the smaller craters since their fractions would be much closer to 1 relative to 
+    the larger craters simply because of their size. This would mean even if the larger craters
+    covered the entire area of a pixel the fractional crater area would never be as large as 
+    that for a relatively smaller crater. Therefore, we would automatically never get large 
+    density values for large craters.
+
+    To offset this effect we have decided to use the "New Boolean Method" which effectively
+    weights the larger craters the same as the smaller craters. With this method we assign
+    a crater_fractional_area value of 1 to every pixel that has 50% or larger of its area
+    covered by craters. 
+    """
+    use_boolean_new = True
+
+    if use_boolean_new == True:
+        print "Computing and saving crater fraction for new boolean method now."
+
+        for w in range(len(all_crater_fractions)):
+
+            current_crater_frac_list = all_crater_fractions[w]
+
+            bool_crater_frac_idx = np.where(current_crater_frac_list >= 0.5)
+            current_crater_frac_list[bool_crater_frac_idx] = 1.0
+
+            # Save results from new boolean method
+            np.save(slope_extdir + all_crater_fractions_names[w] + '_newbool.npy', current_crater_frac_list)
 
     print "\n","Crater fractional area in each pixel computation done and saved."
 

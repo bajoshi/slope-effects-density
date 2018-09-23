@@ -183,7 +183,7 @@ def call_hist_and_fits_smallgrid():
     fig = plt.figure()
     ax = fig.add_subplot(111)
 
-    ax.set_xlabel('Slope', fontsize=12)
+    ax.set_xlabel('Slope [Degrees]', fontsize=12)
     ax.set_ylabel('Normalized bin counts', fontsize=12)
 
     fg = False  # Finer grid 

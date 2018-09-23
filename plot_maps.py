@@ -557,38 +557,38 @@ def convert_npy_array_tofits(npy_array, final_shape, savedir, final_name):
 def read_indiv_diambin_crater_frac():
 
     # read in all invidual diambin crater contributions
-    crater_frac_diambin_1_1p25 = np.load(slope_extdir + 'crater_frac_diambin_1_1p25.npy')
-    crater_frac_diambin_1p25_1p5 = np.load(slope_extdir + 'crater_frac_diambin_1p25_1p5.npy')
-    crater_frac_diambin_1p5_1p75 = np.load(slope_extdir + 'crater_frac_diambin_1p5_1p75.npy')
-    crater_frac_diambin_1p75_2 = np.load(slope_extdir + 'crater_frac_diambin_1p75_2.npy')
+    crater_frac_diambin_1_1p25 = np.load(slope_extdir + 'crater_frac_diambin_1_1p25_newbool.npy')
+    crater_frac_diambin_1p25_1p5 = np.load(slope_extdir + 'crater_frac_diambin_1p25_1p5_newbool.npy')
+    crater_frac_diambin_1p5_1p75 = np.load(slope_extdir + 'crater_frac_diambin_1p5_1p75_newbool.npy')
+    crater_frac_diambin_1p75_2 = np.load(slope_extdir + 'crater_frac_diambin_1p75_2_newbool.npy')
 
-    crater_frac_diambin_2_2p25 = np.load(slope_extdir + 'crater_frac_diambin_2_2p25.npy')
-    crater_frac_diambin_2p25_2p5 = np.load(slope_extdir + 'crater_frac_diambin_2p25_2p5.npy')
-    crater_frac_diambin_2p5_2p75 = np.load(slope_extdir + 'crater_frac_diambin_2p5_2p75.npy')
-    crater_frac_diambin_2p75_3 = np.load(slope_extdir + 'crater_frac_diambin_2p75_3.npy')
+    crater_frac_diambin_2_2p25 = np.load(slope_extdir + 'crater_frac_diambin_2_2p25_newbool.npy')
+    crater_frac_diambin_2p25_2p5 = np.load(slope_extdir + 'crater_frac_diambin_2p25_2p5_newbool.npy')
+    crater_frac_diambin_2p5_2p75 = np.load(slope_extdir + 'crater_frac_diambin_2p5_2p75_newbool.npy')
+    crater_frac_diambin_2p75_3 = np.load(slope_extdir + 'crater_frac_diambin_2p75_3_newbool.npy')
 
-    crater_frac_diambin_3_3p25 = np.load(slope_extdir + 'crater_frac_diambin_3_3p25.npy')
-    crater_frac_diambin_3p25_3p5 = np.load(slope_extdir + 'crater_frac_diambin_3p25_3p5.npy')
-    crater_frac_diambin_3p5_3p75 = np.load(slope_extdir + 'crater_frac_diambin_3p5_3p75.npy')
-    crater_frac_diambin_3p75_4 = np.load(slope_extdir + 'crater_frac_diambin_3p75_4.npy')
+    crater_frac_diambin_3_3p25 = np.load(slope_extdir + 'crater_frac_diambin_3_3p25_newbool.npy')
+    crater_frac_diambin_3p25_3p5 = np.load(slope_extdir + 'crater_frac_diambin_3p25_3p5_newbool.npy')
+    crater_frac_diambin_3p5_3p75 = np.load(slope_extdir + 'crater_frac_diambin_3p5_3p75_newbool.npy')
+    crater_frac_diambin_3p75_4 = np.load(slope_extdir + 'crater_frac_diambin_3p75_4_newbool.npy')
 
-    crater_frac_diambin_4_4p25 = np.load(slope_extdir + 'crater_frac_diambin_4_4p25.npy')
-    crater_frac_diambin_4p25_4p5 = np.load(slope_extdir + 'crater_frac_diambin_4p25_4p5.npy')
-    crater_frac_diambin_4p5_4p75 = np.load(slope_extdir + 'crater_frac_diambin_4p5_4p75.npy')
-    crater_frac_diambin_4p75_5 = np.load(slope_extdir + 'crater_frac_diambin_4p75_5.npy')
+    crater_frac_diambin_4_4p25 = np.load(slope_extdir + 'crater_frac_diambin_4_4p25_newbool.npy')
+    crater_frac_diambin_4p25_4p5 = np.load(slope_extdir + 'crater_frac_diambin_4p25_4p5_newbool.npy')
+    crater_frac_diambin_4p5_4p75 = np.load(slope_extdir + 'crater_frac_diambin_4p5_4p75_newbool.npy')
+    crater_frac_diambin_4p75_5 = np.load(slope_extdir + 'crater_frac_diambin_4p75_5_newbool.npy')
 
     # ---
 
-    crater_frac_diambin_5_6   = np.load(slope_extdir + 'crater_frac_diambin_5_6.npy')
-    crater_frac_diambin_6_7   = np.load(slope_extdir + 'crater_frac_diambin_6_7.npy')
-    crater_frac_diambin_7_8   = np.load(slope_extdir + 'crater_frac_diambin_7_8.npy')
-    crater_frac_diambin_8_9   = np.load(slope_extdir + 'crater_frac_diambin_8_9.npy')
-    crater_frac_diambin_9_10  = np.load(slope_extdir + 'crater_frac_diambin_9_10.npy')
-    crater_frac_diambin_10_15 = np.load(slope_extdir + 'crater_frac_diambin_10_15.npy')
-    crater_frac_diambin_15_20 = np.load(slope_extdir + 'crater_frac_diambin_15_20.npy')
-    crater_frac_diambin_20_25 = np.load(slope_extdir + 'crater_frac_diambin_20_25.npy')
-    crater_frac_diambin_25_30 = np.load(slope_extdir + 'crater_frac_diambin_25_30.npy')
-    crater_frac_diambin_30_35 = np.load(slope_extdir + 'crater_frac_diambin_30_35.npy')
+    crater_frac_diambin_5_6   = np.load(slope_extdir + 'crater_frac_diambin_5_6_newbool.npy')
+    crater_frac_diambin_6_7   = np.load(slope_extdir + 'crater_frac_diambin_6_7_newbool.npy')
+    crater_frac_diambin_7_8   = np.load(slope_extdir + 'crater_frac_diambin_7_8_newbool.npy')
+    crater_frac_diambin_8_9   = np.load(slope_extdir + 'crater_frac_diambin_8_9_newbool.npy')
+    crater_frac_diambin_9_10  = np.load(slope_extdir + 'crater_frac_diambin_9_10_newbool.npy')
+    crater_frac_diambin_10_15 = np.load(slope_extdir + 'crater_frac_diambin_10_15_newbool.npy')
+    crater_frac_diambin_15_20 = np.load(slope_extdir + 'crater_frac_diambin_15_20_newbool.npy')
+    crater_frac_diambin_20_25 = np.load(slope_extdir + 'crater_frac_diambin_20_25_newbool.npy')
+    crater_frac_diambin_25_30 = np.load(slope_extdir + 'crater_frac_diambin_25_30_newbool.npy')
+    crater_frac_diambin_30_35 = np.load(slope_extdir + 'crater_frac_diambin_30_35_newbool.npy')
 
     return crater_frac_diambin_1_1p25, crater_frac_diambin_1p25_1p5, crater_frac_diambin_1p5_1p75, crater_frac_diambin_1p75_2, \
     crater_frac_diambin_2_2p25, crater_frac_diambin_2p25_2p5, crater_frac_diambin_2p5_2p75, crater_frac_diambin_2p75_3, \
@@ -1308,7 +1308,7 @@ def append_to_density_slope_diambin_lists(current_diam, pix_idx, pix_frac, slope
 
     return None
 
-def plot_by_diam(density, slope_arr, pix_frac, start):
+def plot_by_diam(slope_arr, pix_frac, start):
 
     crater_ids_arr, crater_diam_m_arr, crater_id_in_pix_arr = get_ids()
 
@@ -1652,7 +1652,7 @@ if __name__ == '__main__':
     nodata_idx = np.where(slope_arr == -9999.0)
     slope_arr[nodata_idx] = np.nan
 
-    plot_by_diam(density, slope_arr, pix_frac, start)
+    plot_by_diam(slope_arr, pix_frac, start)
     #plot_3d_hist(density, slope_arr)
 
     # total run time

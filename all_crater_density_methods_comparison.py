@@ -20,7 +20,7 @@ if __name__ == '__main__':
     
     # read in all density and slope rasters
     # and put them in numpy arrays.
-    #### -------- Point Density -------- ####
+    #### --------------------------------- Point Density --------------------------------- ####
     point_density_path = slope_extdir + 'pointdensityraster.txt'
     slope_pointdensity_path = slope_extdir + 'slopes4pointdensity.txt'
 
@@ -42,7 +42,7 @@ if __name__ == '__main__':
     point_density[invalid_idx] = np.nan
     slope_pointdensity[invalid_idx] = np.nan
 
-    #### -------- Boolean Density -------- ####
+    #### --------------------------------- Boolean Density --------------------------------- ####
     boolean_density_path = slope_extdir + 'booleandensityraster.txt'
     slope_booleandensity_path = slope_extdir + 'slopes4boolean.txt'
 
@@ -64,7 +64,7 @@ if __name__ == '__main__':
     boolean_density[invalid_idx] = np.nan
     slope_booleandensity[invalid_idx] = np.nan
 
-    #### -------- Fuzzy Density -------- ####
+    #### --------------------------------- Fuzzy Density --------------------------------- ####
     fuzzy_crater_frac = np.load(slope_extdir + 'crater_area_frac_in_pix_clipped.npy')
     fuzzy_pix_frac = np.load(slope_extdir + 'pix_area_fraction_clipped.npy')
     slope_fuzzydensity = np.load(slope_extdir + 'hf_full_slopemap_clipped.npy')
@@ -96,8 +96,8 @@ if __name__ == '__main__':
     ax2.scatter(slope_booleandensity, boolean_density, marker='o', s=5, color='k', edgecolors='None', alpha=0.75)
     ax3.scatter(slope_fuzzydensity, fuzzy_density, marker='o', s=1, color='k', edgecolors='None', alpha=0.75)
 
-    ax1.set_ylabel('Density', fontsize=15)
-    ax2.set_xlabel('Slope', fontsize=15)
+    ax1.set_ylabel(r'$\mathrm{Density\ [Craters\, km^{-2}]}$', fontsize=15)
+    ax2.set_xlabel(r'$\mathrm{Slope\ [Degrees]}$', fontsize=15)
 
     # add minor ticks and grid
     ax1.minorticks_on()
