@@ -1110,36 +1110,36 @@ if __name__ == '__main__':
     crater_frac_diambin_30_35 = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
 
     # ----------------------- Empty arrays for new boolean method ----------------------- #
-    crater_frac_diambin_1_1p25_newbool   = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
-    crater_frac_diambin_1p25_1p5_newbool = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
-    crater_frac_diambin_1p5_1p75_newbool = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
-    crater_frac_diambin_1p75_2_newbool   = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
+    crater_frac_diambin_1_1p25_newbool   = np.zeros(len(pix_x_cen_arr), dtype=np.int)
+    crater_frac_diambin_1p25_1p5_newbool = np.zeros(len(pix_x_cen_arr), dtype=np.int)
+    crater_frac_diambin_1p5_1p75_newbool = np.zeros(len(pix_x_cen_arr), dtype=np.int)
+    crater_frac_diambin_1p75_2_newbool   = np.zeros(len(pix_x_cen_arr), dtype=np.int)
 
-    crater_frac_diambin_2_2p25_newbool   = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
-    crater_frac_diambin_2p25_2p5_newbool = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
-    crater_frac_diambin_2p5_2p75_newbool = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
-    crater_frac_diambin_2p75_3_newbool   = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
+    crater_frac_diambin_2_2p25_newbool   = np.zeros(len(pix_x_cen_arr), dtype=np.int)
+    crater_frac_diambin_2p25_2p5_newbool = np.zeros(len(pix_x_cen_arr), dtype=np.int)
+    crater_frac_diambin_2p5_2p75_newbool = np.zeros(len(pix_x_cen_arr), dtype=np.int)
+    crater_frac_diambin_2p75_3_newbool   = np.zeros(len(pix_x_cen_arr), dtype=np.int)
 
-    crater_frac_diambin_3_3p25_newbool   = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
-    crater_frac_diambin_3p25_3p5_newbool = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
-    crater_frac_diambin_3p5_3p75_newbool = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
-    crater_frac_diambin_3p75_4_newbool   = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
+    crater_frac_diambin_3_3p25_newbool   = np.zeros(len(pix_x_cen_arr), dtype=np.int)
+    crater_frac_diambin_3p25_3p5_newbool = np.zeros(len(pix_x_cen_arr), dtype=np.int)
+    crater_frac_diambin_3p5_3p75_newbool = np.zeros(len(pix_x_cen_arr), dtype=np.int)
+    crater_frac_diambin_3p75_4_newbool   = np.zeros(len(pix_x_cen_arr), dtype=np.int)
 
-    crater_frac_diambin_4_4p25_newbool   = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
-    crater_frac_diambin_4p25_4p5_newbool = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
-    crater_frac_diambin_4p5_4p75_newbool = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
-    crater_frac_diambin_4p75_5_newbool   = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
+    crater_frac_diambin_4_4p25_newbool   = np.zeros(len(pix_x_cen_arr), dtype=np.int)
+    crater_frac_diambin_4p25_4p5_newbool = np.zeros(len(pix_x_cen_arr), dtype=np.int)
+    crater_frac_diambin_4p5_4p75_newbool = np.zeros(len(pix_x_cen_arr), dtype=np.int)
+    crater_frac_diambin_4p75_5_newbool   = np.zeros(len(pix_x_cen_arr), dtype=np.int)
     # ---
-    crater_frac_diambin_5_6_newbool   = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
-    crater_frac_diambin_6_7_newbool   = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
-    crater_frac_diambin_7_8_newbool   = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
-    crater_frac_diambin_8_9_newbool   = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
-    crater_frac_diambin_9_10_newbool  = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
-    crater_frac_diambin_10_15_newbool = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
-    crater_frac_diambin_15_20_newbool = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
-    crater_frac_diambin_20_25_newbool = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
-    crater_frac_diambin_25_30_newbool = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
-    crater_frac_diambin_30_35_newbool = np.zeros(len(pix_x_cen_arr), dtype=np.float32)
+    crater_frac_diambin_5_6_newbool   = np.zeros(len(pix_x_cen_arr), dtype=np.int)
+    crater_frac_diambin_6_7_newbool   = np.zeros(len(pix_x_cen_arr), dtype=np.int)
+    crater_frac_diambin_7_8_newbool   = np.zeros(len(pix_x_cen_arr), dtype=np.int)
+    crater_frac_diambin_8_9_newbool   = np.zeros(len(pix_x_cen_arr), dtype=np.int)
+    crater_frac_diambin_9_10_newbool  = np.zeros(len(pix_x_cen_arr), dtype=np.int)
+    crater_frac_diambin_10_15_newbool = np.zeros(len(pix_x_cen_arr), dtype=np.int)
+    crater_frac_diambin_15_20_newbool = np.zeros(len(pix_x_cen_arr), dtype=np.int)
+    crater_frac_diambin_20_25_newbool = np.zeros(len(pix_x_cen_arr), dtype=np.int)
+    crater_frac_diambin_25_30_newbool = np.zeros(len(pix_x_cen_arr), dtype=np.int)
+    crater_frac_diambin_30_35_newbool = np.zeros(len(pix_x_cen_arr), dtype=np.int)
 
     # also create a blank array for associating 
     # crater ids with each pixel. I need a blank 
@@ -1259,7 +1259,9 @@ if __name__ == '__main__':
             # ------- Find fraction of pixel occupied by crater ------- #
             pix_frac_occ_crater = inter_area / pixel_corners.area()
             if pix_frac_occ_crater >= 0.5:
-                inter_area_crater_frac_newbool = 1.0
+                inter_area_crater_frac_newbool = 1
+            else:
+                inter_area_crater_frac_newbool = 0
 
             # find pixel index using pixel center to append to the correct array element
             pix_index = pixel_indices[j]
@@ -1381,7 +1383,7 @@ if __name__ == '__main__':
     # craters and the invalid_idx definition would be commented out otherwise
     #pix_crater_area[invalid_idx] = -9999.0
 
-    print "Crater fraction computation done. Saving now."
+    print "\n", "Crater fraction computation done. Saving now."
 
     # ----- save individual crater contributions as numpy arrays ----- #
     all_crater_fractions = [crater_frac_diambin_1_1p25, crater_frac_diambin_1p25_1p5, crater_frac_diambin_1p5_1p75, \
@@ -1425,7 +1427,7 @@ if __name__ == '__main__':
     # save as ascii raster
     #su.numpy_to_asciiraster(slope_extdir + 'crater_area_frac_in_pix_fastcomp.npy', (rows, columns), pix_x_cen_arr, pix_y_cen_arr)
 
-    print "\n","Crater fractional area in each pixel computation done and saved."
+    print "Crater fractional area in each pixel computation done and saved."
 
     # total run time
     print '\n'

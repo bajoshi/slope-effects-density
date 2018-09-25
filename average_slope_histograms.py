@@ -217,19 +217,28 @@ def call_hist_and_fits_smallgrid():
         fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_4p75_5, colors[15], callcount, 'finegrid')
 
     else:
-        colors = ['#67001f', '#377eb8', '#1b9e77', '#984ea3']
+        #colors = ['#67001f', '#377eb8', '#1b9e77', '#984ea3']
+        colors = ['#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00',\
+        '#cab2d6','#6a3d9a']
         callcount = 0
+
         fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_1_2, colors[0], callcount, None)
         fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_2_3, colors[1], callcount, None)
         fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_3_4, colors[2], callcount, None)
         fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_4_5, colors[3], callcount, None)
+        fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_5_6, colors[4], callcount, None)
+        fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_6_7, colors[5], callcount, None)
+        fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_7_8, colors[6], callcount, None)
+        fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_8_9, colors[7], callcount, None)
+        fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_9_10, colors[8], callcount, None)
+        #fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_10, colors[9], callcount, None)
 
     # minor ticks
     ax.minorticks_on()
     ax.tick_params('both', width=1, length=3, which='minor')
     ax.tick_params('both', width=1, length=4.7, which='major')
 
-    fig.savefig(slope_extdir + 'slope_histogram_fits_smallrange.png', dpi=300, bbox_inches='tight')
+    fig.savefig(slope_extdir + 'slope_histogram_fits_upto_10km_newbool.png', dpi=300, bbox_inches='tight')
 
     return None
 
