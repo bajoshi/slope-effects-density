@@ -163,13 +163,15 @@ def call_hist_and_fits_smallgrid():
     density_diambin_5_6, density_diambin_6_7, density_diambin_7_8, density_diambin_8_9, \
     density_diambin_9_10, density_diambin_10_15, density_diambin_15_20, density_diambin_20_25, \
     density_diambin_25_30, density_diambin_30_35, \
+    density_diambin_1_2, density_diambin_2_3, density_diambin_3_4, density_diambin_4_5, \
     slope_diambin_1_1p25, slope_diambin_1p25_1p5, slope_diambin_1p5_1p75, slope_diambin_1p75_2, \
     slope_diambin_2_2p25, slope_diambin_2p25_2p5, slope_diambin_2p5_2p75, slope_diambin_2p75_3, \
     slope_diambin_3_3p25, slope_diambin_3p25_3p5, slope_diambin_3p5_3p75, slope_diambin_3p75_4, \
     slope_diambin_4_4p25, slope_diambin_4p25_4p5, slope_diambin_4p5_4p75, slope_diambin_4p75_5, \
     slope_diambin_5_6, slope_diambin_6_7, slope_diambin_7_8, \
     slope_diambin_8_9, slope_diambin_9_10, slope_diambin_10_15, slope_diambin_15_20, \
-    slope_diambin_20_25, slope_diambin_25_30, slope_diambin_30_35 = avg.read_no_overlap_arrays()
+    slope_diambin_20_25, slope_diambin_25_30, slope_diambin_30_35, \
+    slope_diambin_1_2, slope_diambin_2_3, slope_diambin_3_4, slope_diambin_4_5 = avg.read_no_overlap_arrays()
 
     density_diambin_1, density_diambin_2, density_diambin_3, density_diambin_4, \
     density_diambin_5, density_diambin_6, density_diambin_7, density_diambin_8, \
@@ -184,7 +186,7 @@ def call_hist_and_fits_smallgrid():
     ax = fig.add_subplot(111)
 
     ax.set_xlabel('Slope [Degrees]', fontsize=12)
-    ax.set_ylabel('Normalized bin counts', fontsize=12)
+    ax.set_ylabel('Probability density function', fontsize=12)
 
     fg = False  # Finer grid 
     if fg is True:
@@ -218,8 +220,9 @@ def call_hist_and_fits_smallgrid():
 
     else:
         #colors = ['#67001f', '#377eb8', '#1b9e77', '#984ea3']
-        colors = ['#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00',\
-        '#cab2d6','#6a3d9a']
+        colors = ['#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#543005','#fdbf6f',\
+        '#ff7f00','#cab2d6']
+        
         callcount = 0
 
         fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_1_2, colors[0], callcount, None)
@@ -231,7 +234,6 @@ def call_hist_and_fits_smallgrid():
         fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_7_8, colors[6], callcount, None)
         fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_8_9, colors[7], callcount, None)
         fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_9_10, colors[8], callcount, None)
-        #fig, ax, callcount = hist_and_fit(fig, ax, slope_diambin_10, colors[9], callcount, None)
 
     # minor ticks
     ax.minorticks_on()

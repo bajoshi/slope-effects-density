@@ -1,12 +1,15 @@
 from __future__ import division
 
 import numpy as np
+from scipy.stats import gaussian_kde
 
 import sys
 import os
+import time
+import datetime
 
 import matplotlib.pyplot as plt
-import matplotlib.gridspec as gridspec
+import matplotlib.cm as cm
 
 home = os.getenv('HOME')
 slopedir = home + '/Desktop/slope-effects-density/'
@@ -18,6 +21,11 @@ import slope_utils as su
 
 if __name__ == '__main__':
     
+    # Start time
+    start = time.time()
+    dt = datetime.datetime
+    print "Starting at --", dt.now()
+
     # read in all density and slope rasters
     # and put them in numpy arrays.
     #### --------------------------------- Point Density --------------------------------- ####
@@ -65,7 +73,7 @@ if __name__ == '__main__':
     slope_booleandensity[invalid_idx] = np.nan
 
     #### --------------------------------- Fuzzy Density --------------------------------- ####
-    fuzzy_crater_frac = np.load(slope_extdir + 'crater_area_frac_in_pix_clipped.npy')
+    fuzzy_crater_frac = np.load(slope_extdir + 'crater_area_frac_in_pix_fastcomp_newbool.npy')
     fuzzy_pix_frac = np.load(slope_extdir + 'pix_area_fraction_clipped.npy')
     slope_fuzzydensity = np.load(slope_extdir + 'hf_full_slopemap_clipped.npy')
 
@@ -84,58 +92,83 @@ if __name__ == '__main__':
 
     ######### --------------------------------- Plotting --------------------------------- #########
     # Now plot all three on the same figure
-    gs = gridspec.GridSpec(1, 3)
-    gs.update(left=0.1, right=0.9, bottom=0.1, top=0.9, wspace=0.15, hspace=0.15)
 
-    fig = plt.figure(figsize=(9,5))
-    ax1 = fig.add_subplot(gs[0,0])
-    ax2 = fig.add_subplot(gs[0,1])
-    ax3 = fig.add_subplot(gs[0,2])
-
-    ax1.scatter(slope_pointdensity, point_density, marker='o', s=3, color='k', edgecolors='None', alpha=0.75)
-    ax2.scatter(slope_booleandensity, boolean_density, marker='o', s=5, color='k', edgecolors='None', alpha=0.75)
-    ax3.scatter(slope_fuzzydensity, fuzzy_density, marker='o', s=1, color='k', edgecolors='None', alpha=0.75)
+    fig = plt.figure()
+    ax1 = fig.add_subplot(121)
+    ax2 = fig.add_subplot(122)
+    #ax3 = fig.add_subplot(gs[0,2])
 
     ax1.set_ylabel(r'$\mathrm{Density\ [Craters\, km^{-2}]}$', fontsize=15)
     ax2.set_xlabel(r'$\mathrm{Slope\ [Degrees]}$', fontsize=15)
 
     # add minor ticks and grid
     ax1.minorticks_on()
-    ax1.tick_params('both', width=1, length=3, which='minor')
-    ax1.tick_params('both', width=1, length=4.7, which='major')
     ax2.minorticks_on()
-    ax2.tick_params('both', width=1, length=3, which='minor')
-    ax2.tick_params('both', width=1, length=4.7, which='major')
-    ax3.minorticks_on()
-    ax3.tick_params('both', width=1, length=3, which='minor')
-    ax3.tick_params('both', width=1, length=4.7, which='major')
 
     # Set limits 
     ax1.set_ylim(-0.001, 0.023)
-    ax2.set_ylim(-0.0625, 2.0625)
-    ax3.set_ylim(-0.05, 1.35)
+    #ax2.set_ylim(-0.0625, 2.0625)
+    #ax3.set_ylim(-0.05, 1.35)
 
     ax1.set_xlim(-2, 37)
     ax2.set_xlim(-2, 37)
-    ax3.set_xlim(-2, 37)
+    #ax3.set_xlim(-2, 37)
 
     # add text that says which method is plotted
-    ax1.text(0.603, 0.95, '(a) Point', verticalalignment='top', horizontalalignment='left', \
+    ax1.text(0.7, 0.95, 'Point' + '\n' + 'density', verticalalignment='top', horizontalalignment='left', \
         transform=ax1.transAxes, color='k', size=10)
-    ax1.text(0.7, 0.91, 'Density', verticalalignment='top', horizontalalignment='left', \
-        transform=ax1.transAxes, color='k', size=10)
-
-    ax2.text(0.6, 0.95, '(b) Boolean', verticalalignment='top', horizontalalignment='left', \
-        transform=ax2.transAxes, color='k', size=10)
-    ax2.text(0.7, 0.91, 'Density', verticalalignment='top', horizontalalignment='left', \
+    ax2.text(0.7, 0.95, 'Pixel-by-pixel' + '\n' + 'density', verticalalignment='top', horizontalalignment='left', \
         transform=ax2.transAxes, color='k', size=10)
 
-    ax3.text(0.535, 0.95, '(c) Fractional', verticalalignment='top', horizontalalignment='left', \
-        transform=ax3.transAxes, color='k', size=10)
-    ax3.text(0.63, 0.91, 'Density', verticalalignment='top', horizontalalignment='left', \
-        transform=ax3.transAxes, color='k', size=10)
+    #ax3.text(0.535, 0.95, '(c) Fractional', verticalalignment='top', horizontalalignment='left', \
+    #    transform=ax3.transAxes, color='k', size=10)
+    #ax3.text(0.63, 0.91, 'Density', verticalalignment='top', horizontalalignment='left', \
+    #    transform=ax3.transAxes, color='k', size=10)
+
+    # --------- Contours --------- #
+    print "Computing contours"
+    print "Time taken until now --", (time.time() - start), "seconds."
+    # First get rid of invalid entries
+    slope_val_idx = np.where(slope_fuzzydensity != -9999.0)  # no NaNs in the slope arr # checked
+    fuzzy_density_val_idx = np.where(~np.isnan(fuzzy_density))
+    val_idx = reduce(np.intersect1d, (slope_val_idx, fuzzy_density_val_idx))
+    slope_fuzzydensity = slope_fuzzydensity[val_idx]
+    fuzzy_density = fuzzy_density[val_idx]
+    # plot contours for point density
+    """
+    counts, xbins, ybins = np.histogram2d(slope_fuzzydensity, fuzzy_density, bins=100, normed=False)
+    levels_to_plot = [20, 50, 100, 200, 500, 800, 1e3, 1e4]
+    c = ax2.contour(counts.transpose(), levels=levels_to_plot, \
+        extent=[xbins.min(), xbins.max(), ybins.min(), ybins.max()], \
+        cmap=cm.Blues_r, linestyles='solid', zorder=10)
+    """
+
+    xmin = min(slope_fuzzydensity)
+    xmax = max(slope_fuzzydensity)
+    ymin = min(fuzzy_density)
+    ymax = max(fuzzy_density)
+    
+    X, Y = np.mgrid[xmin:xmax:100j, ymin:ymax:100j]
+    positions = np.vstack([X.ravel(), Y.ravel()])
+    values = np.vstack([slope_fuzzydensity, fuzzy_density])
+    kernel = gaussian_kde(values)
+    
+    density = np.reshape(kernel(positions).T, X.shape)
+
+    print "Plotting KDE for Pixel-by-pixel density."
+    print "Time taken until now --", (time.time() - start), "seconds."
+    ax2.imshow(np.rot90(density), cmap=plt.cm.gist_earth_r)
+
+    ax1.scatter(slope_pointdensity, point_density, marker='o', s=3, color='k', edgecolors='None', alpha=0.75)
+    #ax2.scatter(slope_booleandensity, boolean_density, marker='o', s=5, color='k', edgecolors='None', alpha=0.75)
+    ax2.scatter(slope_fuzzydensity, fuzzy_density, marker='o', s=1, color='k', edgecolors='None', alpha=0.75)
+
+    ax1.set_aspect(1.0)
+    ax2.set_aspect(1.0)
 
     # save figure
-    fig.savefig(slope_extdir + 'all_crater_density_methods_comparison.png', dpi=300, bbox_inches='tight')
+    fig.savefig(slope_extdir + 'all_crater_density_methods_comparison_newbool.png', dpi=300, bbox_inches='tight')
 
+    # total run time
+    print "Total time taken --", (time.time() - start)/60, "minutes."
     sys.exit(0)

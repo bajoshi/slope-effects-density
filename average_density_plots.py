@@ -21,21 +21,25 @@ def read_no_overlap_arrays():
     density_diambin_1p25_1p5 = np.load(slope_extdir + 'density_diambin_1p25_1p5.npy')
     density_diambin_1p5_1p75 = np.load(slope_extdir + 'density_diambin_1p5_1p75.npy')
     density_diambin_1p75_2 = np.load(slope_extdir + 'density_diambin_1p75_2.npy')
+    density_diambin_1_2 = np.load(slope_extdir + 'density_diambin_1_2.npy')
 
     density_diambin_2_2p25 = np.load(slope_extdir + 'density_diambin_2_2p25.npy')
     density_diambin_2p25_2p5 = np.load(slope_extdir + 'density_diambin_2p25_2p5.npy')
     density_diambin_2p5_2p75 = np.load(slope_extdir + 'density_diambin_2p5_2p75.npy')
     density_diambin_2p75_3 = np.load(slope_extdir + 'density_diambin_2p75_3.npy')
+    density_diambin_2_3 = np.load(slope_extdir + 'density_diambin_2_3.npy')
 
     density_diambin_3_3p25 = np.load(slope_extdir + 'density_diambin_3_3p25.npy')
     density_diambin_3p25_3p5 = np.load(slope_extdir + 'density_diambin_3p25_3p5.npy')
     density_diambin_3p5_3p75 = np.load(slope_extdir + 'density_diambin_3p5_3p75.npy')
     density_diambin_3p75_4 = np.load(slope_extdir + 'density_diambin_3p75_4.npy')
+    density_diambin_3_4 = np.load(slope_extdir + 'density_diambin_3_4.npy')
 
     density_diambin_4_4p25 = np.load(slope_extdir + 'density_diambin_4_4p25.npy')
     density_diambin_4p25_4p5 = np.load(slope_extdir + 'density_diambin_4p25_4p5.npy')
     density_diambin_4p5_4p75 = np.load(slope_extdir + 'density_diambin_4p5_4p75.npy')
     density_diambin_4p75_5 = np.load(slope_extdir + 'density_diambin_4p75_5.npy')
+    density_diambin_4_5 = np.load(slope_extdir + 'density_diambin_4_5.npy')
 
     # ---
 
@@ -56,21 +60,25 @@ def read_no_overlap_arrays():
     slope_diambin_1p25_1p5 = np.load(slope_extdir + 'slope_diambin_1p25_1p5.npy')
     slope_diambin_1p5_1p75 = np.load(slope_extdir + 'slope_diambin_1p5_1p75.npy')
     slope_diambin_1p75_2 = np.load(slope_extdir + 'slope_diambin_1p75_2.npy')
+    slope_diambin_1_2 = np.load(slope_extdir + 'slope_diambin_1_2.npy')
 
     slope_diambin_2_2p25 = np.load(slope_extdir + 'slope_diambin_2_2p25.npy')
     slope_diambin_2p25_2p5 = np.load(slope_extdir + 'slope_diambin_2p25_2p5.npy')
     slope_diambin_2p5_2p75 = np.load(slope_extdir + 'slope_diambin_2p5_2p75.npy')
     slope_diambin_2p75_3 = np.load(slope_extdir + 'slope_diambin_2p75_3.npy')
+    slope_diambin_2_3 = np.load(slope_extdir + 'slope_diambin_2_3.npy')
 
     slope_diambin_3_3p25 = np.load(slope_extdir + 'slope_diambin_3_3p25.npy')
     slope_diambin_3p25_3p5 = np.load(slope_extdir + 'slope_diambin_3p25_3p5.npy')
     slope_diambin_3p5_3p75 = np.load(slope_extdir + 'slope_diambin_3p5_3p75.npy')
     slope_diambin_3p75_4 = np.load(slope_extdir + 'slope_diambin_3p75_4.npy')
+    slope_diambin_3_4 = np.load(slope_extdir + 'slope_diambin_3_4.npy')
 
     slope_diambin_4_4p25 = np.load(slope_extdir + 'slope_diambin_4_4p25.npy')
     slope_diambin_4p25_4p5 = np.load(slope_extdir + 'slope_diambin_4p25_4p5.npy')
     slope_diambin_4p5_4p75 = np.load(slope_extdir + 'slope_diambin_4p5_4p75.npy')
     slope_diambin_4p75_5 = np.load(slope_extdir + 'slope_diambin_4p75_5.npy')
+    slope_diambin_4_5 = np.load(slope_extdir + 'slope_diambin_4_5.npy')
 
     # ---
 
@@ -92,13 +100,15 @@ def read_no_overlap_arrays():
     density_diambin_5_6, density_diambin_6_7, density_diambin_7_8, density_diambin_8_9, \
     density_diambin_9_10, density_diambin_10_15, density_diambin_15_20, density_diambin_20_25, \
     density_diambin_25_30, density_diambin_30_35, \
+    density_diambin_1_2, density_diambin_2_3, density_diambin_3_4, density_diambin_4_5, \
     slope_diambin_1_1p25, slope_diambin_1p25_1p5, slope_diambin_1p5_1p75, slope_diambin_1p75_2, \
     slope_diambin_2_2p25, slope_diambin_2p25_2p5, slope_diambin_2p5_2p75, slope_diambin_2p75_3, \
     slope_diambin_3_3p25, slope_diambin_3p25_3p5, slope_diambin_3p5_3p75, slope_diambin_3p75_4, \
     slope_diambin_4_4p25, slope_diambin_4p25_4p5, slope_diambin_4p5_4p75, slope_diambin_4p75_5, \
     slope_diambin_5_6, slope_diambin_6_7, slope_diambin_7_8, \
     slope_diambin_8_9, slope_diambin_9_10, slope_diambin_10_15, slope_diambin_15_20, \
-    slope_diambin_20_25, slope_diambin_25_30, slope_diambin_30_35
+    slope_diambin_20_25, slope_diambin_25_30, slope_diambin_30_35, \
+    slope_diambin_1_2, slope_diambin_2_3, slope_diambin_3_4, slope_diambin_4_5
 
 def read_Nvalue_arrays():
 
